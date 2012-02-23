@@ -1,0 +1,8 @@
+exports.session_sekrit = 'Are you the gatekeeper?';
+exports.ldap_server_url = 'ldaps://addressbook.mozilla.com:636';
+exports.ldap_bind_dn = 'mail=USERNAME@mozilla.com,o=com,dc=mozilla';
+exports.ldap_bind_password = 'password';
+
+// For debugging...
+exports.browserid_server = 'https://dev.diresworb.org';
+// 'https://browserid.org';

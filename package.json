@@ -1,0 +1,23 @@
+{
+  "author": "Ozten <shout@ozten.com> (http://ozten.com)",
+  "name": "clortho",
+  "description": "Mozilla's BrowserID IdP Service",
+  "version": "0.0.0",
+  "repository": {
+    "url": ""
+  },
+  "main": "clortho",
+  "engines": {
+    "node": "~0.6.10"
+  },
+  "dependencies": {
+    "client-sessions": "0.0.3",
+    "crypto":"0.0.3",
+    "ejs": "0.6.1",
+    "express": "2.5.8",
+    "jwcrypto": "0.1.1",
+    "ldapjs": "0.4.7"
+  },
+  "devDependencies": {},
+  "optionalDependencies": {}
+}

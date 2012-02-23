@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>provisioning</title>
+</head>
+<body>
+<!-- script type="text/javascript" src="https://browserid.org/include.js"></script -->
+<script type="text/javascript" src="<%= browserid_server %>/provisioning_api.js"></script>
+<script type="text/javascript" src="/js/lib/jquery.min.js"></script>
+<script type="text/javascript" src="/js/provision.js" /></script>
+<script>
+console.log('next script window.provision=', window.provision);
+window.provision(
+<% if (user) { %>
+  "<%= user %>"
+<% } else { %>
+  null
+<% } %>
+);
+</script>
+</body>
+</html>

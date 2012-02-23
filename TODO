@@ -1,0 +1,6 @@
+* sercure it
+** CSRF
+** vet input
+** vet escaping output
+
+* MPL 2.0 license
