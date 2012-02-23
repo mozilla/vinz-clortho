@@ -9,6 +9,11 @@ $(document).ready(function() {
     // Email form element is actually ignored
     email = email.replace('dev.clortho.mozilla.org', 'mozilla.com');
     if (email) {
+      // Sign-in used normally via BrowserID flow
+      // Disable input as user should only use the email address
+      // they specified.
+      // We *don't* disable this if sign-in is being used directly
+      // (outside of BrowserID), so user can edit the field
       $("input[type=email]").val(email).attr('disabled', true);
     }
     //all cancel buttons work the same
@@ -30,6 +35,9 @@ $(document).ready(function() {
         return;
       }
 
+      // Sign-in used directly, outside of BrowserID flow
+      if (! email)
+        email = $('[name=user]').val();
       $.ajax({
         url: '/browserid/sign_in',
         type: 'POST',

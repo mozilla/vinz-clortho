@@ -1,0 +1,5 @@
+etc/config.js
+etc/*.pem
+etc/*.csr
+*~
+#*#
