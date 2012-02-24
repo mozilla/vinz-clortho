@@ -1,46 +1,70 @@
-## Setup ##
+# Vinz Clortho
+``vinz-clortho`` is a BrowserID primary for organizations that use LDAP as their authentication.
 
-Add a local domain name to your /etc/hosts file or deploy to a server. Localhost won't work with jschannel stuff.
+It is a HTTPS Node.js server which exposes 3 URLs.
+* /.well-known/browserid
+* /browserid/sign_in
+* /browserid/provision
 
-Copy etc/config.js-dist to etc/config.js and add your LDAP username and LDAP password, so the server can bind as you. In production, this will be replaced with a "bind user", but you can serve that role in development.
+## Usage
 
-**Note:** LDAP username is not your alias... it's the original username you were given.
-**Note:** During sign_in we still test your password with a second bind, so you'll be able to test wrong password, etc in BID flows.
+By routing traffic to these three urls, users can use their LDAP email address and email aliases across the web. Users will be prompted to sign in. Their LDAP credentials will be used to bind to your backend. A session will be created and they will be on their merry way.
 
-Edit ``client/js/provision.js`` and change the ``email.replace('dev.clortho.mozilla.org', 'mozilla.com');`` to match your local domain name.
+## Installation
 
-See docs/DEV_NOTES.md and generate SSL certs under etc/
+Install [Node.js](http://nodejs.org).
 
-Use ``sudo clortho`` to run on port 443.
+    npm install
 
-You can ignore notes below here...
+Look for errors. You will need several C and C++ header files on your system, such as:
 
-## Bugs ##
-* BID doesn't recognized self-signed certs
-** BAD https://browserid.org/wsapi/address_info?email=ozten%40vinz.clortho.org
-** BAD https://diresworb.org/wsapi/address_info?email=ozten%40vinz.clortho.org
-** GOOD https://dev.diresworb.org/wsapi/address_info?email=ozten%40vinz.clortho.org
-** https://diresworb.org/wsapi/address_info?email=ozten%40browserid-i5y.herokuapp.com
+* libgmp3-dev
 
-## Painpoints ##
-* Can't test system unless it's on the public internet
-** /.well-known/browserid must be fetchable by browserid.org
-* BID lint - Check DNS, well-known file, etc
-* Network issues, our squid reverse proxy caching
-* Lack of js_channel debugging in Fx and Chrome
-** Bad JS in a script file, no errors but entire js file stops being loaded
-** provisioning_api MUST be from the same domain as your testing (I had local and browserid.org...)
-* /.well-known/browserid requires 'Content-Type', 'application/json' but some web servers will serve application/octet-stream
-* BrowserID server caches things like "this is not a primary", so you can fix your mistake w/o restarting the server.
-** Caches non-200 responses also
+### Configuration
 
-## Pro Tips ##
-https://browserid.org/wsapi/address_info?email=ozten%40browserid-i5y.herokuapp.com
-https://browserid.org/wsapi/address_info?email=ozten%40browserid-i5y.herokuapp.com
-https://browserid.org/wsapi/address_info?email=ozten%40browserid-i5y.herokuapp.com
+    cp etc/config.js-dist etc/config.js
 
-## Questions ##
+Edit following settings:
 
-* How long does the public-key at /.well-known/browserid live for?
-** When you change it... what happens to other requests mid-flight?
-* well known gives us provisioning and authentication, but why no logout
+* exports.session_sekrit = 'Some random string';
+* exports.ldap_server_url = 'ldaps://addressbook.mozilla.com:636';
+* exports.ldap_bind_dn = 'mail=USERNAME@mozilla.com,o=com,dc=mozilla';
+* exports.ldap_bind_password = 'sekrit password';
+* exports.issuer = 'mozilla.com';
+
+This application uses a simple bind in LDAP to search for the user's DN, 
+before trying to bind as the user. ``ldap_bind_dn`` and ``ldap_bind_password`` will be set to ``''`` for many systems, that have configured an anonymous
+binding. Alternatively, you may have secured your system with a shared 
+bind dn and password, you'd enter those here.
+
+## Start up
+
+    sudo clortho
+
+This will start the server listening on port 443.
+
+## Shutdown
+
+Kill the foreground process with ``Cntl-C``.
+
+## Testing
+
+Go to a BrowserID enabled website, such as [My Favorite Beer](http://myfavoritebeer.org/) and enter <My Username>@<Issuer> into the email address area.
+
+Example:
+For a system which has
+
+    exports.issuer = 'example.com';
+
+Alice would enter ``alice@example.com``.
+
+The BrowserID protocol will discover that your organization is a primary 
+identity provider for example.com and trust your LDAP system to authenticate
+Alice properly. You'll see GET and POST requests on the 3 urls listed above.
+
+## Maintenance
+
+Sessions are stored in encrypted cookies on the user's browser. There 
+are no backend databases.
+
+Making sure the clortho daemon is up and running is the only maintenance task.
