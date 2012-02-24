@@ -57,7 +57,7 @@ Kill the foreground process with ``Cntl-C``.
 
 ## Testing
 
-Go to a BrowserID enabled website, such as [My Favorite Beer](http://myfavoritebeer.org/) and enter <My Username>@<Issuer> into the email address area.
+Go to a BrowserID enabled website, such as [My Favorite Beer](http://myfavoritebeer.org/) and enter ``MyUsername``@``Issuer.tld``into the email address area.
 
 Example:
 For a system which has
