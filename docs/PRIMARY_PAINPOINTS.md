@@ -20,11 +20,13 @@ Wherein we document gotchas and things that caught me while writing this Primary
 * /.well-known/browserid requires 'Content-Type', 'application/json' but some web servers will serve application/octet-stream
 * BrowserID server caches things like "this is not a primary", so you can fix your mistake w/o restarting the server.
   ** Caches non-200 responses also
+* Debugging certificate problems (document format, better tooling)
 
 ## Pro Tips ##
 
 * curl https://browserid.org/wsapi/address_info?email=ozten%40browserid-i5y.herokuapp.com
 * or https://browserid.org/wsapi/address_info?email=<USERNAME>%40<ISSUER DOMAIN>
+* Certificates a ``.`` seperated Base64 URL encoded messages. You can use [utils.js](https://github.com/mozilla/jwcrypto) to decode via nod.e
 
 ## Questions ##
 Notes for questions to answer...
