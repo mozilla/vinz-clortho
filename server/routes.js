@@ -18,7 +18,7 @@ exports.routes = function () {
         console.info('Stale keys, re-generating');
         this.ttl = new Date();
         // generate a fresh 1024 bit RSA key
-        var keypair = jwk.KeyPair.generate('RS', 128);
+        var keypair = jwk.KeyPair.generate('RS', 256);
 
         this.public_key = JSON.parse(keypair.publicKey.serialize());
         this.private_key = JSON.parse(keypair.secretKey.serialize());

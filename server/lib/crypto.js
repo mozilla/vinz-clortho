@@ -15,7 +15,7 @@ if (!exports.pubKey) {
   console.log("WARNING: you're using ephemeral keys.  They will be purged at restart.");
 
   // generate a fresh 1024 bit RSA key
-  var keypair = jwk.KeyPair.generate('RS', 128);
+  var keypair = jwk.KeyPair.generate('RS', 256);
 
   exports.pubKey = JSON.parse(keypair.publicKey.serialize());
   _privKey = JSON.parse(keypair.secretKey.serialize());
