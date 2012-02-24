@@ -1,6 +1,6 @@
-const
-jwk = require("jwcrypto/jwk"),
-jwcert = require("jwcrypto/jwcert");
+const jwk = require("jwcrypto/jwk"),
+      jwcert = require("jwcrypto/jwcert"),
+      conf = require("../../etc/config");
 
 try {
   exports.pubKey = JSON.parse(process.env['PUBLIC_KEY']);
@@ -29,7 +29,7 @@ exports.cert_key = function(pubkey, email, duration_s, cb) {
   var pubkey = jwk.PublicKey.fromSimpleObject(pubkey);
   expiration.setTime(new Date().valueOf() + duration_s * 1000);
   process.nextTick(function() {
-    cb(null, (new jwcert.JWCert('eyedee.me', expiration, new Date(),
+    cb(null, (new jwcert.JWCert(conf.issuer, expiration, new Date(),
                                 pubkey, {email: email})).sign(_privKey));
   });
 };
