@@ -32,6 +32,7 @@ You can ignore notes below here...
 ** provisioning_api MUST be from the same domain as your testing (I had local and browserid.org...)
 * /.well-known/browserid requires 'Content-Type', 'application/json' but some web servers will serve application/octet-stream
 * BrowserID server caches things like "this is not a primary", so you can fix your mistake w/o restarting the server.
+** Caches non-200 responses also
 
 ## Pro Tips ##
 https://browserid.org/wsapi/address_info?email=ozten%40browserid-i5y.herokuapp.com

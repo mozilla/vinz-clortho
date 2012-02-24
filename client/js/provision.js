@@ -1,27 +1,24 @@
 (function () {
-// username@mozilla.com
 window.provision = function (user) {
   var cmpi = function (s1, s2) {
         if (! s1.toLowerCase) s1 = String(s1);
         if (! s2.toLowerCase) s2 = String(s2);
         return s1.toLowerCase() == s2.toLowerCase();
       },
-      msg;
-  console.log('hooking up begin provisioning with user=', user);
+      msg = "user is not authenticated as target user";
+  console.log('hooking up begin provisioning with user=' + user);
 
   // username@dev.clortho.mozilla.org
   navigator.id.beginProvisioning(function(email, cert_duration) {
     console.log('callback');
-    console.log('begining provisioning', email, cert_duration);
-    var n_email = email.replace('dev.clortho.mozilla.org', 'mozilla.com');
+    console.log('begining provisioning ' + email + ' ' + cert_duration);
+
     if (! user) {
       console.log('no session, failing');
-      console.log(navigator.id.raiseProvisioningFailure);
-      msg = "No Active Session";
       navigator.id.raiseProvisioningFailure(msg);
     } else {
-      if (cmpi(user, n_email)) {
-      console.log('emails matched', user, n_email, 'next genKeyPair');
+      if (cmpi(user, email)) {
+      console.log('emails matched ' + user + ' == ' + email + ' next genKeyPair');
       navigator.id.genKeyPair(function(pubkey) {
         $.ajax({
             url: '/browserid/provision',
@@ -39,18 +36,15 @@ window.provision = function (user) {
             },
             error: function(r) {
               console.log("Error certifying key, raising provision failure");
-              msg = "couldn't certify key";
               navigator.id.raiseProvisioningFailure(msg);
             }
           });
         });
       } else {
-        msg = 'user is not authenticated as target user';
-        console.log(msg);
+        console.log('User [', user, '] and email [', email, '] dont match');
         navigator.id.raiseProvisioningFailure(msg);
       }    
     }
   }); //beginProvisioning
 };
-console.log('window.provision=', window.provision);
 })();

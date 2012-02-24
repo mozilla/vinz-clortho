@@ -45,15 +45,22 @@ app.configure(function(){
   app.get('/', function (req, resp) {
     resp.send("I am the keymaster");
   });
-  app.get('/.well-known/browserid', routes.well_known_browserid);
+  // Make /.well-known/browserid
+  // curl -k https://dev.clortho.mozilla.org/make/.well-known/browserid > client/.well-known/browserid
+  app.get('/make/.well-known/browserid', routes.well_known_browserid);
   app.get('/browserid/provision', routes.provision);
   app.post('/browserid/provision', routes.provision_key);
   app.get('/browserid/sign_in', routes.signin);
   app.post('/browserid/sign_in', routes.check_signin);
 
-
   app.use(express.compiler({ enable: ['less'],
                              src: './client'}));
+  app.use(function (req, resp, next) {
+    if ('/.well-known/browserid' === req.url) {
+      resp.setHeader('Content-Type', 'application/json');
+    }
+    next();
+  });
   app.use(express.static(__dirname + '/client'));
 });
 
