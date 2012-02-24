@@ -1,14 +1,22 @@
 # Vinz Clortho
+
+**Status:** This service is under active development and **not ready for production systems**.
+
 ``vinz-clortho`` is a BrowserID primary for organizations that use LDAP as their authentication.
 
 It is a HTTPS Node.js server which exposes 3 URLs.
+
 * /.well-known/browserid
 * /browserid/sign_in
 * /browserid/provision
 
 ## Usage
 
-By routing traffic to these three urls, users can use their LDAP email address and email aliases across the web. Users will be prompted to sign in. Their LDAP credentials will be used to bind to your backend. A session will be created and they will be on their merry way.
+By routing HTTPS traffic to your domain (same one as email domain) for these three new urls, 
+users can use their LDAP email address and email aliases across the web. 
+
+Users will be prompted to sign in. Their LDAP credentials will be used to bind to your existing backend. 
+A session will be created and they will be on their merry way.
 
 ## Installation
 
