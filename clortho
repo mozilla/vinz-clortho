@@ -47,7 +47,7 @@ app.configure(function(){
   });
   // Make /.well-known/browserid
   // curl -k https://dev.clortho.mozilla.org/make/.well-known/browserid > client/.well-known/browserid
-  app.get('/make/.well-known/browserid', routes.well_known_browserid);
+  app.get('/.well-known/browserid', routes.well_known_browserid);
   app.get('/browserid/provision', routes.provision);
   app.post('/browserid/provision', routes.provision_key);
   app.get('/browserid/sign_in', routes.signin);

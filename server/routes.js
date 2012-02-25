@@ -14,17 +14,7 @@ exports.routes = function () {
   well_known_browserid: function (req, resp) {
       var timeout = 6 * 60 * 60;
       // On startup, keys need to be pulled from memcache or some such
-      if (! this.ttl || (new Date - this.ttl) > timeout * 1000) {
-        console.info('Stale keys, re-generating');
-        this.ttl = new Date();
-        // generate a fresh 1024 bit RSA key
-        var keypair = jwk.KeyPair.generate('RS', 256);
-
-        this.public_key = JSON.parse(keypair.publicKey.serialize());
-        this.private_key = JSON.parse(keypair.secretKey.serialize());
-      }
-
-      var pk = JSON.stringify(this.public_key);
+      var pk = JSON.stringify(crypto.pubKey);
       resp.setHeader('Content-Type', 'application/json');
       resp.setHeader('Cache-Control', 'max-age=' + timeout);
       resp.render('well_known_browserid', {
@@ -73,6 +63,7 @@ exports.routes = function () {
       } else {
         // LDAP is case-insensitive...
         console.log('authing', req.body.user, req.body.pass);
+
         auth.login(req.body.user, req.body.pass, function (err, passed) {
           if (err || ! passed) {
             resp.write('Email or Password incorrect');
