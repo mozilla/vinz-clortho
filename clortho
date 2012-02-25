@@ -52,6 +52,7 @@ app.configure(function(){
   app.post('/browserid/provision', routes.provision_key);
   app.get('/browserid/sign_in', routes.signin);
   app.post('/browserid/sign_in', routes.check_signin);
+  app.post('/browserid/signout', routes.signout);
 
   app.use(express.compiler({ enable: ['less'],
                              src: './client'}));

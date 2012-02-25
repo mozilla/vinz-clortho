@@ -69,12 +69,13 @@ exports.routes = function () {
             resp.write('Email or Password incorrect');
             resp.writeHead(401);
           } else {
-            req.session.email = req.body.user;
+            req.session.email = req.body.user.replace('@mozilla.com', '@' + conf.issuer);
             resp.writeHead(200);
           }
           resp.end();
         });
       }
-    }
+    },
+    signout: function (req, resp) { req.session.reset(); resp.send('bye!'); }
   };
 };
