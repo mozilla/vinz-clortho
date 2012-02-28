@@ -24,7 +24,8 @@ window.provision = function (user) {
             url: '/browserid/provision',
             data: JSON.stringify({
               pubkey: pubkey,
-              duration: cert_duration
+              duration: cert_duration,
+              "_csrf": $('[name=_csrf]').val()
             }),
             type: 'POST',
             headers: { "Content-Type": 'application/json' },

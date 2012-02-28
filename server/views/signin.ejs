@@ -5,6 +5,7 @@
   <h1><%= title %></h1>
   <div class="error"></div>
   <form action="" method="POST">
+    <input type="hidden" name="_csrf" value="<%= csrf_token %>" />
     <div><label>Email</label><input type="email" name="user" value=""></span></div>
     <div><label for="pass">Password</label><input type="password" id="pass" name="pass" value="" /></div>
     <div><div class="label"></div><button>Sign in</button><button class="cancel">Cancel</button></div>

@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 "user strict";
 var sessions = require("client-sessions"),
-      conf = require("./etc/config"),
+      conf = require("../etc/config"),
       crypto = require("crypto"),
       express = require("express"),
       fs = require("fs"),
       https = require("https"),
       path = require("path"),
-      routes = require("./server/routes").routes();
+      routes = require("../server/routes").routes();
 
 var privateKey = fs.readFileSync('etc/privatekey.pem').toString();
 var certificate = fs.readFileSync('etc/certificate.pem').toString();
@@ -26,7 +26,7 @@ app.configure('production', function(){
 });
 
 app.configure(function(){
-  app.set('views', path.join(__dirname, 'server/views'));
+  app.set('views', path.join(__dirname, '..', 'server/views'));
   app.set('view engine', 'ejs');
   app.use(express.logger());
 
@@ -42,6 +42,13 @@ app.configure(function(){
       maxAge: 14 * 24 * 60 * 60 * 1000 // 2 weeks
     }
   }));
+  console.log('Setting up express csrf');
+  app.use(express.csrf());
+  app.use(function (req, resp, next) {
+    resp.local('csrf_token', req.session._csrf);
+    next();
+  });
+
   app.use(app.router);
   app.get('/', function (req, resp) {
     resp.send("I am the keymaster");
@@ -55,7 +62,7 @@ app.configure(function(){
   app.post('/browserid/sign_in', routes.check_signin);
   app.get('/browserid/signout', routes.signout);
 
-  var static_dir = path.join(__dirname, '/client');
+  var static_dir = path.join(__dirname, '..', 'client');
   app.use(express.compiler({ enable: ['less'],
                              src: static_dir}
 ));

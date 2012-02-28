@@ -43,7 +43,7 @@ $(document).ready(function() {
         url: '/browserid/sign_in',
         type: 'POST',
         dataType: 'json',
-        data: { user: email, pass: pass },
+        data: { user: email, pass: pass, "_csrf": $('[name=_csrf]').val() },
         success: function() {
           // User is authenticated!  Let's call .completeAuthentication() and send
           // them on their way

@@ -3,7 +3,6 @@ const conf = require("../etc/config"),
       jwk = require("jwcrypto/jwk"),
       jwcert = require("jwcrypto/jwcert");
 
-console.log(conf);
 var auth = require('./lib/auth').auth(conf);
 
 exports.routes = function () {
@@ -23,7 +22,6 @@ exports.routes = function () {
       });
     },
     provision: function (req, resp) {
-      console.log(req.session);
       resp.render('provision', {user: 
                                 req.session.email, 
                                 browserid_server: conf.browserid_server,
@@ -61,15 +59,13 @@ exports.routes = function () {
         resp.writeHead(400);
         return resp.end();
       } else {
-        // LDAP is case-insensitive...
-        console.log('authing', req.body.user, req.body.pass);
-
-        auth.login(req.body.user, req.body.pass, function (err, passed) {
+        auth.login(req.body.user.toLowerCase(), req.body.pass, function (err, passed) {
           if (err || ! passed) {
             resp.write('Email or Password incorrect');
             resp.writeHead(401);
           } else {
-            req.session.email = req.body.user.replace('@mozilla.com', '@' + conf.issuer);
+            var user = req.body.user.replace('@mozilla.com', '@' + conf.issuer);
+            req.session.email = user;
             resp.writeHead(200);
           }
           resp.end();
