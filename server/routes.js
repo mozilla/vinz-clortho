@@ -54,7 +54,7 @@ exports.routes = function () {
         });      
     },
     signin: function (req, resp) {
-      resp.render('signin', {title: "Sign in to Mozilla LDAP"});
+      resp.render('signin', {title: "Sign in with your LDAP password"});
     },
     check_signin: function (req, resp) {       
       if (!req.body.user || !req.body.pass) {
@@ -76,6 +76,12 @@ exports.routes = function () {
         });
       }
     },
-    signout: function (req, resp) { req.session.reset(); resp.send('bye!'); }
+    signout: function (req, resp) { req.session.reset(); resp.send('bye!'); },
+    handle404: function (req, resp) {
+        resp.render('404', {
+                      status: 404,
+                      title: '404'
+                    });
+    }
   };
 };

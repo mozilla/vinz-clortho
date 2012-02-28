@@ -2,5 +2,9 @@
 ** CSRF
 ** vet input
 ** vet escaping output
-
+* Add HTTP Basic Auth header support
 * MPL 2.0 license
+
+
+
+http://www.thereplicapropforum.com/f24/vinz-clortho-keymaster-gozer-v2-0-a-123284/

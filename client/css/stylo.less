@@ -1,0 +1,49 @@
+// connect-compiler is braindead, so we have to use imports 
+// relative to clortho executable
+@import 'client/css/boilerplate';
+
+body {
+  background-color: #efe7d4;
+}
+
+/* #efe7d4, #ded6c3 */
+
+#signin-panel {
+  text-align: center;
+  border: solid 1px black;
+  .borderRadius(15px);
+  .boxShadow(2px 2px 6px #000);
+  .gradientV3(#FFF, #FFF, 40, #EEE); 
+
+  margin: 3% 4% 3% 5%;
+  padding: 10px 17px;
+
+  width: 400px;
+
+  h1 { margin: 3% auto; }
+
+  form {
+  text-align: left; 
+
+  label, .label {
+    display: inline-block;
+    font-weight: bold;
+    text-align: right;
+    width: 150px;
+    font-size: 1.1em;
+    margin-right: 10px;
+  }
+  button { 
+   .borderRadius(5px);
+    color: #000;
+    background-color: #efe7d4; /* #EEE; */
+    margin-top: 3%;
+    font-size: 1.1em;
+  }
+
+  button:hover { 
+    color: #333;
+    background-color: #dfd7c4;
+  }
+  } // form
+}

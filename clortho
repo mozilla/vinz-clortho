@@ -18,6 +18,7 @@ var app = express.createServer(options);
 
 app.configure('development', function () {
   app.use(express.responseTime());
+
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true })); 
 });
 app.configure('production', function(){
@@ -52,17 +53,27 @@ app.configure(function(){
   app.post('/browserid/provision', routes.provision_key);
   app.get('/browserid/sign_in', routes.signin);
   app.post('/browserid/sign_in', routes.check_signin);
-  app.post('/browserid/signout', routes.signout);
+  app.get('/browserid/signout', routes.signout);
 
+  var static_dir = path.join(__dirname, '/client');
   app.use(express.compiler({ enable: ['less'],
-                             src: './client'}));
+                             src: static_dir}
+));
+
   app.use(function (req, resp, next) {
     if ('/.well-known/browserid' === req.url) {
       resp.setHeader('Content-Type', 'application/json');
     }
     next();
   });
-  app.use(express.static(__dirname + '/client'));
+
+  console.log('servering static out of ', static_dir);
+  app.use(express.static(static_dir));
+
+  app.use(function (req, resp, next) {
+    console.log('last chance');
+    routes.handle404(req, resp);
+  });
 });
 
 

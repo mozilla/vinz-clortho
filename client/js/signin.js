@@ -8,6 +8,7 @@ $(document).ready(function() {
         msg;
     // Email form element is actually ignored
     email = email.replace('dev.clortho.mozilla.org', 'mozilla.com');
+    email = email.replace('vinz.clortho.org', 'mozilla.com');
     if (email) {
       // Sign-in used normally via BrowserID flow
       // Disable input as user should only use the email address
