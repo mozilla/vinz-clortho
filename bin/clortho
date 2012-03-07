@@ -5,16 +5,26 @@ var sessions = require("client-sessions"),
       crypto = require("crypto"),
       express = require("express"),
       fs = require("fs"),
+      http = require("http"),
       https = require("https"),
       path = require("path"),
-      routes = require("../server/routes").routes();
-
-var privateKey = fs.readFileSync('etc/privatekey.pem').toString();
-var certificate = fs.readFileSync('etc/certificate.pem').toString();
-
-var options = {key: privateKey, cert: certificate};
-
-var app = express.createServer(options);
+      routes = require("../server/routes").routes(),
+      util = require("util");
+var app,
+    options = {};
+if (conf.use_https) {
+  try {
+    var privateKey = fs.readFileSync('etc/privatekey.pem').toString();
+    var certificate = fs.readFileSync('etc/certificate.pem').toString();
+    app = express.createServer({key: privateKey, cert: certificate});
+  } catch (e) {
+    console.error('You must setup etc/privatekey.pem and etc/certificate.pem');
+    console.error('See docs/DEV_NOTES.md for details.');
+    throw e;
+  }
+} else {
+  app = express.createServer();
+}
 
 app.configure('development', function () {
   app.use(express.responseTime());
@@ -67,23 +77,34 @@ app.configure(function(){
                              src: static_dir}
 ));
 
-  app.use(function (req, resp, next) {
+app.use(function (req, resp, next) {
     if ('/.well-known/browserid' === req.url) {
       resp.setHeader('Content-Type', 'application/json');
+      resp.setHeader('Last-Modified', routes.well_known_last_mod);
+    } else {
+      console.log(req.url);
     }
-    next();
+    next();  
+    
+    
   });
+
 
   console.log('servering static out of ', static_dir);
   app.use(express.static(static_dir));
 
   app.use(function (req, resp, next) {
-    console.log('last chance');
     routes.handle404(req, resp);
   });
 });
 
-
 // Startup
-app.listen(443);
+if (conf.use_https) {
+  app.listen(conf.https_port);
+  console.log(util.format('Listing on https://%s', conf.issuer));
+} else {
+  app.listen(conf.http_port);
+  console.log(util.format('Listing on http://%s:%s', conf.issuer, conf.http_port));
+}
+
 console.log("I am Vinz Clortho, keymaster of Zuul. Are you Gozer the gatekeeper?");

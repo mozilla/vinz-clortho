@@ -3,7 +3,10 @@ exports.ldap_server_url = 'ldaps://addressbook.mozilla.com:636';
 exports.ldap_bind_dn = 'mail=USERNAME@mozilla.com,o=com,dc=mozilla';
 exports.ldap_bind_password = 'password';
 exports.issuer = 'dev.clortho.org';
+exports.http_port = 3666;
 
 // For debugging...
+exports.use_https = false;
+exports.https_port = 443;
 exports.browserid_server = 'https://dev.diresworb.org';
 // 'https://browserid.org';

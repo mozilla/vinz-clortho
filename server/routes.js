@@ -1,21 +1,47 @@
 const conf = require("../etc/config"),
       crypto = require('./lib/crypto.js');
       jwk = require("jwcrypto/jwk"),
-      jwcert = require("jwcrypto/jwcert");
+      jwcert = require("jwcrypto/jwcert"),
+      util = require('util');
 
 var auth = require('./lib/auth').auth(conf);
 
 exports.routes = function () {
+  var well_known_last_mod = new Date().getTime();
   return {
   public_key: null,
   private_key: null,
   ttl: null,
   well_known_browserid: function (req, resp) {
-      var timeout = 6 * 60 * 60;
+      // 6 hours in seconds
+      var timeout = 120 ; //6 * 60 * 60; // in seconds
+      console.log(req.headers);
+      if (req.headers['if-modified-since'] !== undefined) {
+        var since = new Date(req.headers['if-modified-since']);
+        if (isNaN(since.getTime())) {
+          console.error('======== Bad date in If-Modified-Since header');
+        } else {
+          util.puts(since);
+          //TODO these are both true...
+          console.log('========= since', '>', since, (well_known_last_mod < since), ' and < ', (since < well_known_last_mod));
+          console.log('since==', since, 'well-known', new Date(well_known_last_mod));
+          // Does the client already have the latest copy?
+          if (since >= well_known_last_mod) {
+            console.log('Use the Cache, luke');
+            // TODO move above?
+            resp.setHeader('Cache-Control', 'max-age=' + timeout);
+            return resp.send(304);    
+          } else {
+            console.log('=============== NO 304 FOR YOU =============');
+          }
+        }
+      }
       // On startup, keys need to be pulled from memcache or some such
       var pk = JSON.stringify(crypto.pubKey);
+      console.log('======= CACHE HEADERS ========');
       resp.setHeader('Content-Type', 'application/json');
       resp.setHeader('Cache-Control', 'max-age=' + timeout);
+      resp.setHeader('Last-Modified', new Date(well_known_last_mod).toUTCString());
       resp.render('well_known_browserid', {
         public_key: pk,
         layout: false

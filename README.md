@@ -40,6 +40,16 @@ Edit following settings:
 * exports.ldap_bind_password = 'sekrit password';
 * exports.issuer = 'mozilla.com';
 
+## HTTP vs HTTPS
+This app runs under http by default. It can also run under HTTPS, which is helpful for development
+or if you don't want to run Node as a front-line webserver.
+
+To run under https:
+
+* Follow directions in [dev notes](docs/DEV_NOTES.md) to generate a self-signed SSL cert
+* In config set ``exports.use_https`` to true
+* sudo node bin/clortho will start the server listening on port 443
+
 This application uses a simple bind in LDAP to search for the user's DN, 
 before trying to bind as the user. ``ldap_bind_dn`` and ``ldap_bind_password`` will be set to ``''`` for many systems, that have configured an anonymous
 binding. Alternatively, you may have secured your system with a shared 
@@ -47,9 +57,13 @@ bind dn and password, you'd enter those here.
 
 ## Start up
 
+    clortho
+
+or
     sudo clortho
 
-This will start the server listening on port 443.
+
+This will start the server listening on port 3666. You can control port and protocol via ``etc/config.js``. See docs/DEPLOYMENT.md.
 
 ## Shutdown
 
