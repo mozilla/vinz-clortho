@@ -30,7 +30,7 @@ exports.routes = function () {
             console.log('Use the Cache, luke');
             // TODO move above?
             resp.setHeader('Cache-Control', 'max-age=' + timeout);
-            return resp.send(304);    
+            return resp.send(304);
           } else {
             console.log('=============== NO 304 FOR YOU =============');
           }
@@ -48,8 +48,8 @@ exports.routes = function () {
       });
     },
     provision: function (req, resp) {
-      resp.render('provision', {user: 
-                                req.session.email, 
+      resp.render('provision', {user:
+                                req.session.email,
                                 browserid_server: conf.browserid_server,
                                 layout: false});
     },
@@ -75,12 +75,12 @@ exports.routes = function () {
           } else {
             resp.json({ cert: cert });
           }
-        });      
+        });
     },
     signin: function (req, resp) {
       resp.render('signin', {title: "Sign in with your LDAP password"});
     },
-    check_signin: function (req, resp) {       
+    check_signin: function (req, resp) {
       if (!req.body.user || !req.body.pass) {
         resp.writeHead(400);
         return resp.end();
@@ -102,7 +102,7 @@ exports.routes = function () {
     handle404: function (req, resp) {
         resp.render('404', {
                       status: 404,
-                      title: '404'
+                      layout: null
                     });
     }
   };
