@@ -13,10 +13,13 @@ var sessions = require("client-sessions"),
       util = require("util");
 var app,
     options = {};
+
+process.chdir(path.dirname(__dirname));
+
 if (conf.use_https) {
   try {
-    var privateKey = fs.readFileSync('etc/privatekey.pem').toString();
-    var certificate = fs.readFileSync('etc/certificate.pem').toString();
+    var privateKey = fs.readFileSync('../etc/privatekey.pem').toString();
+    var certificate = fs.readFileSync('../etc/certificate.pem').toString();
     app = express.createServer({key: privateKey, cert: certificate});
   } catch (e) {
     console.error('You must setup etc/privatekey.pem and etc/certificate.pem');
@@ -82,7 +85,7 @@ console.log('supported_languages:',  conf.supported_languages);
 
   var static_dir = path.join(__dirname, '..', 'client');
   app.use(express.compiler({ enable: ['less'],
-                             src: static_dir}
+                             src: './client'}
 ));
 
 app.use(function (req, resp, next) {
