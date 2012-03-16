@@ -15,6 +15,7 @@
     "crypto":"0.0.3",
     "ejs": "0.6.1",
     "express": "2.5.8",
+    "i18n-abide": "git://github.com/mozilla/i18n-abide.git",
     "jwcrypto": "0.1.1",
     "ldapjs": "0.4.7",
     "less": "1.2.2",

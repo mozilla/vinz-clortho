@@ -32,7 +32,9 @@ html[dir=rtl] .left-col {
 .left-col /*, .right-col */ {
   border: solid @debug-border-width blue;
   min-width: (113px - (@debug-border-width * 2));
+  max-width: (173px - (@debug-border-width * 2));
   min-height: 1px;
+  overflow: hidden;
   float: left;
 }
 html[dir=rtl] {
@@ -99,7 +101,8 @@ label {
 /* === Heading === */
 h1 {
   color: #333;
-  font-size: 2em;
+  font-size: 1.5em;
+  margin-bottom: -0.3em;
 }
 
 /* === Labels === */
@@ -114,7 +117,8 @@ input {
 
 button {
 
-  font-size: 1.5em;
+  font-size: 1.2em;
+  line-height: 1.5;
 }
 
 .last {
