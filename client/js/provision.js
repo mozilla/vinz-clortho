@@ -12,6 +12,7 @@ window.provision = function (user) {
   navigator.id.beginProvisioning(function(email, cert_duration) {
     console.log('callback');
     console.log('begining provisioning ' + email + ' ' + cert_duration);
+    alert('cert_duration=', cert_duration);
 
     if (! user) {
       console.log('no session, failing');
@@ -44,7 +45,7 @@ window.provision = function (user) {
       } else {
         console.log('User [', user, '] and email [', email, '] dont match');
         navigator.id.raiseProvisioningFailure(msg);
-      }    
+      }
     }
   }); //beginProvisioning
 };

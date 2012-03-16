@@ -7,6 +7,7 @@ var sessions = require("client-sessions"),
       fs = require("fs"),
       http = require("http"),
       https = require("https"),
+      i18n = require('i18n-abide'),
       path = require("path"),
       routes = require("../server/routes").routes(),
       util = require("util");
@@ -51,8 +52,14 @@ app.configure(function(){
       maxAge: 14 * 24 * 60 * 60 * 1000 // 2 weeks
     }
   }));
-  console.log('Setting up express csrf');
   app.use(express.csrf());
+console.log('supported_languages:',  conf.supported_languages);
+  app.use(i18n.abide({
+    supported_languages: conf.supported_languages,
+    default_lang: conf.default_lang,
+    debug_lang: conf.debug_lang,
+    locale_directory: conf.locale_directory
+  }));
   app.use(function (req, resp, next) {
     resp.local('csrf_token', req.session._csrf);
     next();

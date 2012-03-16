@@ -48,8 +48,8 @@ exports.routes = function () {
       });
     },
     provision: function (req, resp) {
-      resp.render('provision', {user:
-                                req.session.email,
+      console.log('provision called', req.session.email);
+      resp.render('provision', {user: req.session.email,
                                 browserid_server: conf.browserid_server,
                                 layout: false});
     },
@@ -78,7 +78,7 @@ exports.routes = function () {
         });
     },
     signin: function (req, resp) {
-      resp.render('signin', {title: "Sign in with your LDAP password"});
+      resp.render('signin', {title: req.gettext("Sign in with your LDAP password")});
     },
     check_signin: function (req, resp) {
       if (!req.body.user || !req.body.pass) {
