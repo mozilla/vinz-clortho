@@ -1,13 +1,38 @@
-<div id="signin-panel">
+<!--
+         | Mozilla |
+         | Paragraph
+   Label | Input
+   Label | Input
+         | login cancel
+-->
+<div class="signin-panel">
   <!-- img src="/i/mozilla200x50_purple.png" width="200" height="50" alt="Mozilla Logo" / -->
   <!-- 356 x 129 -->
-  <img src="/i/mozilla_corp.jpeg" width="200" xheight="50" alt="Mozilla Logo" />
-  <h1><%= title %></h1>
-  <div class="error"></div>
+  <div class="left-col"></div>
+  <div class="center-col">
+    <img class="logo" src="/i/mozilla_corp.jpeg" width="300" xheight="129" alt="Mozilla Logo" />
+    <h1><%= title %></h1>
+    <div class="error"></div>
+    <p><%= gettext("Please use your LDAP password") %></p>
+  </div>
+  <div class="right-col"></div>
+
   <form action="" method="POST">
     <input type="hidden" name="_csrf" value="<%= csrf_token %>" />
-    <div><label><%= gettext('Email') %></label><input type="email" name="user" value=""></span></div>
-    <div><label for="pass"><%= gettext('Password') %></label><input type="password" id="pass" name="pass" value="" /></div>
-    <div><div class="label"></div><button><%= gettext('Sign in') %></button><button class="cancel"><%= gettext('Cancel') %></button></div>
+    <div class="left-col">
+      <label for="user"><%= gettext('Email') %></label>
+    </div><div class="center-col">
+        <input id="user" type="email" name="user" value="">
+    </div>
+    <div class="right-col"></div>
+
+    <div class="left-col"><label for="pass"><%= gettext('Password') %></label></div>
+    <div class="center-col"><input type="password" id="pass" name="pass" value="" /></div>
+    <div class="right-col"></div>
+
+    <div class="left-col last"></div>
+    <div class="center-col last"><button><%= gettext('Sign in') %></button><button class="cancel"><%= gettext('Cancel') %></button></div>
+    <div class="right-col last"></div>
   </form>
-</div>
+  <br class="clear" />
+</div><!-- #sign-in-panel -->

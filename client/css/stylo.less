@@ -3,56 +3,120 @@
 // Which should be top of the repo
 @import 'client/css/boilerplate';
 
+/* === Layout === */
+@debug-border-width: 0px;
+body {
+  line-height: 1.5;
+}
+
+#content {
+
+}
+
+.signin-panel {
+  border: solid @debug-border-width red;
+  width: 500px;
+  margin-top: 1.5rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.left-col {
+  clear: left;
+  text-align: right;
+}
+html[dir=rtl] .left-col {
+  clear: right;
+  text-align: left;
+}
+.left-col /*, .right-col */ {
+  border: solid @debug-border-width blue;
+  min-width: (113px - (@debug-border-width * 2));
+  min-height: 1px;
+  float: left;
+}
+html[dir=rtl] {
+  .left-col, .right-col, .center-col {
+    float: right;
+  }
+}
+.center-col {
+  border: solid @debug-border-width green;
+  width: (300px - (@debug-border-width * 2));
+  padding-left: 5px;
+  float: left;
+}
+
+html[dir=rtl] {
+  .center-col {
+    padding-right: 5px;
+  }
+}
+html[dir=ltr] {
+  .left-col {
+    padding-right: 5px;
+  }
+}
+html[dir=rtl] {
+  .right-col {
+    padding-left: 5px;
+  }
+}
+
+.left-col, .center-col, -right-col {
+  margin-bottom: 5px;
+}
+
+.clear {
+  clear: both;
+}
+
+/* === Basic Style === */
 body {
   background-color: #efe7d4;
+  font-family: Times;
 }
 
-html[dir=rtl] body {
-  background-color: red;
-}
-
-
-/* === Page Layout === */
-
-
-/* #efe7d4, #ded6c3 */
-
-#signin-panel {
-  text-align: center;
-  border: solid 1px black;
-  .borderRadius(15px);
-  .boxShadow(2px 2px 6px #000);
+.signin-panel {
+  background-color: #FFF;
+  // color: rgb(166, 7, 53);
+  color: #333;
+  .borderRadius(5px);
+  //.boxShadow(2px 2px 6px #000);
+  .boxShadow3(2px 2px 6px rgba(0, 0, 0, 0.25), 3px 3px 60px rgba(0, 0, 0, 0.25), 5px 2px 16px rgba(0, 0, 0, 0.25));
   .gradientV3(#FFF, #FFF, 40, #EEE);
 
-  margin: 5% auto;
-  padding: 10px 17px;
+}
 
-  width: 400px;
+label {
+  font-family: Arial;
+}
 
-  h1 { margin: 3% auto; }
+.logo {
+  padding-top: 10px;
+}
 
-  form {
-  text-align: left;
+/* === Heading === */
+h1 {
+  color: #333;
+  font-size: 2em;
+}
 
-  label, .label {
-    display: inline-block;
-    font-weight: bold;
-    text-align: right;
-    width: 150px;
-    font-size: 1.1em;
-    margin-right: 10px;
-  }
-  button {
-   .borderRadius(5px);
-    color: #000;
-    background-color: #efe7d4; /* #EEE; */
-    margin-top: 3%;
-    font-size: 1.1em;
-  }
+/* === Labels === */
+label {
+  font-weight: bold;
+}
 
-  button:hover {
-    color: #333;
-    background-color: #dfd7c4;
-  }
-  } // form
+/* === Inputs === */
+input {
+  width: 100%;
+}
+
+button {
+
+  font-size: 1.5em;
+}
+
+.last {
+  padding-bottom: 10px;
 }

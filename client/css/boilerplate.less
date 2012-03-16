@@ -121,6 +121,13 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   box-shadow: @params; // Opera 10.5, IE9+, Chrome 10+
 }
 
+// Drop shadow
+.boxShadow3(@params1, @params2, @params3){
+  -moz-box-shadow: @params1, @params2, @params3; // FF3.5+
+  -webkit-box-shadow: @params1, @params2, @params3; // Saf3.0+, Chrome
+  box-shadow: @params1, @params2, @params3; // Opera 10.5, IE9+, Chrome 10+
+}
+
 // Transition
 .transition(@params){
   -moz-transition: @params; // FF4+
@@ -151,29 +158,13 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
 //   </div>
 // </div>
 
-// set the width of your body column
-@contentWidth: 960px;
 
-html{
-  width: 100%;
-  height: 100%;
-  min-width: @contentWidth; // set so that browsers resized smaller do not change column content
-}
 
 body{
   position: relative; // to enable correct absolute positioning
 }
 
-.wrapOut{
-  width: 100%;
-  .floatClear;
-  min-width: @contentWidth;
-}
 
-.wrapIn{
-  width: @contentWidth;
-  margin: 0 auto;
-}
 
 
 // ====================================================== //
@@ -213,12 +204,12 @@ body{
   @defaultStart: @buttonColor + 35%;
   @defaultEnd: @buttonColor;
   @borderColor: @buttonColor - 50%;
-  
+
   // button positioning
   .floatClear;
   margin: 10px 0 0 0;
   padding: 4px 13px 2px 13px;
-  
+
   // text styles
   font-size: 30px;
   color: #fff;
@@ -226,32 +217,32 @@ body{
   letter-spacing: .1em;
   text-transform: uppercase;
   text-shadow: rgba(0,0,0,0.2) -1px 0, rgba(0,0,0,0.2) 0 -1px, rgba(255,255,255,0.2) 0 1px;
-  
+
   // box styles
   border: 1px solid @borderColor;
   .borderRadius(6px);
   .boxShadow(0px 0px 2px @borderColor);
   .gradientV4(@defaultStart, @defaultStart, 46, @defaultEnd, 54, @defaultEnd);
-  
+
   // hover state
   &:hover{
     color: #fff;
-    
+
     // gradient colors
     @start: @defaultStart - 20%;
     @end: @defaultEnd - 20%;
-    
+
     .gradientV4(@start, @start, 46, @end, 54, @end);
   }
-  
+
   // active (click) state
   &:active{
     color: #fff;
-    
+
     // gradient colors
     @start: @defaultStart - 40%;
     @end: @defaultEnd - 40%;
-    
+
     .gradientV4(@start, @start, 46, @end, 54, @end);
   }
 }
@@ -290,7 +281,7 @@ ul{list-style-type: none;}
 // clearfix (thanks for the mixin-able syntax, Mark Otto!)
 .clearfix{
   zoom: 1;
-  
+
   &:after{
     content: ".";
     display: block;

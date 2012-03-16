@@ -78,7 +78,7 @@ exports.routes = function () {
         });
     },
     signin: function (req, resp) {
-      resp.render('signin', {title: req.gettext("Sign in with your LDAP password")});
+      resp.render('signin', {title: req.gettext("Sign In")});
     },
     check_signin: function (req, resp) {
       if (!req.body.user || !req.body.pass) {
