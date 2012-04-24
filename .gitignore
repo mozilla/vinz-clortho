@@ -3,3 +3,6 @@ etc/*.pem
 etc/*.csr
 *~
 #*#
+locale
+node_modules
+client/css/*.css
