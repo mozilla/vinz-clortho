@@ -1,4 +1,8 @@
-const conf = require("../etc/config"),
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+ const conf = require("../etc/config"),
       crypto = require('./lib/crypto.js');
       jwk = require("jwcrypto/jwk"),
       jwcert = require("jwcrypto/jwcert"),
@@ -100,8 +104,10 @@ exports.routes = function () {
     },
     signout: function (req, resp) { req.session.reset(); resp.send('bye!'); },
     handle404: function (req, resp) {
-        resp.render('404', {
+        resp.render('404.jade', {
+                      title: req.gettext('yo'),
                       status: 404,
+
                       layout: null
                     });
     }

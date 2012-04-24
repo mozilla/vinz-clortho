@@ -1,4 +1,8 @@
-var ldap = require('ldapjs');
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+const ldap = require('ldapjs');
 
 exports.auth = function (opts) {
   console.log(opts);
@@ -14,8 +18,8 @@ exports.auth = function (opts) {
      * @method bind
      * @param {string} email - mozilla.com email address
      * @param {string} password - password to use.
-     * @param {function} [callback] - callback to call when complete.  Will be 
-     * called with one parameter - err.  err will be null if successful, an object 
+     * @param {function} [callback] - callback to call when complete.  Will be
+     * called with one parameter - err.  err will be null if successful, an object
      * otw.
      */
     login: function(email, password, callback) {

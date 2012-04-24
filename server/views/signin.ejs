@@ -1,15 +1,7 @@
-<!--
-         | Mozilla |
-         | Paragraph
-   Label | Input
-   Label | Input
-         | login cancel
--->
 <div class="signin-panel">
-  <!-- 356 x 129 -->
   <div class="left-col"></div>
   <div class="center-col">
-    <img class="logo" src="/i/mozilla_corp.jpeg" width="300" xheight="129" alt="Mozilla Logo" />
+    <img class="logo" src="/i/mozilla_corp.jpeg" width="300" alt="Mozilla Logo" />
     <h1><%= title %></h1>
     <div class="error"></div>
     <p><%= gettext("Please use your LDAP password") %></p>
@@ -21,7 +13,8 @@
     <div class="left-col">
       <label for="user"><%= gettext('Email') %></label>
     </div><div class="center-col">
-        <input id="user" type="email" name="user" value="">
+        <input id="user" type="email" name="user" value=""
+               autocorrect="off" autocapitalize="off">
     </div>
     <div class="right-col"></div>
 
