@@ -2,13 +2,13 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
- const conf = require("./etc/config"),
-      crypto = require('./lib/crypto.js');
-      jwk = require("jwcrypto/jwk"),
-      jwcert = require("jwcrypto/jwcert"),
-      util = require('util');
+ const config = require('./lib/configuration'),
+       crypto = require('./lib/crypto.js');
+       jwk = require("jwcrypto/jwk"),
+       jwcert = require("jwcrypto/jwcert"),
+       util = require('util');
 
-var auth = require('./lib/auth').auth(conf);
+var auth = require('./lib/auth').auth(config);
 
 exports.routes = function () {
   // TODO Support a more ops friendly public key senario
@@ -55,7 +55,7 @@ exports.routes = function () {
     provision: function (req, resp) {
       console.log('provision called', req.session.email);
       resp.render('provision', {user: req.session.email,
-                                browserid_server: conf.browserid_server,
+                                browserid_server: config.get('browserid_server'),
                                 layout: false});
     },
     provision_key: function (req, resp) {
@@ -95,7 +95,7 @@ exports.routes = function () {
             resp.write('Email or Password incorrect');
             resp.writeHead(401);
           } else {
-            var user = req.body.user.replace('@mozilla.com', '@' + conf.issuer);
+            var user = req.body.user.replace('@mozilla.com', '@' + config.get('issuer'));
             req.session.email = user;
             resp.writeHead(200);
           }

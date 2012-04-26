@@ -4,10 +4,10 @@
 
 const ldap = require('ldapjs');
 
-exports.auth = function (opts) {
-  if (! opts.ldap_server_url) throw "Configuration error, you must specifiy an ldap_server_url";
-  if (! opts.ldap_bind_dn) throw "Configuration error, you must specifiy a ldap_bind_dn";
-  if (! opts.ldap_bind_password) throw "Configuration error, you must specifiy a ldap_bind_password";
+exports.auth = function (config) {
+  if (! config.get('ldap_server_url')) throw "Configuration error, you must specifiy an ldap_server_url";
+  if (! config.get('ldap_bind_dn')) throw "Configuration error, you must specifiy a ldap_bind_dn";
+  if (! config.get('ldap_bind_password')) throw "Configuration error, you must specifiy a ldap_bind_password";
 
   return {
 
@@ -26,10 +26,10 @@ exports.auth = function (opts) {
         throw "Invalid ASSERTION, authenticating non mozilla.com email address:" + email;
       }
       var client = ldap.createClient({
-        url: opts.ldap_server_url
+        url: config.get('ldap_server_url')
       });
       var results = 0;
-      client.bind(opts.ldap_bind_dn, opts.ldap_bind_password, function(err) {
+      client.bind(config.get('ldap_bind_dn'), config.get('ldap_bind_password'), function(err) {
         if (err) {
           console.log('NOAUTH', err);
           console.log('Unable to bind to LDAP to search for DNs');

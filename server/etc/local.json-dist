@@ -1,0 +1,18 @@
+{
+  "browserid_server": "http://127.0.0.1:10002",
+  "client_sessions": {
+    "cookie_name": "session_state",
+    "secret": "YOU MUST CHANGE ME",
+    "duration": 86400000
+  },
+  "default_lang": "en-US",
+  "debug_lang": "it-CH",
+  "http_port": 3000,
+  "issuer": "dev.clortho.mozilla.org",
+  "ldap_bind_dn": "mail=USERNAME@mozilla.com,o=com,dc=mozilla";
+  "ldap_bind_password": "password";
+  "ldap_server_url": "ldaps://addressbook.mozilla.com:636",
+  "locale_directory": "locale",
+  "supported_languages": ["en-US"],
+  "use_https": true
+}

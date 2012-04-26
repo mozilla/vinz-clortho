@@ -15,7 +15,7 @@ const crypto = require("crypto"),
       util = require("util");
 
 
-const conf = require("../etc/config"),
+const config = require('../lib/configuration'),
       routes = require("../routes").routes();
 
 // TODO Add Winston
@@ -31,7 +31,7 @@ console.log('changing into ' + path.dirname(__dirname));
 process.chdir(path.dirname(__dirname));
 
 
-if (conf.use_https) {
+if (config.get('use_https')) {
   try {
     var privateKey = fs.readFileSync('etc/privatekey.pem').toString();
     var certificate = fs.readFileSync('etc/certificate.pem').toString();
@@ -63,21 +63,22 @@ app.configure(function(){
   app.use(express.bodyParser());
 
   app.use(express.methodOverride());
+  var sess_config = config.get('client_sessions');
   app.use(sessions({
-    cookieName: 'session_state',
-    secret: conf.session_sekrit,
-    duration: 6 * 24 * 60 * 60 * 1000, // 1 day
+    cookieName: sess_config.cookie_name,
+    secret: sess_config.secret,
+    duration: sess_config.duration, // 1 day
     cookie: {
       maxAge: 14 * 24 * 60 * 60 * 1000 // 2 weeks
     }
   }));
   app.use(express.csrf());
-console.log('supported_languages:',  conf.supported_languages);
+console.log('supported_languages:',  config.get('supported_languages'));
   app.use(i18n.abide({
-    supported_languages: conf.supported_languages,
-    default_lang: conf.default_lang,
-    debug_lang: conf.debug_lang,
-    locale_directory: conf.locale_directory
+    supported_languages: config.get('supported_languages'),
+    default_lang: config.get('default_lang'),
+    debug_lang: config.get('debug_lang'),
+    locale_directory: config.get('locale_directory')
   }));
   app.use(function (req, resp, next) {
     resp.local('csrf_token', req.session._csrf);
@@ -123,12 +124,12 @@ app.use(function (req, resp, next) {
 });
 
 // Startup
-if (conf.use_https) {
-  app.listen(conf.https_port);
-  console.log(util.format('Listing on https://%s', conf.issuer));
+if (config.get('use_https')) {
+  app.listen(443);
+  console.log(util.format('Listing on https://%s', config.get('issuer')));
 } else {
-  app.listen(conf.http_port);
-  console.log(util.format('Listing on http://%s:%s', conf.issuer, conf.http_port));
+  app.listen(config.get('http_port'));
+  console.log(util.format('Listing on http://%s:%s', config.get('issuer'), config.get('http_port')));
 }
 
 console.log("I am Vinz Clortho, keymaster of Zuul. Are you Gozer the gatekeeper?");
