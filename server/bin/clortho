@@ -18,10 +18,10 @@ const crypto = require("crypto"),
 const config = require('../lib/configuration'),
       routes = require("../routes").routes();
 
+// TODO unknown email address
 // TODO Add Winston
 // TODO add statsd
-// TODO add convict #1
-// Layout source #2
+
 
 var app,
     options = {};
@@ -82,13 +82,15 @@ console.log('supported_languages:',  config.get('supported_languages'));
   }));
   app.use(function (req, resp, next) {
     resp.local('csrf_token', req.session._csrf);
+    resp.local('browserid_server', config.get('browserid_server'));
+    var s = req.session || null;
+    resp.local('session', s);
     next();
   });
 
   app.use(app.router);
   app.get('/', function (req, resp) {
-    // TODO: Make a QA usable homepage like BigTent has
-    resp.send("I am the keymaster <a href='/browserid/signout'>Log out</a>");
+    resp.render('home', {title: 'Testing homepage'});
   });
   // Make /.well-known/browserid
   // curl -k https://dev.clortho.mozilla.org/make/.well-known/browserid > static/.well-known/browserid

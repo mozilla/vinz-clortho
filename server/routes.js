@@ -103,7 +103,9 @@ exports.routes = function () {
         });
       }
     },
-    signout: function (req, resp) { req.session.reset(); resp.send('bye!'); },
+    // QA Only URL
+    signout: function (req, resp) { req.session.reset(); resp.redirect('/'); },
+
     handle404: function (req, resp) {
         resp.render('404', {
                       title: '',
