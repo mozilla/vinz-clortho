@@ -82,10 +82,13 @@ exports.routes = function () {
           }
         });
     },
-    signin: function (req, resp) {
+    /* signin_from_form and check_signin_from_form are used for
+       processing form based authentication, used when
+       signin_method is 'form' */
+    signin_from_form: function (req, resp) {
       resp.render('signin', {title: req.gettext("Sign In")});
     },
-    check_signin: function (req, resp) {
+    check_signin_from_form: function (req, resp) {
       if (!req.body.user || !req.body.pass) {
         resp.writeHead(400);
         return resp.end();
@@ -103,6 +106,50 @@ exports.routes = function () {
         });
       }
     },
+    /* signin_from_basicauth is used for processing Basic Auth HTTP headers
+       used when signin_method is 'basicauth' */
+    signin_from_basicauth: function (req, resp) {
+      var challange = function () {
+        resp.statusCode = 401;
+        resp.setHeader('WWW-Authenticate', config.get('basic_auth_realm'));
+        resp.render('basicauth_cancel', {layout: false});
+      };
+      if (req.headers['authorization']) {
+        auth.basic_auth_decode(req.headers['authorization'], function (err, email, password) {
+          if (err) {
+            console.log(err);
+            challange();
+          } else {
+            // Email form element is actually ignored
+            // TODO: This is needed for test environments... but is ugly
+            email = email.replace('dev.clortho.mozilla.org', 'mozilla.com');
+            email = email.replace('vinz.clortho.org', 'mozilla.com');
+
+            // TODO For testing...  do we need to rewrite the email right here?
+            auth.login(email.toLowerCase(), password, function (err, passed) {
+              if (err || ! passed) {
+                console.log('Email or Password incorrect');
+                challange();
+              } else {
+                console.log('fixing up ' + email);
+                var user = email.replace('@mozilla.com', '@' + config.get('issuer'));
+                req.session.email = user;
+                // Send down 'login complete web page'
+                console.log('Sending Success');
+                resp.render('basicauth_success', {
+                  layout: false,
+                  current_user: user
+                });
+                resp.end();
+              }
+            });
+          }
+        });
+      } else {
+        challange();
+      }
+    },
+
     // QA Only URL
     signout: function (req, resp) { req.session.reset(); resp.redirect('/'); },
 

@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html>
+<body>
+<script src="<%= browserid_server %>/authentication_api.js"></script>
+<script>
+navigator.id.beginAuthentication(function(email) {
+  navigator.id.raiseAuthenticationFailure("user canceled authentication");
+});
+</script>
+</html>

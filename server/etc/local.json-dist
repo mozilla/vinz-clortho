@@ -1,4 +1,5 @@
 {
+  "basic_auth_realm": "Basic realm=\"Mozilla Corporation - LDAP Login\"",
   "browserid_server": "http://127.0.0.1:10002",
   "client_sessions": {
     "cookie_name": "session_state",
@@ -13,6 +14,7 @@
   "ldap_bind_password": "password";
   "ldap_server_url": "ldaps://addressbook.mozilla.com:636",
   "locale_directory": "locale",
+  "signin_method": "basicauth",
   "supported_languages": ["en-US"],
   "use_https": true
 }

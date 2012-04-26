@@ -1,0 +1,6 @@
+<% if (session && session.email) { %>
+<p>Current Email: <strong><%= session.email %></strong></p>
+<p><a href='/browserid/signout'>Log out</a></p>
+<% } %>
+
+<p>I am the keymaster!</p>

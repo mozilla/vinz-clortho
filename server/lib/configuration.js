@@ -7,6 +7,11 @@ const convict = require('convict'),
       path = require('path');
 
 var conf = module.exports = convict({
+  basic_auth_realm: {
+    doc: "Used when signin_method is basicauth",
+    format: 'string = "Basic realm=\\"Mozilla Corporation - LDAP Login\\""'
+  },
+
   browserid_server: 'string = "https://browserid.org"',
   client_sessions: {
     cookie_name: 'string = "session_state"',
@@ -21,6 +26,10 @@ var conf = module.exports = convict({
   ldap_bind_password: 'string = "password"',
   ldap_server_url: 'string = "ldaps://addressbook.mozilla.com:636"',
   locale_directory: 'string = "locale"',
+  signin_method: {
+    doc: "How should this app collect authentication credentials? With an HTML form or Basic Auth",
+    format: 'string ["form", "basicauth"] = "basicauth"'
+  },
   supported_languages: {
     doc: "List of languages this deployment should detect and display localized strings.",
     format: 'array { string }* = [ "en-US" ]',

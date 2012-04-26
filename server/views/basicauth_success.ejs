@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<body>
+<script src="<%= browserid_server %>/authentication_api.js"></script>
+<script>
+navigator.id.beginAuthentication(function(email) {
+  alert(email + ' ==? ' + "<%= current_user %>");
+  if (email == "<%= current_user %>") {
+    navigator.id.completeAuthentication();
+  } else {
+    navigator.id.raiseAuthenticationFailure('user is not authenticated as target user');
+  }
+});
+</script>
+</html>

@@ -99,8 +99,15 @@ console.log('supported_languages:',  config.get('supported_languages'));
   app.get('/.well-known/browserid', routes.well_known_browserid);
   app.get('/browserid/provision', routes.provision);
   app.post('/browserid/provision', routes.provision_key);
-  app.get('/browserid/sign_in', routes.signin);
-  app.post('/browserid/sign_in', routes.check_signin);
+  if (config.get('signin_method') == 'basicauth') {
+    app.get('/browserid/sign_in', routes.signin_from_basicauth);
+
+  } else if (config.get('signin_method') == 'form') {
+    app.get('/browserid/sign_in', routes.signin_from_form);
+    app.post('/browserid/sign_in', routes.check_signin_from_form);
+
+  }
+
   app.get('/browserid/signout', routes.signout);
 
   var static_dir = path.join(process.cwd(), '..', 'static');
