@@ -11,6 +11,7 @@
 var auth = require('./lib/auth').auth(conf);
 
 exports.routes = function () {
+  // TODO Support a more ops friendly public key senario
   var well_known_last_mod = new Date().getTime();
   return {
   public_key: null,
@@ -104,8 +105,8 @@ exports.routes = function () {
     },
     signout: function (req, resp) { req.session.reset(); resp.send('bye!'); },
     handle404: function (req, resp) {
-        resp.render('404.jade', {
-                      title: req.gettext('yo'),
+        resp.render('404', {
+                      title: req.gettext('Error'),
                       status: 404,
 
                       layout: null
