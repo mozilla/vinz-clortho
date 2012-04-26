@@ -4,7 +4,7 @@
 
 const jwk = require("jwcrypto/jwk"),
       jwcert = require("jwcrypto/jwcert"),
-      conf = require("../../etc/config");
+      conf = require("../etc/config");
 
 try {
   exports.pubKey = JSON.parse(process.env['PUBLIC_KEY']);
