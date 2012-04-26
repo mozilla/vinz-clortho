@@ -11,6 +11,7 @@ $(document).ready(function() {
         },
         msg;
     // Email form element is actually ignored
+    // TODO: This is needed for test environments... but is ugly
     email = email.replace('dev.clortho.mozilla.org', 'mozilla.com');
     email = email.replace('vinz.clortho.org', 'mozilla.com');
     if (email) {
@@ -49,14 +50,9 @@ $(document).ready(function() {
         dataType: 'json',
         data: { user: email, pass: pass, "_csrf": $('[name=_csrf]').val() },
         success: function() {
-          // User is authenticated!  Let's call .completeAuthentication() and send
-          // them on their way
-          console.log("Calling completeAuthentication")
           navigator.id.completeAuthentication();
         },
         error: function() {
-          // This is a terrible password.
-          console.log("Bad password")
           $("div.error").hide().text("Yikes, that password looks wrong.  Try again.").fadeIn(600);
         }
       });

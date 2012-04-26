@@ -4,8 +4,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-const sessions = require("client-sessions"),
-      conf = require("../etc/config"),
+const conf = require("../etc/config"),
       crypto = require("crypto"),
       express = require("express"),
       fs = require("fs"),
@@ -14,11 +13,17 @@ const sessions = require("client-sessions"),
       i18n = require('i18n-abide'),
       path = require("path"),
       routes = require("../server/routes").routes(),
+      sessions = require("client-sessions"),
       util = require("util");
+
+// TODO Add Winston
+// TODO add statsd
+// TODO add convict
 
 var app,
     options = {};
 
+// Top of repo is the current working directory
 process.chdir(path.dirname(__dirname));
 
 if (conf.use_https) {
@@ -97,19 +102,15 @@ app.use(function (req, resp, next) {
     if ('/.well-known/browserid' === req.url) {
       resp.setHeader('Content-Type', 'application/json');
       resp.setHeader('Last-Modified', routes.well_known_last_mod);
-    } else {
-      console.log(req.url);
     }
     next();
+});
 
 
-  });
+console.log('servering static out of ', static_dir);
+app.use(express.static(static_dir));
 
-
-  console.log('servering static out of ', static_dir);
-  app.use(express.static(static_dir));
-
-  app.use(function (req, resp, next) {
+app.use(function (req, resp, next) {
     routes.handle404(req, resp);
   });
 });
