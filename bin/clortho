@@ -18,7 +18,8 @@ const conf = require("../etc/config"),
 
 // TODO Add Winston
 // TODO add statsd
-// TODO add convict
+// TODO add convict #1
+// Layout source #2
 
 var app,
     options = {};

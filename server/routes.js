@@ -106,7 +106,7 @@ exports.routes = function () {
     signout: function (req, resp) { req.session.reset(); resp.send('bye!'); },
     handle404: function (req, resp) {
         resp.render('404', {
-                      title: req.gettext('Error'),
+                      title: '',
                       status: 404,
 
                       layout: null
