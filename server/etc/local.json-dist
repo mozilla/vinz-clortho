@@ -10,8 +10,8 @@
   "debug_lang": "it-CH",
   "http_port": 3000,
   "issuer": "dev.clortho.mozilla.org",
-  "ldap_bind_dn": "mail=USERNAME@mozilla.com,o=com,dc=mozilla";
-  "ldap_bind_password": "password";
+  "ldap_bind_dn": "mail=USERNAME@mozilla.com,o=com,dc=mozilla",
+  "ldap_bind_password": "password",
   "ldap_server_url": "ldaps://addressbook.mozilla.com:636",
   "locale_directory": "locale",
   "signin_method": "basicauth",
