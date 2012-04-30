@@ -75,7 +75,6 @@ exports.auth = function (config) {
       var pieces = cred.split(' ');
       if (pieces[0] === 'Basic' && pieces.length === 2) {
         var decoded = new Buffer(pieces[1], 'base64').toString('utf8');
-        console.log(decoded);
         if (decoded.indexOf(':') === -1) {
           cb("Malformed Basic Authorization [" + decoded + "]", null, null);
         } else {
