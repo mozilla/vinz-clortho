@@ -163,10 +163,10 @@ exports.routes = function () {
     },
 
     // QA Only URLs
-    signout: function (req, resp) { req.session.reset(); resp.redirect('/'); },
+    signout: function (req, resp) { req.session.reset(); resp.redirect(config.get('static_mount_path')); },
     delegate_domain_override: function (req, resp) {
       var test_delegate = config.get('test_delegate_domain_override');
-      resp.contentType('application/javascript');
+      resp.header('Content-Type', 'application/javascript');
       if (test_delegate) {
         resp.write(
           util.format(

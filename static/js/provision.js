@@ -19,7 +19,7 @@ window.provision = function (user) {
       if (cmpi(user, email)) {
       navigator.id.genKeyPair(function(pubkey) {
         $.ajax({
-            url: '/browserid/provision',
+            url: window.location.href,
             data: JSON.stringify({
               pubkey: pubkey,
               duration: cert_duration,

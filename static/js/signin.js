@@ -36,7 +36,8 @@ $(document).ready(function() {
       e.preventDefault();
 
       // figure out which password field they entered their password into
-      var pass = $.trim($("#pass").val());
+      var pass = $.trim($("#pass").val()),
+          auth_url = $('form').attr('action');
 
       // validate password client side
       if (pass.length < 6) {
@@ -48,7 +49,7 @@ $(document).ready(function() {
       if (! email)
         email = $('[name=user]').val();
       $.ajax({
-        url: '/browserid/sign_in',
+        url: auth_url,
         type: 'POST',
         dataType: 'json',
         data: { user: email, pass: pass, "_csrf": $('[name=_csrf]').val() },

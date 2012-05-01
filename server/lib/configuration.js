@@ -39,6 +39,10 @@ var conf = module.exports = convict({
     host: "string?",
     port: "integer{1,65535}?"
   },
+  static_mount_path: {
+    doc: "Base path where static files will be served from. Reduces URL conflicts. Examples: '/', '/browserid' ",
+    format: 'string = "/browserid"'
+  },
   supported_languages: {
     doc: "List of languages this deployment should detect and display localized strings.",
     format: 'array { string }* = [ "en-US" ]',
