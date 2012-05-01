@@ -14,6 +14,8 @@ $(document).ready(function() {
     // TODO: This is needed for test environments... but is ugly
     email = email.replace('dev.clortho.mozilla.org', 'mozilla.com');
     email = email.replace('vinz.clortho.org', 'mozilla.com');
+    email = email.replace('intranet-dev.allizom.org', 'mozilla.com');
+
     if (email) {
       // Sign-in used normally via BrowserID flow
       // Disable input as user should only use the email address

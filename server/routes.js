@@ -124,6 +124,7 @@ exports.routes = function () {
             // TODO: This is needed for test environments... but is ugly
             email = email.replace('dev.clortho.mozilla.org', 'mozilla.com');
             email = email.replace('vinz.clortho.org', 'mozilla.com');
+            email = email.replace('intranet-dev.allizom.org', 'mozilla.com');
 
             // TODO For testing...  do we need to rewrite the email right here?
             auth.login(email.toLowerCase(), password, function (err, passed) {

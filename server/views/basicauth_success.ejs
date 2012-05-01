@@ -4,7 +4,7 @@
 <script src="<%= browserid_server %>/authentication_api.js"></script>
 <script>
 navigator.id.beginAuthentication(function(email) {
-  alert(email + ' ==? ' + "<%= current_user %>");
+  if (window.console) console.log(email + ' ==? ' + "<%= current_user %>");
   if (email == "<%= current_user %>") {
     navigator.id.completeAuthentication();
   } else {
