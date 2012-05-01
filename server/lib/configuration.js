@@ -30,6 +30,15 @@ var conf = module.exports = convict({
     doc: "How should this app collect authentication credentials? With an HTML form or Basic Auth",
     format: 'string ["form", "basicauth"] = "basicauth"'
   },
+  statsd: {
+    enabled: {
+      doc: "enable UDP based statsd reporting",
+      format: 'boolean = true',
+      env: 'ENABLE_STATSD'
+    },
+    host: "string?",
+    port: "integer{1,65535}?"
+  },
   supported_languages: {
     doc: "List of languages this deployment should detect and display localized strings.",
     format: 'array { string }* = [ "en-US" ]',
@@ -42,6 +51,11 @@ var conf = module.exports = convict({
     env: 'VAR_PATH'
   },
 });
+
+// At the time this file is required, we'll determine the "process name" for this proc
+// if we can determine what type of process it is (browserid or verifier) based
+// on the path, we'll use that, otherwise we'll name it 'ephemeral'.
+conf.set('process_type', path.basename(process.argv[1], ".js"));
 
 var dev_config_path = path.join(process.cwd(), 'server', 'etc', 'local.json');
 console.log(dev_config_path);
