@@ -33,11 +33,11 @@ process.chdir(path.dirname(__dirname));
 
 if (config.get('use_https')) {
   try {
-    var privateKey = fs.readFileSync('etc/privatekey.pem').toString();
-    var certificate = fs.readFileSync('etc/certificate.pem').toString();
+    var privateKey = fs.readFileSync('config/privatekey.pem').toString();
+    var certificate = fs.readFileSync('config/certificate.pem').toString();
     app = express.createServer({key: privateKey, cert: certificate});
   } catch (e) {
-    console.error('You must setup etc/privatekey.pem and etc/certificate.pem');
+    console.error('You must setup config/privatekey.pem and config/certificate.pem');
     console.error('See docs/DEV_NOTES.md for details.');
     throw e;
   }
@@ -90,7 +90,7 @@ console.log('supported_languages:',  config.get('supported_languages'));
 
   app.use(app.router);
   app.get('/', function (req, resp) {
-    resp.render('home', {title: 'Testing homepage'});
+    resp.render('home', {title: 'Testing homepage', delegate_domain_override: false});
   });
   // Make /.well-known/browserid
   // curl -k https://dev.clortho.mozilla.org/make/.well-known/browserid > static/.well-known/browserid
@@ -108,8 +108,11 @@ console.log('supported_languages:',  config.get('supported_languages'));
 
   }
 
+  // Dev and Stage only
   app.get('/browserid/signout', routes.signout);
+  app.get('/browserid/delegate_domain_override.js', routes.delegate_domain_override);
 
+  // Static
   var static_dir = path.join(process.cwd(), '..', 'static');
   app.use(express.compiler({ enable: ['less'],
                              src: './static'}

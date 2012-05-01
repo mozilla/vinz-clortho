@@ -13,6 +13,9 @@
     </div><!-- #content -->
 <script src="<%= browserid_server %>/authentication_api.js"></script>
 <script src="/js/lib/jquery.min.js"></script>
+<% if (delegate_domain_override === true) { %>
+<script src="/browserid/delegate_domain_override.js"></script>
+<% } %>
 <script src="/js/signin.js"></script>
   </body>
 </html>

@@ -86,7 +86,11 @@ exports.routes = function () {
        processing form based authentication, used when
        signin_method is 'form' */
     signin_from_form: function (req, resp) {
-      resp.render('signin', {title: req.gettext("Sign In")});
+      var test_delegate = config.get('test_delegate_domain_override');
+      resp.render('signin', {
+        title: req.gettext("Sign In"),
+        delegate_domain_override: (!!test_delegate)
+      });
     },
     check_signin_from_form: function (req, resp) {
       if (!req.body.user || !req.body.pass) {
@@ -122,9 +126,12 @@ exports.routes = function () {
           } else {
             // Email form element is actually ignored
             // TODO: This is needed for test environments... but is ugly
-            email = email.replace('dev.clortho.mozilla.org', 'mozilla.com');
-            email = email.replace('vinz.clortho.org', 'mozilla.com');
-            email = email.replace('intranet-dev.allizom.org', 'mozilla.com');
+            var orig_email = email;
+            var test_delegate = config.get('test_delegate_domain_override');
+
+            if (!! test_delegate) {
+              email = email.replace(test_delegate, 'mozilla.com');
+            }
 
             // TODO For testing...  do we need to rewrite the email right here?
             auth.login(email.toLowerCase(), password, function (err, passed) {
@@ -132,14 +139,14 @@ exports.routes = function () {
                 console.log('Email or Password incorrect');
                 challange();
               } else {
-                console.log('fixing up ' + email);
-                var user = email.replace('@mozilla.com', '@' + config.get('issuer'));
-                req.session.email = user;
+                // TODO - fix session issue, how does this relate to var test_delegate = config.get('test_delegate_domain_override');?
+                //var user = email.replace('@mozilla.com', '@' + config.get('issuer'));
+                //req.session.email = user;
                 // Send down 'login complete web page'
-                console.log('Sending Success');
+                req.session.email = orig_email;
                 resp.render('basicauth_success', {
                   layout: false,
-                  current_user: user
+                  current_user: orig_email
                 });
                 resp.end();
               }
@@ -151,8 +158,19 @@ exports.routes = function () {
       }
     },
 
-    // QA Only URL
+    // QA Only URLs
     signout: function (req, resp) { req.session.reset(); resp.redirect('/'); },
+    delegate_domain_override: function (req, resp) {
+      var test_delegate = config.get('test_delegate_domain_override');
+      resp.contentType('application/javascript');
+      if (test_delegate) {
+        resp.write(
+          util.format(
+            "function fixup_delegate_domain (email) { return email.replace('%s', 'mozilla.com'); }",
+            test_delegate));
+      }
+      resp.end();
+    },
 
     handle404: function (req, resp) {
         resp.render('404', {

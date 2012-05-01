@@ -4,6 +4,7 @@
 
 $(document).ready(function() {
   navigator.id.beginAuthentication(function(email) {
+    // TODO remove cmpi
     var cmpi = function (s1, s2) {
           if (! s1.toLowerCase) s1 = String(s1);
           if (! s2.toLowerCase) s2 = String(s2);
@@ -12,9 +13,9 @@ $(document).ready(function() {
         msg;
     // Email form element is actually ignored
     // TODO: This is needed for test environments... but is ugly
-    email = email.replace('dev.clortho.mozilla.org', 'mozilla.com');
-    email = email.replace('vinz.clortho.org', 'mozilla.com');
-    email = email.replace('intranet-dev.allizom.org', 'mozilla.com');
+    if (window.fixup_delegate_domain) {
+      email = fixup_delegate_domain(email);
+    }
 
     if (email) {
       // Sign-in used normally via BrowserID flow

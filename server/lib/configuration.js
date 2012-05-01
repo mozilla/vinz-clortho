@@ -44,6 +44,10 @@ var conf = module.exports = convict({
     format: 'array { string }* = [ "en-US" ]',
     env: 'SUPPORTED_LANGUAGES'
   },
+  test_delegate_domain_override: {
+    doc: "Dev or Test environments will have a fake domain to delegate to us. See DEPLOYMENT.md",
+    format: 'string = ""'
+  },
   use_https: 'boolean = false',
   var_path: {
     doc: "The path where deployment specific resources will be sought (keys, etc), and logs will be kept.",
@@ -57,7 +61,7 @@ var conf = module.exports = convict({
 // on the path, we'll use that, otherwise we'll name it 'ephemeral'.
 conf.set('process_type', path.basename(process.argv[1], ".js"));
 
-var dev_config_path = path.join(process.cwd(), 'server', 'etc', 'local.json');
+var dev_config_path = path.join(process.cwd(), 'server', 'config', 'local.json');
 console.log(dev_config_path);
 console.log('checking for ', process.env['CONFIG_FILES'], path.existsSync(dev_config_path));
 if (! process.env['CONFIG_FILES'] &&
