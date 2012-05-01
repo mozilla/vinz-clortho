@@ -102,7 +102,11 @@ exports.routes = function () {
             resp.write('Email or Password incorrect');
             resp.writeHead(401);
           } else {
-            var user = req.body.user.replace('@mozilla.com', '@' + config.get('issuer'));
+            var test_delegate = config.get('test_delegate_domain_override'),
+                user = req.body.user;
+            if (!! test_delegate) {
+              user = req.body.user.replace('@mozilla.com', '@' + test_delegate);
+            }
             req.session.email = user;
             resp.writeHead(200);
           }
