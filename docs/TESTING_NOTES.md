@@ -2,7 +2,7 @@
 
 Vinz Clortho is an IdP hosted under https://intranet.mozilla.org for email addresses such as mozilla.com. This leads to a slightly complicated structure in production and a very complicated strucutre in stage.
 
-![Delegation and Testing diagram](delegation_and_testing.jpg)
+![Delegation and Testing diagram](../../../raw/master/docs/delegation_and_testing.jpg)
 
 If you want to test in "development" you'll go to [dev.myfavoritebeer.org](https://dev.myfavoritebeer.org) and enter ``<LDAP USERNAME>@dev-id.allizom.org``. When prompted by HTTP Basic Auth, use your real LDAP password. The system will fixup your email address to be ``<LDAP USERNAME>@mozilla.com`` during LDAP authentication.
 
