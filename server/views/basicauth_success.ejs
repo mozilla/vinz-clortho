@@ -4,12 +4,9 @@
 <script src="<%= browserid_server %>/authentication_api.js"></script>
 <script>
 navigator.id.beginAuthentication(function(email) {
-  if (window.console) console.log(email + ' ==? ' + "<%= current_user %>");
   if (email == "<%= current_user %>") {
-    alert('success');
     navigator.id.completeAuthentication();
   } else {
-    alert('user is not auth');
     navigator.id.raiseAuthenticationFailure('user is not authenticated as target user');
   }
 });
