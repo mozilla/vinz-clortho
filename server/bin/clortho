@@ -127,7 +127,7 @@ console.log('supported_languages:',  config.get('supported_languages'));
   // Static
   var static_dir = path.join(process.cwd(), '..', 'static');
   app.use(express.compiler({ enable: ['less'],
-                             src: './static'}
+                             src: '../static'}
 ));
 
 app.use(function (req, resp, next) {
