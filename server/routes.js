@@ -11,7 +11,6 @@
 var auth = require('./lib/auth').auth(config);
 
 exports.routes = function () {
-  // TODO Support a more ops friendly public key senario
   var well_known_last_mod = new Date().getTime();
   return {
   public_key: null,
@@ -26,7 +25,7 @@ exports.routes = function () {
           console.error('Bad date in If-Modified-Since header [' +
             req.headers['if-modified-since'] + ']');
         } else {
-                    // Does the client already have the latest copy?
+          // Does the client already have the latest copy?
           if (since >= well_known_last_mod) {
             resp.setHeader('Cache-Control', 'max-age=' + timeout);
             return resp.send(304);
@@ -118,8 +117,8 @@ exports.routes = function () {
             console.warn(err);
             challange();
           } else {
-            // Email form element is actually ignored
-            // TODO: This is needed for test environments... but is ugly
+            // This is needed for test environments... but is ugly
+            // tst_delegate will always be empty in production
             var orig_email = email;
             var test_delegate = config.get('test_delegate_domain_override');
 
@@ -127,16 +126,11 @@ exports.routes = function () {
               email = email.replace(test_delegate, 'mozilla.com');
             }
 
-            // TODO For testing...  do we need to rewrite the email right here?
             auth.login(email.toLowerCase(), password, function (err, passed) {
               if (err || ! passed) {
                 console.warn('Email or Password incorrect');
                 challange();
               } else {
-                // TODO - fix session issue, how does this relate to var test_delegate = config.get('test_delegate_domain_override');?
-                //var user = email.replace('@mozilla.com', '@' + config.get('issuer'));
-                //req.session.email = user;
-                // Send down 'login complete web page'
                 req.session.email = orig_email;
                 resp.render('basicauth_success', {
                   layout: false,

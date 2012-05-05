@@ -4,15 +4,10 @@
 
 $(document).ready(function() {
   navigator.id.beginAuthentication(function(email) {
-    // TODO remove cmpi
-    var cmpi = function (s1, s2) {
-          if (! s1.toLowerCase) s1 = String(s1);
-          if (! s2.toLowerCase) s2 = String(s2);
-          return s1.toLowerCase() == s2.toLowerCase();
-        },
-        msg;
+    var msg;
     // Email form element is actually ignored
-    // TODO: This is needed for test environments... but is ugly
+    // This is needed for test environments... but is ugly
+    // In production fixup_delegate_domain will not be defined
     if (window.fixup_delegate_domain) {
       email = fixup_delegate_domain(email);
     }
@@ -35,7 +30,6 @@ $(document).ready(function() {
     $("form").submit(function(e) {
       e.preventDefault();
 
-      // figure out which password field they entered their password into
       var pass = $.trim($("#pass").val()),
           auth_url = $('form').attr('action');
 
