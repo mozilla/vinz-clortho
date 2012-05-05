@@ -31,18 +31,16 @@ exports.auth = function (config) {
       var results = 0;
       client.bind(config.get('ldap_bind_dn'), config.get('ldap_bind_password'), function(err) {
         if (err) {
-          console.log('NOAUTH', err);
-          console.log('Unable to bind to LDAP to search for DNs');
+          console.error('Unable to bind to LDAP to search for DNs' + err.toString());
           return callback(err, false);
         } else {
-          console.log('SYS LOGIN SUCCESSFUL');
           client.search('o=com,dc=mozilla', {
             scope: 'sub',
             filter: '(|(mail=' + email + ')(emailAlias=' + email + '))',
             attributes: ['mail']
           }, function (err, res) {
             if (err) {
-              console.log('error on search');
+              console.error('error on search ' + err.toString());
               return callback(err, false);
             }
             res.on('searchEntry', function(entry) {
@@ -50,21 +48,18 @@ exports.auth = function (config) {
               results++;
             });
             res.on('end', function () {
-             console.log('finished');
               if (results == 1) {
                 client.bind(bindDN, password, function (err) {
                   if (err) {
-                    console.log('Wrong username or password');
+                    console.warn('Wrong username or password ' + err.toString());
                     callback(err, false);
                   } else {
                     // Successful LDAP authentication
-                    console.log('Okay, calling callback');
                     callback(null, true);
                   }
                 });
               } else {
-                console.log('Wrong username... found ', results, ' entries');
-                callback(err, false);
+                callback(null, false);
               }
             });
         });

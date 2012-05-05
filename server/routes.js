@@ -18,8 +18,8 @@ exports.routes = function () {
   private_key: null,
   ttl: null,
   well_known_browserid: function (req, resp) {
-      // 6 hours in seconds
-      var timeout = 120 ; //6 * 60 * 60; // in seconds
+      // 2 minutes in seconds
+      var timeout = 120 ; //2 * 60; // in seconds
       if (req.headers['if-modified-since'] !== undefined) {
         var since = new Date(req.headers['if-modified-since']);
         if (isNaN(since.getTime())) {
@@ -115,7 +115,7 @@ exports.routes = function () {
       if (req.headers['authorization']) {
         auth.basic_auth_decode(req.headers['authorization'], function (err, email, password) {
           if (err) {
-            console.log(err);
+            console.warn(err);
             challange();
           } else {
             // Email form element is actually ignored
@@ -130,7 +130,7 @@ exports.routes = function () {
             // TODO For testing...  do we need to rewrite the email right here?
             auth.login(email.toLowerCase(), password, function (err, passed) {
               if (err || ! passed) {
-                console.log('Email or Password incorrect');
+                console.warn('Email or Password incorrect');
                 challange();
               } else {
                 // TODO - fix session issue, how does this relate to var test_delegate = config.get('test_delegate_domain_override');?
