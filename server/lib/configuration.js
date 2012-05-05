@@ -65,9 +65,8 @@ var conf = module.exports = convict({
 // on the path, we'll use that, otherwise we'll name it 'ephemeral'.
 conf.set('process_type', path.basename(process.argv[1], ".js"));
 
-var dev_config_path = path.join(process.cwd(), 'server', 'config', 'local.json');
-console.log(dev_config_path);
-console.log('checking for ', process.env['CONFIG_FILES'], path.existsSync(dev_config_path));
+var dev_config_path = path.join(process.cwd(), 'config', 'local.json');
+
 if (! process.env['CONFIG_FILES'] &&
     path.existsSync(dev_config_path)) {
   process.env['CONFIG_FILES'] = dev_config_path;

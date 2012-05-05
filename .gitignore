@@ -1,8 +1,9 @@
-server/etc/config.js
-server/etc/*.pem
-server/etc/*.csr
+server/config/*.json
+server/config/*.pem
+server/config/*.csr
+server/var
 *~
 #*#
 locale
 node_modules
-client/css/*.css
+static/css/*.css

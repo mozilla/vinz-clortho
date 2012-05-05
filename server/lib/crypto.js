@@ -4,13 +4,26 @@
 
 const jwk = require("jwcrypto/jwk"),
       jwcert = require("jwcrypto/jwcert"),
-      config = require('./configuration');
-
+      config = require('./configuration'),
+      store = require('./keypair_store');
+// ENV Variables
 try {
   exports.pubKey = JSON.parse(process.env['PUBLIC_KEY']);
   _privKey = JSON.parse(process.env['PRIVATE_KEY']);
 } catch(e) { }
+// or var file system cache
+if (!exports.pubKey) {
+  try {
+    store.read_files_sync(function (err, publicKey, secretKey) {
+      if (! err) {
+        exports.pubKey = publicKey;
+        _privKey = secretKey;
+      }
+    });
+  } catch (e) { }
+}
 
+// or ephemeral
 if (!exports.pubKey) {
   if (exports.pubKey != exports.privKey) {
     throw "inconsistent configuration!  if privKey is defined, so must be pubKey";
@@ -24,7 +37,6 @@ if (!exports.pubKey) {
   exports.pubKey = JSON.parse(keypair.publicKey.serialize());
   _privKey = JSON.parse(keypair.secretKey.serialize());
 }
-
 // turn _privKey into an instance
 var _privKey = jwk.SecretKey.fromSimpleObject(_privKey);
 

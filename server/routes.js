@@ -20,30 +20,21 @@ exports.routes = function () {
   well_known_browserid: function (req, resp) {
       // 6 hours in seconds
       var timeout = 120 ; //6 * 60 * 60; // in seconds
-      console.log(req.headers);
       if (req.headers['if-modified-since'] !== undefined) {
         var since = new Date(req.headers['if-modified-since']);
         if (isNaN(since.getTime())) {
-          console.error('======== Bad date in If-Modified-Since header');
+          console.error('Bad date in If-Modified-Since header [' +
+            req.headers['if-modified-since'] + ']');
         } else {
-          util.puts(since);
-          //TODO these are both true...
-          console.log('========= since', '>', since, (well_known_last_mod < since), ' and < ', (since < well_known_last_mod));
-          console.log('since==', since, 'well-known', new Date(well_known_last_mod));
-          // Does the client already have the latest copy?
+                    // Does the client already have the latest copy?
           if (since >= well_known_last_mod) {
-            console.log('Use the Cache, luke');
-            // TODO move above?
             resp.setHeader('Cache-Control', 'max-age=' + timeout);
             return resp.send(304);
-          } else {
-            console.log('=============== NO 304 FOR YOU =============');
           }
         }
       }
       // On startup, keys need to be pulled from memcache or some such
       var pk = JSON.stringify(crypto.pubKey);
-      console.log('======= CACHE HEADERS ========');
       resp.setHeader('Content-Type', 'application/json');
       resp.setHeader('Cache-Control', 'max-age=' + timeout);
       resp.setHeader('Last-Modified', new Date(well_known_last_mod).toUTCString());
@@ -53,13 +44,11 @@ exports.routes = function () {
       });
     },
     provision: function (req, resp) {
-      console.log('provision called', req.session.email);
       resp.render('provision', {user: req.session.email,
                                 browserid_server: config.get('browserid_server'),
                                 layout: false});
     },
     provision_key: function (req, resp) {
-      console.log('provisioning key', req.body.pubkey);
       if (!req.session || !req.session.email) {
         resp.writeHead(401);
         return resp.end();
@@ -82,6 +71,7 @@ exports.routes = function () {
           }
         });
     },
+
     /* signin_from_form and check_signin_from_form are used for
        processing form based authentication, used when
        signin_method is 'form' */
