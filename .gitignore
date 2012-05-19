@@ -6,4 +6,3 @@ server/var
 #*#
 locale
 node_modules
-static/css/*.css
