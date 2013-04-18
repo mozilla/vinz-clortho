@@ -2,10 +2,15 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-const jwk = require("jwcrypto/jwk"),
-      jwcert = require("jwcrypto/jwcert"),
+const jwcrypto = require("jwcrypto"),
+      cert = jwcrypto.cert,
       config = require('./configuration'),
       store = require('./keypair_store');
+
+// load desired algorithms
+require("jwcrypto/lib/algs/rs");
+require("jwcrypto/lib/algs/ds");
+
 // ENV Variables
 try {
   exports.pubKey = JSON.parse(process.env['PUBLIC_KEY']);
@@ -23,6 +28,8 @@ if (!exports.pubKey) {
   } catch (e) { }
 }
 
+var _privKey = null;
+
 // or ephemeral
 if (!exports.pubKey) {
   if (exports.pubKey != exports.privKey) {
@@ -31,14 +38,14 @@ if (!exports.pubKey) {
   // if no keys are provided emit a nasty message and generate some
   console.warn("WARNING: you're using ephemeral keys.  They will be purged at restart.");
 
-  // generate a fresh 1024 bit RSA key
-  var keypair = jwk.KeyPair.generate('RS', 256);
-
-  exports.pubKey = JSON.parse(keypair.publicKey.serialize());
-  _privKey = JSON.parse(keypair.secretKey.serialize());
+  jwcrypto.generateKeypair({algorithm: 'RS', keysize: 256}, function(err, keypair) {
+    exports.pubKey = JSON.parse(keypair.publicKey.serialize());
+    _privKey = JSON.parse(keypair.secretKey.serialize());
+  });
+} else {
+  // turn _privKey into an instance
+  _privKey = jwk.SecretKey.fromSimpleObject(_privKey);
 }
-// turn _privKey into an instance
-var _privKey = jwk.SecretKey.fromSimpleObject(_privKey);
 
 exports.cert_key = function(pubkey, email, duration_s, cb) {
   var expiration = new Date();

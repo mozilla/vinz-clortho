@@ -4,8 +4,6 @@
 
  const config = require('./lib/configuration'),
        crypto = require('./lib/crypto.js');
-       jwk = require("jwcrypto/jwk"),
-       jwcert = require("jwcrypto/jwcert"),
        util = require('util');
 
 var auth = require('./lib/auth').auth(config);
