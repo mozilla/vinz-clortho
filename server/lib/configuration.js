@@ -20,7 +20,10 @@ var conf = module.exports = convict({
   },
   default_lang: 'string = "en-US"',
   debug_lang: 'string = "it-CH"',
-  http_port: 'integer = 3000',
+  http_port: {
+    format: 'integer = 3000',
+    env: "PORT"
+  },
   issuer: 'string = "dev.clortho.org"',
   ldap_bind_dn: 'string = "mail=USERNAME@mozilla.com,o=com,dc=mozilla"',
   ldap_bind_password: 'string = "password"',
