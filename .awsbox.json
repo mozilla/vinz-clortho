@@ -1,0 +1,8 @@
+{
+  "processes": [
+    "server/bin/clortho"
+  ],
+  "env": {
+    "CONFIG_FILES": "$HOME/config.json"
+  }
+}
