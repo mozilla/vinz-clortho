@@ -27,7 +27,7 @@ var conf = module.exports = convict({
   issuer: 'string = "dev.clortho.org"',
   ldap_bind_dn: 'string = "mail=USERNAME@mozilla.com,o=com,dc=mozilla"',
   ldap_bind_password: 'string = "password"',
-  ldap_server_url: 'string = "ldaps://addressbook.mozilla.com:636"',
+  ldap_server_url: 'string = "ldaps://ldap.mozilla.org:636"',
   locale_directory: 'string = "locale"',
   signin_method: {
     doc: "How should this app collect authentication credentials? With an HTML form or Basic Auth",
