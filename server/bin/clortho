@@ -20,6 +20,10 @@ const config = require('../lib/configuration'),
       sessions = require("client-sessions"),
       util = require("util");
 
+process.on('uncaughtException', function(err) {
+  console.error('uncaught exception', err);
+});
+
 // TODO unknown email address
 // TODO Add Winston
 // TODO add statsd
