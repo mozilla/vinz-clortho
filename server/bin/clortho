@@ -73,7 +73,7 @@ app.configure(function(){
     }
   }));
   app.use(express.csrf());
-console.log('supported_languages:',  config.get('supported_languages'));
+  console.log('supported_languages:',  config.get('supported_languages'));
   app.use(i18n.abide({
     supported_languages: config.get('supported_languages'),
     default_lang: config.get('default_lang'),
@@ -154,6 +154,7 @@ if (config.get('use_https')) {
   app.listen(443);
   console.log(util.format('Listing on https://%s', config.get('issuer')));
 } else {
+  console.log(JSON.stringify(config.get('http_port')));
   app.listen(config.get('http_port'));
   console.log(util.format('Listing on http://%s:%s', config.get('issuer'), config.get('http_port')));
 }

@@ -9,56 +9,59 @@ const convict = require('convict'),
 var conf = module.exports = convict({
   basic_auth_realm: {
     doc: "Used when signin_method is basicauth",
-    format: 'string = "Basic realm=\\"Mozilla Corporation - LDAP Login\\""'
+    format: 'string',
+    default: 'Basic realm="Mozilla Corporation - LDAP Login"'
   },
-
-  browserid_server: 'string = "https://browserid.org"',
+  browserid_server: { format: "url", default: "https://login.persona.org", },
   client_sessions: {
-    cookie_name: 'string = "session_state"',
-    secret: 'string = "YOU MUST CHANGE ME"',
-    duration: 'integer = '  + (24 * 60 * 60 * 1000) // 1 day
+    cookie_name: { format: 'string', default: "session_state" },
+    secret: { format: 'string', default: "YOU MUST CHANGE ME" },
+    duration: { format: 'int', default: (24 * 60 * 60 * 1000) }
   },
-  default_lang: 'string = "en-US"',
-  debug_lang: 'string = "it-CH"',
-  http_port: {
-    format: 'integer = 3000',
-    env: "PORT"
-  },
-  issuer: 'string = "dev.clortho.org"',
-  ldap_bind_dn: 'string = "mail=USERNAME@mozilla.com,o=com,dc=mozilla"',
-  ldap_bind_password: 'string = "password"',
-  ldap_server_url: 'string = "ldaps://ldap.mozilla.org:636"',
-  locale_directory: 'string = "locale"',
+  default_lang: { format: 'string', default: 'en-US' },
+  debug_lang: { format: 'string', default: "it-CH" },
+  http_port: { format: 'int', env: "PORT", default: 3000 },
+  issuer: { format: 'string', default: "dev.clortho.org" },
+  ldap_bind_dn: { format: 'string', default: "mail=USERNAME@mozilla.com,o=com,dc=mozilla" },
+  ldap_bind_password: { format: 'string', default: "password" },
+  ldap_server_url: { format: 'string', default: "ldaps://ldap.mozilla.org:636" },
+  locale_directory: { format: 'string', default: "locale" },
   signin_method: {
     doc: "How should this app collect authentication credentials? With an HTML form or Basic Auth",
-    format: 'string ["form", "basicauth"] = "basicauth"'
+    format: ["form", "basicauth"],
+    default: 'form'
   },
   statsd: {
     enabled: {
       doc: "enable UDP based statsd reporting",
-      format: 'boolean = true',
+      format: Boolean,
+      default: true,
       env: 'ENABLE_STATSD'
     },
-    host: "string?",
-    port: "integer{1,65535}?"
+    host: { format: "string", default: "" },
+    port: { format: "int", default: 6000 }
   },
   static_mount_path: {
     doc: "Base path where static files will be served from. Reduces URL conflicts. Examples: '/', '/browserid' ",
-    format: 'string = "/browserid"'
+    format: 'string',
+    default: "/browserid"
   },
   supported_languages: {
     doc: "List of languages this deployment should detect and display localized strings.",
-    format: 'array { string }* = [ "en-US" ]',
+    format: Array,
+    default: [ "en-US" ],
     env: 'SUPPORTED_LANGUAGES'
   },
   test_delegate_domain_override: {
     doc: "Dev or Test environments will have a fake domain to delegate to us. See DEPLOYMENT.md",
-    format: 'string = ""'
+    format: 'string',
+    default: ""
   },
-  use_https: 'boolean = false',
+  use_https: { format: Boolean, default: false },
   var_path: {
     doc: "The path where deployment specific resources will be sought (keys, etc), and logs will be kept.",
-    format: 'string?',
+    format: 'string',
+    default: "",
     env: 'VAR_PATH'
   },
 });
