@@ -28,28 +28,15 @@ process.on('uncaughtException', function(err) {
 // TODO Add Winston
 // TODO add statsd
 
-var app,
-    options = {};
+var app, options = {};
 
-if (config.get('use_https')) {
-  try {
-    var privateKey = fs.readFileSync('config/privatekey.pem').toString();
-    var certificate = fs.readFileSync('config/certificate.pem').toString();
-    app = express.createServer({key: privateKey, cert: certificate});
-  } catch (e) {
-    console.error('You must setup config/privatekey.pem and config/certificate.pem');
-    console.error('See docs/DEV_NOTES.md for details.');
-    throw e;
-  }
-} else {
-  app = express.createServer();
-}
+app = express.createServer();
 
 app.configure('development', function () {
   app.use(express.responseTime());
-
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 });
+
 app.configure('production', function(){
   app.use(express.errorHandler());
 });
@@ -59,10 +46,10 @@ app.configure(function(){
   app.set('view engine', 'ejs');
   app.use(express.logger());
 
-  //
   app.use(express.bodyParser());
 
   app.use(express.methodOverride());
+
   var sess_config = config.get('client_sessions');
   app.use(sessions({
     cookieName: sess_config.cookie_name,
@@ -72,14 +59,16 @@ app.configure(function(){
       maxAge: 14 * 24 * 60 * 60 * 1000 // 2 weeks
     }
   }));
+
   app.use(express.csrf());
-  console.log('supported_languages:',  config.get('supported_languages'));
+
   app.use(i18n.abide({
     supported_languages: config.get('supported_languages'),
     default_lang: config.get('default_lang'),
     debug_lang: config.get('debug_lang'),
     locale_directory: config.get('locale_directory')
   }));
+
   app.use(function (req, resp, next) {
     resp.local('csrf_token', req.session._csrf);
     resp.local('browserid_server', config.get('browserid_server'));
@@ -105,16 +94,25 @@ app.configure(function(){
   });
 
   app.use(app.router);
+
+  // .well-known file must be served with a content-type of application/json
+  app.use(function (req, resp, next) {
+    if ('/.well-known/browserid' === req.url) {
+      resp.setHeader('Content-Type', 'application/json');
+      resp.setHeader('Last-Modified', routes.well_known_last_mod);
+    }
+    next();
+  });
+
   app.get('/', function (req, resp) {
     resp.render('home', {title: 'Testing homepage', delegate_domain_override: false});
   });
-  // Make /.well-known/browserid
-  // curl -k https://dev.clortho.mozilla.org/make/.well-known/browserid > static/.well-known/browserid
-
 
   app.get('/.well-known/browserid', routes.well_known_browserid);
+
   app.get('/provision', routes.provision);
   app.post('/provision', routes.provision_key);
+
   if (config.get('signin_method') == 'basicauth') {
     app.get('/sign_in', routes.signin_from_basicauth);
 
@@ -134,14 +132,6 @@ app.configure(function(){
                              src: '../static'}
 ));
 
-app.use(function (req, resp, next) {
-    if ('/.well-known/browserid' === req.url) {
-      resp.setHeader('Content-Type', 'application/json');
-      resp.setHeader('Last-Modified', routes.well_known_last_mod);
-    }
-    next();
-});
-
 app.use(express.static(static_dir));
 
 app.use(function (req, resp, next) {
@@ -150,13 +140,7 @@ app.use(function (req, resp, next) {
 });
 
 // Startup
-if (config.get('use_https')) {
-  app.listen(443);
-  console.log(util.format('Listing on https://%s', config.get('issuer')));
-} else {
-  console.log(JSON.stringify(config.get('http_port')));
-  app.listen(config.get('http_port'));
-  console.log(util.format('Listing on http://%s:%s', config.get('issuer'), config.get('http_port')));
-}
-
-console.log("I am Vinz Clortho, keymaster of Zuul. Are you Gozer the gatekeeper?");
+app.listen(config.get('http_port'), "127.0.0.1", function(err, address) {
+  console.log(util.format("running on http://%s:%s",
+                          app.address().address, app.address().port));
+});

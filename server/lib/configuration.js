@@ -21,7 +21,7 @@ var conf = module.exports = convict({
   default_lang: { format: 'string', default: 'en-US' },
   debug_lang: { format: 'string', default: "it-CH" },
   http_port: { format: 'int', env: "PORT", default: 3000 },
-  issuer: { format: 'string', default: "dev.clortho.org" },
+  issuer: { format: 'string', default: "mozilla.personatest.org" },
   ldap_bind_dn: { format: 'string', default: "mail=USERNAME@mozilla.com,o=com,dc=mozilla" },
   ldap_bind_password: { format: 'string', default: "password" },
   ldap_server_url: { format: 'string', default: "ldaps://ldap.mozilla.org:636" },
@@ -57,7 +57,6 @@ var conf = module.exports = convict({
     format: 'string',
     default: ""
   },
-  use_https: { format: Boolean, default: false },
   var_path: {
     doc: "The path where deployment specific resources will be sought (keys, etc), and logs will be kept.",
     format: 'string',
