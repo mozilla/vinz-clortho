@@ -42,9 +42,10 @@ exports.routes = function () {
       });
     },
     provision: function (req, resp) {
-      resp.render('provision', {user: req.session.email,
-                                browserid_server: config.get('browserid_server'),
-                                layout: false});
+      resp.render('provision', {
+        user: req.session.email,
+        browserid_server: config.get('browserid_server'),
+        layout: false});
     },
     provision_key: function (req, resp) {
       if (!req.session || !req.session.email) {

@@ -71,6 +71,5 @@ exports.read_files_sync = function (callback) {
     // File IO or malformed JSON
     console.trace(e);
     callback(e.toString());
-
   }
 }

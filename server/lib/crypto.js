@@ -11,28 +11,29 @@ const jwcrypto = require("jwcrypto"),
 require("jwcrypto/lib/algs/rs");
 require("jwcrypto/lib/algs/ds");
 
+var _privKey = null;
+
 // ENV Variables
 try {
   exports.pubKey = JSON.parse(process.env['PUBLIC_KEY']);
-  _privKey = JSON.parse(process.env['PRIVATE_KEY']);
+  _privKey = jwcrypto.loadSecretKey(process.env['PRIVATE_KEY']);
 } catch(e) { }
+
 // or var file system cache
 if (!exports.pubKey) {
   try {
     store.read_files_sync(function (err, publicKey, secretKey) {
       if (! err) {
         exports.pubKey = publicKey;
-        _privKey = secretKey;
+        _privKey = jwcrypto.loadSecretKey(JSON.stringify(secretKey));
       }
     });
   } catch (e) { }
 }
 
-var _privKey = null;
-
 // or ephemeral
 if (!exports.pubKey) {
-  if (exports.pubKey != exports.privKey) {
+  if (exports.pubKey != _privKey) {
     throw "inconsistent configuration!  if privKey is defined, so must be pubKey";
   }
   // if no keys are provided emit a nasty message and generate some
@@ -40,19 +41,25 @@ if (!exports.pubKey) {
 
   jwcrypto.generateKeypair({algorithm: 'RS', keysize: 256}, function(err, keypair) {
     exports.pubKey = JSON.parse(keypair.publicKey.serialize());
-    _privKey = JSON.parse(keypair.secretKey.serialize());
+    _privKey = keypair.secretKey;
   });
-} else {
-  // turn _privKey into an instance
-  _privKey = JSON.parse(_privKey);
 }
 
 exports.cert_key = function(pubkey, email, duration_s, cb) {
+  var pubKey = jwcrypto.loadPublicKey(pubkey);
+
   var expiration = new Date();
-  var pubkey = jwk.PublicKey.fromSimpleObject(pubkey);
-  expiration.setTime(new Date().valueOf() + duration_s * 1000);
-  process.nextTick(function() {
-    cb(null, (new jwcert.JWCert(config.get('issuer'), expiration, new Date(),
-                                pubkey, {email: email})).sign(_privKey));
-  });
+  var iat = new Date();
+
+  expiration.setTime(new Date().valueOf() + (duration_s * 1000));
+
+  // Set issuedAt to 10 seconds ago. Pads for verifier clock skew
+  iat.setTime(iat.valueOf() - (10 * 1000));
+
+  cert.sign(
+    {publicKey: pubKey, principal: {email: email}},
+    {issuer: config.get('issuer'), issuedAt: iat, expiresAt: expiration},
+    null,
+    _privKey,
+    cb);
 };

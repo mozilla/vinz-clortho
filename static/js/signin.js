@@ -4,13 +4,11 @@
 
 $(document).ready(function() {
   // XXX: currently the server is plucking email out of get data when
-  // the auth page is rendered.
-  // That violates our abstraction and will break in the native case or
-  // when we change our internal mechanism for conveying user email address
-  // to authentication page.  We should pass email up to the
-  // server for rewriting from javascript instead of using server
-  // rewriting.
-  navigator.id.beginAuthentication(function(/* XXX: rely on me: email */) {
+  // the auth page is rendered.  It does this to render to the user
+  // their substituted email address.
+  //
+  // We need the client to bounce the email off the server and sub it in.
+  navigator.id.beginAuthentication(function(email) {
     var msg;
 
     // all cancel buttons work the same
@@ -31,10 +29,6 @@ $(document).ready(function() {
         $("div.error").hide().text("Yikes, Passwords have to be at least 6 characters").fadeIn(600);
         return;
       }
-
-      // XXX (see comment above): Use the email that the server wrote into
-      // the page
-      var email = $('[name=user]').val();
 
       $.ajax({
         url: auth_url,
