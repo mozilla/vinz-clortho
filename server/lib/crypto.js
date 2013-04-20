@@ -44,7 +44,7 @@ if (!exports.pubKey) {
   });
 } else {
   // turn _privKey into an instance
-  _privKey = jwk.SecretKey.fromSimpleObject(_privKey);
+  _privKey = JSON.parse(_privKey);
 }
 
 exports.cert_key = function(pubkey, email, duration_s, cb) {
