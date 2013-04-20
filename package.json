@@ -23,6 +23,9 @@
     "less": "1.2.2",
     "node-statsd": "0.0.2"
   },
+  "scripts": {
+    "start": "node ./server/bin/clortho"
+  },
   "devDependencies": {},
   "optionalDependencies": {}
 }
