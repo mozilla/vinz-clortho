@@ -73,10 +73,8 @@ exports.routes = function () {
        processing form based authentication, used when
        signin_method is 'form' */
     signin_from_form: function (req, resp) {
-      var test_delegate = config.get('test_delegate_domain_override');
       resp.render('signin', {
-        title: req.gettext("Sign In"),
-        delegate_domain_override: (!!test_delegate)
+        title: req.gettext("Sign In")
       });
     },
     check_signin_from_form: function (req, resp) {
@@ -89,11 +87,7 @@ exports.routes = function () {
             resp.write('Email or Password incorrect');
             resp.writeHead(401);
           } else {
-            var test_delegate = config.get('test_delegate_domain_override'),
-                user = req.body.user;
-            if (!! test_delegate) {
-              user = req.body.user.replace('@mozilla.com', '@' + test_delegate);
-            }
+            var user = req.body.user;
             req.session.email = user;
             resp.writeHead(200);
           }
@@ -118,11 +112,6 @@ exports.routes = function () {
             // This is needed for test environments... but is ugly
             // tst_delegate will always be empty in production
             var orig_email = email;
-            var test_delegate = config.get('test_delegate_domain_override');
-
-            if (!! test_delegate) {
-              email = email.replace(test_delegate, 'mozilla.com');
-            }
 
             auth.login(email.toLowerCase(), password, function (err, passed) {
               if (err || ! passed) {
@@ -146,17 +135,6 @@ exports.routes = function () {
 
     // QA Only URLs
     signout: function (req, resp) { req.session.reset(); resp.redirect(config.get('static_mount_path')); },
-    delegate_domain_override: function (req, resp) {
-      var test_delegate = config.get('test_delegate_domain_override');
-      resp.header('Content-Type', 'application/javascript');
-      if (test_delegate) {
-        resp.write(
-          util.format(
-            "function fixup_delegate_domain (email) { return email.replace('%s', 'mozilla.com'); }",
-            test_delegate));
-      }
-      resp.end();
-    },
 
     handle404: function (req, resp) {
         resp.render('404', {

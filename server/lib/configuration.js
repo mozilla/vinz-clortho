@@ -52,11 +52,6 @@ var conf = module.exports = convict({
     default: [ "en-US" ],
     env: 'SUPPORTED_LANGUAGES'
   },
-  test_delegate_domain_override: {
-    doc: "Dev or Test environments will have a fake domain to delegate to us. See DEPLOYMENT.md",
-    format: 'string',
-    default: ""
-  },
   var_path: {
     doc: "The path where deployment specific resources will be sought (keys, etc), and logs will be kept.",
     format: 'string',

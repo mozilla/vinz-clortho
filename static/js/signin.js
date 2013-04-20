@@ -5,12 +5,6 @@
 $(document).ready(function() {
   navigator.id.beginAuthentication(function(email) {
     var msg;
-    // Email form element is actually ignored
-    // This is needed for test environments... but is ugly
-    // In production fixup_delegate_domain will not be defined
-    if (window.fixup_delegate_domain) {
-      email = fixup_delegate_domain(email);
-    }
 
     if (email) {
       // Sign-in used normally via BrowserID flow

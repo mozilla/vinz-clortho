@@ -105,7 +105,7 @@ app.configure(function(){
   });
 
   app.get('/', function (req, resp) {
-    resp.render('home', {title: 'Testing homepage', delegate_domain_override: false});
+    resp.render('home', {title: 'Testing homepage'});
   });
 
   app.get('/.well-known/browserid', routes.well_known_browserid);
@@ -124,7 +124,6 @@ app.configure(function(){
 
   // Dev and Stage only
   app.get('/signout', routes.signout);
-  app.get('/delegate_domain_override.js', routes.delegate_domain_override);
 
   // Static
   var static_dir = path.join(process.cwd(), '..', 'static');
