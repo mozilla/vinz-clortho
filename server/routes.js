@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 const config = require('./lib/configuration'),
-      crypto = require('./lib/crypto.js');
+      crypto = require('./lib/crypto'),
         util = require('util'),
 emailRewrite = require('./lib/email_rewrite.js');
 
