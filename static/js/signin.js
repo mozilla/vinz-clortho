@@ -3,18 +3,17 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 $(document).ready(function() {
-  navigator.id.beginAuthentication(function(email) {
+  // XXX: currently the server is plucking email out of get data when
+  // the auth page is rendered.
+  // That violates our abstraction and will break in the native case or
+  // when we change our internal mechanism for conveying user email address
+  // to authentication page.  We should pass email up to the
+  // server for rewriting from javascript instead of using server
+  // rewriting.
+  navigator.id.beginAuthentication(function(/* XXX: rely on me: email */) {
     var msg;
 
-    if (email) {
-      // Sign-in used normally via BrowserID flow
-      // Disable input as user should only use the email address
-      // they specified.
-      // We *don't* disable this if sign-in is being used directly
-      // (outside of BrowserID), so user can edit the field
-      $("input[type=email]").val(email).attr('disabled', true);
-    }
-    //all cancel buttons work the same
+    // all cancel buttons work the same
     $("form button.cancel").click(function(e) {
       e.preventDefault();
       msg = "user canceled authentication";
@@ -33,9 +32,10 @@ $(document).ready(function() {
         return;
       }
 
-      // Sign-in used directly, outside of BrowserID flow
-      if (! email)
-        email = $('[name=user]').val();
+      // XXX (see comment above): Use the email that the server wrote into
+      // the page
+      var email = $('[name=user]').val();
+
       $.ajax({
         url: auth_url,
         type: 'POST',

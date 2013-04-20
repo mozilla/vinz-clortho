@@ -113,14 +113,8 @@ app.configure(function(){
   app.get('/provision', routes.provision);
   app.post('/provision', routes.provision_key);
 
-  if (config.get('signin_method') == 'basicauth') {
-    app.get('/sign_in', routes.signin_from_basicauth);
-
-  } else if (config.get('signin_method') == 'form') {
-    app.get('/sign_in', routes.signin_from_form);
-    app.post('/sign_in', routes.check_signin_from_form);
-
-  }
+  app.get('/sign_in', routes.signin_from_form);
+  app.post('/sign_in', routes.check_signin_from_form);
 
   // Dev and Stage only
   app.get('/signout', routes.signout);

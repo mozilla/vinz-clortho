@@ -2,26 +2,27 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
- const config = require('./lib/configuration'),
-       crypto = require('./lib/crypto.js');
-       util = require('util');
+const config = require('./lib/configuration'),
+      crypto = require('./lib/crypto.js');
+        util = require('util'),
+emailRewrite = require('./lib/email_rewrite.js');
 
 var auth = require('./lib/auth').auth(config);
 
 exports.routes = function () {
   var well_known_last_mod = new Date().getTime();
   return {
-  public_key: null,
-  private_key: null,
-  ttl: null,
-  well_known_browserid: function (req, resp) {
+    public_key: null,
+    private_key: null,
+    ttl: null,
+    well_known_browserid: function (req, resp) {
       // 2 minutes in seconds
       var timeout = 120 ; //2 * 60; // in seconds
       if (req.headers['if-modified-since'] !== undefined) {
         var since = new Date(req.headers['if-modified-since']);
         if (isNaN(since.getTime())) {
           console.error('Bad date in If-Modified-Since header [' +
-            req.headers['if-modified-since'] + ']');
+                        req.headers['if-modified-since'] + ']');
         } else {
           // Does the client already have the latest copy?
           if (since >= well_known_last_mod) {
@@ -73,63 +74,34 @@ exports.routes = function () {
        processing form based authentication, used when
        signin_method is 'form' */
     signin_from_form: function (req, resp) {
+      var email = (req.query ? req.query.email : null);
+      if (email) email = emailRewrite(email);
+
       resp.render('signin', {
-        title: req.gettext("Sign In")
+        title: req.gettext("Sign In"),
+        email: email
       });
     },
     check_signin_from_form: function (req, resp) {
+      var mozillaUser = "";
+      if (req.body.user) {
+        mozillaUser = emailRewrite(req.body.user).toLowerCase();
+      }
+
       if (!req.body.user || !req.body.pass) {
         resp.writeHead(400);
         return resp.end();
       } else {
-        auth.login(req.body.user.toLowerCase(), req.body.pass, function (err, passed) {
+        auth.login(mozillaUser, req.body.pass, function (err, passed) {
           if (err || ! passed) {
             resp.write('Email or Password incorrect');
             resp.writeHead(401);
           } else {
-            var user = req.body.user;
-            req.session.email = user;
+            req.session.email = req.body.user;
             resp.writeHead(200);
           }
           resp.end();
         });
-      }
-    },
-    /* signin_from_basicauth is used for processing Basic Auth HTTP headers
-       used when signin_method is 'basicauth' */
-    signin_from_basicauth: function (req, resp) {
-      var challange = function () {
-        resp.statusCode = 401;
-        resp.setHeader('WWW-Authenticate', config.get('basic_auth_realm'));
-        resp.render('basicauth_cancel', {layout: false});
-      };
-      if (req.headers['authorization']) {
-        auth.basic_auth_decode(req.headers['authorization'], function (err, email, password) {
-          if (err) {
-            console.warn(err);
-            challange();
-          } else {
-            // This is needed for test environments... but is ugly
-            // tst_delegate will always be empty in production
-            var orig_email = email;
-
-            auth.login(email.toLowerCase(), password, function (err, passed) {
-              if (err || ! passed) {
-                console.warn('Email or Password incorrect');
-                challange();
-              } else {
-                req.session.email = orig_email;
-                resp.render('basicauth_success', {
-                  layout: false,
-                  current_user: orig_email
-                });
-                resp.end();
-              }
-            });
-          }
-        });
-      } else {
-        challange();
       }
     },
 
@@ -137,12 +109,12 @@ exports.routes = function () {
     signout: function (req, resp) { req.session.reset(); resp.redirect(config.get('static_mount_path')); },
 
     handle404: function (req, resp) {
-        resp.render('404', {
-                      title: '',
-                      status: 404,
+      resp.render('404', {
+        title: '',
+        status: 404,
 
-                      layout: null
-                    });
+        layout: null
+      });
     }
   };
 };

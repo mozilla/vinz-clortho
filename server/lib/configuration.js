@@ -7,11 +7,6 @@ const convict = require('convict'),
       path = require('path');
 
 var conf = module.exports = convict({
-  basic_auth_realm: {
-    doc: "Used when signin_method is basicauth",
-    format: 'string',
-    default: 'Basic realm="Mozilla Corporation - LDAP Login"'
-  },
   browserid_server: { format: "url", default: "https://login.persona.org", },
   client_sessions: {
     cookie_name: { format: 'string', default: "session_state" },
@@ -20,17 +15,19 @@ var conf = module.exports = convict({
   },
   default_lang: { format: 'string', default: 'en-US' },
   debug_lang: { format: 'string', default: "it-CH" },
+  domain_mapping: {
+    doc: "Testing feature: Allows users to type in a testing domain to trigger the Mozilla IdP, but have their emails rewritten to mozilla domains",
+    format: Object,
+    default: {
+      "mozilla.personatest.org": "mozilla.com"
+    },
+  },
   http_port: { format: 'int', env: "PORT", default: 3000 },
   issuer: { format: 'string', default: "mozilla.personatest.org" },
   ldap_bind_dn: { format: 'string', default: "mail=USERNAME@mozilla.com,o=com,dc=mozilla" },
   ldap_bind_password: { format: 'string', default: "password" },
   ldap_server_url: { format: 'string', default: "ldaps://ldap.mozilla.org:636" },
   locale_directory: { format: 'string', default: "locale" },
-  signin_method: {
-    doc: "How should this app collect authentication credentials? With an HTML form or Basic Auth",
-    format: ["form", "basicauth"],
-    default: 'form'
-  },
   statsd: {
     enabled: {
       doc: "enable UDP based statsd reporting",
