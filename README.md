@@ -1,8 +1,9 @@
-# Vinz Clortho
+# Mozilla IdP
 
-**Status:** This service is under active development and **not ready for production systems**.
+``mozilla-idp`` is a server that implements support for Persona on the mozilla.com domain.
 
-``vinz-clortho`` is a BrowserID primary for organizations that use LDAP as their authentication.
+When deployed, this will allow mozillans with `mozilla.com` or `mozilla.org` email addresses
+to authenticate with Persona enabled websites using their Mozilla (LDAP) password.
 
 It is a HTTP node.js server which exposes 3 URLs.
 
@@ -20,7 +21,7 @@ A session will be created and they will be on their merry way.
 
 ## Installation
 
-Install [Node.js](http://nodejs.org).
+Install [Node.js](http://nodejs.org) version 0.8 or newer.
 
     npm install
 

@@ -14,7 +14,6 @@ const config = require('../lib/configuration'),
       express = require("express"),
       fs = require("fs"),
       http = require("http"),
-      https = require("https"),
       i18n = require('i18n-abide'),
       routes = require("../routes").routes()
       sessions = require("client-sessions"),
