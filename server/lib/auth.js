@@ -6,6 +6,8 @@ const ldap = require('ldapjs');
 
 exports.auth = function (config) {
   if (! config.get('ldap_server_url')) throw "Configuration error, you must specifiy an ldap_server_url";
+  if (! config.get('ldap_bind_dn')) throw "Configuration error, you must specifiy a ldap_bind_dn";
+  if (! config.get('ldap_bind_password')) throw "Configuration error, you must specifiy a ldap_bind_password";
 
   return {
 
@@ -52,11 +54,10 @@ exports.auth = function (config) {
         }
       });
 
-      var bindDN = 'mail=' + email + ',o=com,dc=mozilla';
       var results = 0;
       client.bind(
-        bindDN,
-        password,
+        config.get('ldap_bind_dn'),
+        config.get('ldap_bind_password'),
         function(err) {
           if (err) {
             console.error('Unable to bind to LDAP to search for DNs: ' + err.toString());

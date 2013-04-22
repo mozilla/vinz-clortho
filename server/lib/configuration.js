@@ -24,10 +24,9 @@ var conf = module.exports = convict({
   },
   http_port: { format: 'int', env: "PORT", default: 3000 },
   issuer: { format: 'string', default: "mozilla.personatest.org" },
-  ldap_server_url: {
-    format: 'string',
-    default: "ldaps://ldap.mozilla.org:636"
-  },
+  ldap_bind_dn: { format: 'string', default: "mail=USERNAME@mozilla.com,o=com,dc=mozilla" },
+  ldap_bind_password: { format: 'string', default: "password" },
+  ldap_server_url: { format: 'string', default: "ldaps://ldap.mozilla.org:636" },
   locale_directory: { format: 'string', default: "locale" },
   statsd: {
     enabled: {
