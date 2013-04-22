@@ -1,10 +1,11 @@
-# Vinz Clortho
+# Mozilla IdP
 
-**Status:** This service is under active development and **not ready for production systems**.
+``mozilla-idp`` is a server that implements support for Persona on the mozilla.com domain.
 
-``vinz-clortho`` is a BrowserID primary for organizations that use LDAP as their authentication.
+When deployed, this will allow mozillans with `mozilla.com` or `mozilla.org` email addresses
+to authenticate with Persona enabled websites using their Mozilla (LDAP) password.
 
-It is a HTTPS Node.js server which exposes 3 URLs.
+It is a HTTP node.js server which exposes 3 URLs.
 
 * /.well-known/browserid
 * /browserid/sign_in
@@ -12,15 +13,15 @@ It is a HTTPS Node.js server which exposes 3 URLs.
 
 ## Usage
 
-By routing HTTPS traffic to your domain (same one as email domain) for these three new urls, 
-users can use their LDAP email address and email aliases across the web. 
+By routing HTTPS traffic to your domain (same one as email domain) for these three new urls,
+users can use their LDAP email address and email aliases across the web.
 
-Users will be prompted to sign in. Their LDAP credentials will be used to bind to your existing backend. 
+Users will be prompted to sign in. Their LDAP credentials will be used to bind to your existing backend.
 A session will be created and they will be on their merry way.
 
 ## Installation
 
-Install [Node.js](http://nodejs.org).
+Install [Node.js](http://nodejs.org) version 0.8 or newer.
 
     npm install
 
@@ -41,29 +42,14 @@ Edit following settings:
 * exports.issuer = 'mozilla.com';
 
 ## HTTP vs HTTPS
-This app runs under http by default. It can also run under HTTPS, which is helpful for development
-or if you don't want to run Node as a front-line webserver.
 
-To run under https:
-
-* Follow directions in [dev notes](docs/DEV_NOTES.md) to generate a self-signed SSL cert
-* In config set ``exports.use_https`` to true
-* sudo node bin/clortho will start the server listening on port 443
-
-This application uses a simple bind in LDAP to search for the user's DN, 
-before trying to bind as the user. ``ldap_bind_dn`` and ``ldap_bind_password`` will be set to ``''`` for many systems, that have configured an anonymous
-binding. Alternatively, you may have secured your system with a shared 
-bind dn and password, you'd enter those here.
+This app runs under http.  If you want to run it as HTTPs you can change the code, or use a proxy
 
 ## Start up
 
     clortho
 
-or
-    sudo clortho
-
-
-This will start the server listening on port 3666. You can control port and protocol via ``etc/config.js``. See docs/DEPLOYMENT.md.
+This will start the server listening on port 3000. You can control port and protocol via ``etc/config.js``. Or the `PORT` environment variable. See docs/DEPLOYMENT.md.
 
 ## Shutdown
 
@@ -71,22 +57,23 @@ Kill the foreground process with ``Cntl-C``.
 
 ## Testing
 
-Go to a BrowserID enabled website, such as [My Favorite Beer](http://myfavoritebeer.org/) and enter ``MyUsername``@``Issuer.tld``into the email address area.
+Go to a BrowserID enabled website, such as [123done](http://123done.org/) and enter ``MyUsername``@``Issuer.tld``into the email address area.
 
 Example:
+
 For a system which has
 
     exports.issuer = 'example.com';
 
 Alice would enter ``alice@example.com``.
 
-The BrowserID protocol will discover that your organization is a primary 
+Persona will discover that your organization is a primary
 identity provider for example.com and trust your LDAP system to authenticate
 Alice properly. You'll see GET and POST requests on the 3 urls listed above.
 
 ## Maintenance
 
-Sessions are stored in encrypted cookies on the user's browser. There 
+Sessions are stored in encrypted cookies on the user's browser. There
 are no backend databases.
 
 Making sure the clortho daemon is up and running is the only maintenance task.

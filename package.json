@@ -11,16 +11,19 @@
     "node": "~0.6.10"
   },
   "dependencies": {
-    "client-sessions": "0.0.3",
-    "convict": "0.0.6",
-    "crypto":"0.0.3",
+    "awsbox": "0.4.4",
+    "client-sessions": "0.1.0",
+    "convict": "0.1.0",
     "ejs": "0.6.1",
     "express": "2.5.8",
     "i18n-abide": "0.0.3",
-    "jwcrypto": "0.1.1",
-    "ldapjs": "0.4.7",
+    "jwcrypto": "0.4.3",
+    "ldapjs": "0.6.2",
     "less": "1.2.2",
     "node-statsd": "0.0.2"
+  },
+  "scripts": {
+    "start": "node ./server/bin/clortho"
   },
   "devDependencies": {},
   "optionalDependencies": {}
