@@ -21,9 +21,11 @@ const path = require('path');
 // ./server is our current working directory
 process.chdir(path.join(path.dirname(__dirname), 'server'));
 
-const jwk = require("jwcrypto/jwk"),
+const jwcrypto = require("jwcrypto"),
       store = require('../server/lib/keypair_store'),
       util = require('util');
+
+require("jwcrypto/lib/algs/rs");
 
 var error_remove_keypair = function () {
     console.error("Old keypair detected, you must remove these files to generate new ones.")
@@ -36,15 +38,23 @@ store.files_exist(function (exists) {
     error_remove_keypair();
   } else {
     // generate a fresh 1024 bit RSA key
-    var keypair = jwk.KeyPair.generate('RS', 256);
-    store.write_files(keypair, function (err) {
-      console.error("Problem writing public key, existing");
-      console.error(err);
-      process.exist(2);
-    }, function (err) {
-      console.error("Problem writing secret key, existing");
-      console.error(err);
-      process.exist(3);
-    });
-  }
+    jwcrypto.generateKeypair(
+      {algorithm: 'RS', keysize: 256},
+      function(err, keypair) {
+        if (err) {
+          console.error("error generating keys:", err);
+          process.exit(1);
+        } else {
+          store.write_files(keypair, function (err) {
+            console.error("Problem writing public key, existing");
+            console.error(err);
+            process.exist(2);
+          }, function (err) {
+            console.error("Problem writing secret key, existing");
+            console.error(err);
+            process.exist(3);
+          });
+        }
+      });
+    }
 });

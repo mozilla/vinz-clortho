@@ -3,24 +3,15 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 $(document).ready(function() {
+  // XXX: currently the server is plucking email out of get data when
+  // the auth page is rendered.  It does this to render to the user
+  // their substituted email address.
+  //
+  // We need the client to bounce the email off the server and sub it in.
   navigator.id.beginAuthentication(function(email) {
     var msg;
-    // Email form element is actually ignored
-    // This is needed for test environments... but is ugly
-    // In production fixup_delegate_domain will not be defined
-    if (window.fixup_delegate_domain) {
-      email = fixup_delegate_domain(email);
-    }
 
-    if (email) {
-      // Sign-in used normally via BrowserID flow
-      // Disable input as user should only use the email address
-      // they specified.
-      // We *don't* disable this if sign-in is being used directly
-      // (outside of BrowserID), so user can edit the field
-      $("input[type=email]").val(email).attr('disabled', true);
-    }
-    //all cancel buttons work the same
+    // all cancel buttons work the same
     $("form button.cancel").click(function(e) {
       e.preventDefault();
       msg = "user canceled authentication";
@@ -39,9 +30,6 @@ $(document).ready(function() {
         return;
       }
 
-      // Sign-in used directly, outside of BrowserID flow
-      if (! email)
-        email = $('[name=user]').val();
       $.ajax({
         url: auth_url,
         type: 'POST',

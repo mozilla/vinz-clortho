@@ -7,55 +7,53 @@ const convict = require('convict'),
       path = require('path');
 
 var conf = module.exports = convict({
-  basic_auth_realm: {
-    doc: "Used when signin_method is basicauth",
-    format: 'string = "Basic realm=\\"Mozilla Corporation - LDAP Login\\""'
-  },
-
-  browserid_server: 'string = "https://browserid.org"',
+  browserid_server: { format: "url", default: "https://login.persona.org", },
   client_sessions: {
-    cookie_name: 'string = "session_state"',
-    secret: 'string = "YOU MUST CHANGE ME"',
-    duration: 'integer = '  + (24 * 60 * 60 * 1000) // 1 day
+    cookie_name: { format: 'string', default: "session_state" },
+    secret: { format: 'string', default: "YOU MUST CHANGE ME" },
+    duration: { format: 'int', default: (24 * 60 * 60 * 1000) }
   },
-  default_lang: 'string = "en-US"',
-  debug_lang: 'string = "it-CH"',
-  http_port: 'integer = 3000',
-  issuer: 'string = "dev.clortho.org"',
-  ldap_bind_dn: 'string = "mail=USERNAME@mozilla.com,o=com,dc=mozilla"',
-  ldap_bind_password: 'string = "password"',
-  ldap_server_url: 'string = "ldaps://addressbook.mozilla.com:636"',
-  locale_directory: 'string = "locale"',
-  signin_method: {
-    doc: "How should this app collect authentication credentials? With an HTML form or Basic Auth",
-    format: 'string ["form", "basicauth"] = "basicauth"'
+  default_lang: { format: 'string', default: 'en-US' },
+  debug_lang: { format: 'string', default: "it-CH" },
+  domain_mapping: {
+    doc: "Testing feature: Allows users to type in a testing domain to trigger the Mozilla IdP, but have their emails rewritten to mozilla domains",
+    format: Object,
+    default: {
+      "mozilla.personatest.org": "mozilla.com"
+    },
   },
+  http_port: { format: 'int', env: "PORT", default: 3000 },
+  issuer: { format: 'string', default: "mozilla.personatest.org" },
+  ldap_server_url: {
+    format: 'string',
+    default: "ldaps://ldap.mozilla.org:636"
+  },
+  locale_directory: { format: 'string', default: "locale" },
   statsd: {
     enabled: {
       doc: "enable UDP based statsd reporting",
-      format: 'boolean = true',
+      format: Boolean,
+      default: true,
       env: 'ENABLE_STATSD'
     },
-    host: "string?",
-    port: "integer{1,65535}?"
+    host: { format: "string", default: "" },
+    port: { format: "int", default: 6000 }
   },
   static_mount_path: {
     doc: "Base path where static files will be served from. Reduces URL conflicts. Examples: '/', '/browserid' ",
-    format: 'string = "/browserid"'
+    format: 'string',
+    default: "/browserid"
   },
   supported_languages: {
     doc: "List of languages this deployment should detect and display localized strings.",
-    format: 'array { string }* = [ "en-US" ]',
+    format: Array,
+    default: [ "en-US" ],
     env: 'SUPPORTED_LANGUAGES'
   },
-  test_delegate_domain_override: {
-    doc: "Dev or Test environments will have a fake domain to delegate to us. See DEPLOYMENT.md",
-    format: 'string = ""'
-  },
-  use_https: 'boolean = false',
   var_path: {
     doc: "The path where deployment specific resources will be sought (keys, etc), and logs will be kept.",
-    format: 'string?',
+    format: 'string',
+    default: "",
     env: 'VAR_PATH'
   },
 });
@@ -68,7 +66,7 @@ conf.set('process_type', path.basename(process.argv[1], ".js"));
 var dev_config_path = path.join(process.cwd(), 'config', 'local.json');
 
 if (! process.env['CONFIG_FILES'] &&
-    path.existsSync(dev_config_path)) {
+    fs.existsSync(dev_config_path)) {
   process.env['CONFIG_FILES'] = dev_config_path;
 }
 

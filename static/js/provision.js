@@ -11,7 +11,6 @@ window.provision = function (user) {
       },
       msg = "user is not authenticated as target user";
 
-  // username@dev.clortho.mozilla.org
   navigator.id.beginProvisioning(function(email, cert_duration) {
     if (! user) {
       navigator.id.raiseProvisioningFailure(msg);

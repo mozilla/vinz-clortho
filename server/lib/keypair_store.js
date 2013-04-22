@@ -55,11 +55,11 @@ exports.write_files = function (keypair, pub_cb, secr_cb) {
  * Method is synchronous as it's used from other modules during loading.
  */
 exports.read_files_sync = function (callback) {
-  var pub_exists = path.existsSync(pub_key_filename);
+  var pub_exists = fs.existsSync(pub_key_filename);
   if (! pub_exists) {
     return callback("Missing public key, cannot read files");
   }
-  var priv_exists = path.existsSync(priv_key_filename);
+  var priv_exists = fs.existsSync(priv_key_filename);
   if (! priv_exists) {
     return callback("Missing secret key, cannot read files");
   }
@@ -71,6 +71,5 @@ exports.read_files_sync = function (callback) {
     // File IO or malformed JSON
     console.trace(e);
     callback(e.toString());
-
   }
 }
