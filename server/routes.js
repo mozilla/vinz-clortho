@@ -5,9 +5,8 @@
 const config = require('./lib/configuration'),
       crypto = require('./lib/crypto'),
         util = require('util'),
-emailRewrite = require('./lib/email_rewrite.js');
-
-var auth = require('./lib/auth').auth(config);
+emailRewrite = require('./lib/email_rewrite.js'),
+        auth = require('./lib/auth');
 
 exports.routes = function () {
   var well_known_last_mod = new Date().getTime();
@@ -93,7 +92,10 @@ exports.routes = function () {
         resp.writeHead(400);
         return resp.end();
       } else {
-        auth.login(mozillaUser, req.body.pass, function (err, passed) {
+        auth.authEmail({
+          email: mozillaUser,
+          password: req.body.pass
+        }, function (err, passed) {
           if (err || ! passed) {
             resp.write('Email or Password incorrect');
             resp.writeHead(401);
