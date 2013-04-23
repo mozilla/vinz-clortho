@@ -94,20 +94,6 @@ exports.auth = function (config) {
             });
           }
         });
-    },
-    basic_auth_decode: function (cred, cb) {
-      var pieces = cred.split(' ');
-      if (pieces[0] === 'Basic' && pieces.length === 2) {
-        var decoded = new Buffer(pieces[1], 'base64').toString('utf8');
-        if (decoded.indexOf(':') === -1) {
-          cb("Malformed Basic Authorization [" + decoded + "]", null, null);
-        } else {
-          var parts = decoded.split(':');
-          cb(null, parts[0], parts[1]);
-        }
-      } else {
-        cb("Unknown type of Authentication [" + pieces[0] + "]", null, null);
-      }
     }
   };
 };
