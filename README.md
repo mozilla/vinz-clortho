@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mozilla/vinz-clortho.png?branch=unit-tests)](https://travis-ci.org/mozilla/vinz-clortho)
+
 # Mozilla IdP
 
 ``mozilla-idp`` is a server that implements support for Persona on the mozilla.com domain.
