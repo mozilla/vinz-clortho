@@ -1,7 +1,7 @@
 {
   "author": "Ozten <shout@ozten.com> (http://ozten.com)",
   "name": "clortho",
-  "description": "Mozilla's BrowserID IdP Service",
+  "description": "A server that provides Persona support for mozilla.{com,org} emails.",
   "version": "0.0.0",
   "repository": {
     "url": ""
@@ -22,9 +22,12 @@
     "less": "1.2.2",
     "node-statsd": "0.0.2"
   },
-  "scripts": {
-    "start": "node ./server/bin/clortho"
+  "devDependencies": {
+    "mocha": "1.9.0",
+    "should": "1.2.2"
   },
-  "devDependencies": {},
-  "optionalDependencies": {}
+  "scripts": {
+    "start": "node ./server/bin/clortho",
+    "test": "mocha -R spec tests/"
+  }
 }

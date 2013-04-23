@@ -27,6 +27,7 @@ var conf = module.exports = convict({
   ldap_bind_dn: { format: 'string', default: "mail=USERNAME@mozilla.com,o=com,dc=mozilla" },
   ldap_bind_password: { format: 'string', default: "password" },
   ldap_server_url: { format: 'string', default: "ldaps://ldap.mozilla.org:636" },
+  ldap_server_connect_timeout: { format: 'int', default: 10000 },
   locale_directory: { format: 'string', default: "locale" },
   statsd: {
     enabled: {
@@ -62,7 +63,7 @@ var conf = module.exports = convict({
 // on the path, we'll use that, otherwise we'll name it 'ephemeral'.
 conf.set('process_type', path.basename(process.argv[1], ".js"));
 
-var dev_config_path = path.join(process.cwd(), 'config', 'local.json');
+var dev_config_path = path.join(__dirname, '..', 'config', 'local.json');
 
 if (! process.env['CONFIG_FILES'] &&
     fs.existsSync(dev_config_path)) {
