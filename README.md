@@ -16,8 +16,7 @@ Note: This section is still in changing.
 You will need a public and secret key pair to act as a 
 [Persona IdP](https://developer.mozilla.org/en-US/docs/Persona/Implementing_a_Persona_IdP). 
 
-    > cd scripts
-    > ./gen_keys.js
+    > scripts/gen_keys.js
 
 The `gen_keys.js` command can be run directly. It will write two files into `server/config`, 
 `public-key.json` and `secret-key.json`.
