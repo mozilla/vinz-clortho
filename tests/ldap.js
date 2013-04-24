@@ -2,7 +2,8 @@ const
 should = require('should'),
 ldapServer = require('./lib/ldap-server.js'),
 ldap = require('ldapjs'),
-auth = require('../server/lib/auth.js');
+auth = require('../server/lib/auth.js'),
+testUtil = require('./lib/test-util.js');
 
 var ldapServerInstance;
 
