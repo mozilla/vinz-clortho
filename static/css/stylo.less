@@ -4,125 +4,87 @@
 @import '../static/css/boilerplate';
 
 /* === Layout === */
-@debug-border-width: 0px;
+.l-center-vh {
+  margin: auto;
+}
+.l-center { text-align: center; }
+
+.l-30, .l-70 { min-height: 1em; height: auto; float: left; padding: 3px 0px; }
+.l-30 { width: 30%; clear: left; }
+.l-70 { width: 70%; }
+
+/* === Modules === */
+
 body {
-  line-height: 1.5;
+  background: #2D9ED2;
+
+  background-image: -o-radial-gradient(64% 96%, #2C9ED4 19%, #299AD2 42%, rgba(4,60,85,0.20) 100%), url(/i/jumping_fox_back.png);
+  background-image: -moz-radial-gradient(64% 96%, #2C9ED4 19%, #299AD2 42%, rgba(4,60,85,0.20) 100%);
+  background-image: -webkit-radial-gradient(64% 96%, #2C9ED4 19%, #299AD2 42%, rgba(4,60,85,0.20) 100%), url(/i/jumping_fox_back.png);
+  background-image: -ms-radial-gradient(64% 96%, #2C9ED4 19%, #299AD2 42%, rgba(4,60,85,0.20) 100%), url(/i/jumping_fox_back.png);
+  background-image: radial-gradient(64% 96%, #2C9ED4 19%, #299AD2 42%, rgba(4,60,85,0.20) 100%);
 }
 
-#content {
-
+.btn {
+  font-size: 12pt;
+  line-height: 1;
+  padding: 6px 10px 7px;
+  border: 0px none;
+  text-shadow: 0px 1px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  white-space: nowrap;
+  border-radius: 3px 3px 3px 3px;
+  box-shadow: 0px -1px 0px rgba(0, 0, 0, 0.3) inset, 0px 1px 0px rgba(0, 0, 0, 0.2);
 }
 
 .signin-panel {
-  border: solid @debug-border-width red;
-  width: 500px;
-  margin-top: 1.5rem;
-  margin-left: auto;
-  margin-right: auto;
+  width: 524px;
+  height: 286px;
+  background-image: url(/i/jumping_fox_back.png);
+  position: relative;
 }
 
-.left-col {
-  clear: left;
-  text-align: right;
-}
-html[dir=rtl] .left-col {
-  clear: right;
-  text-align: left;
-}
-.left-col /*, .right-col */ {
-  border: solid @debug-border-width blue;
-  min-width: (113px - (@debug-border-width * 2));
-  max-width: (173px - (@debug-border-width * 2));
-  min-height: 1px;
-  overflow: hidden;
-  float: left;
-}
-html[dir=rtl] {
-  .left-col, .right-col, .center-col {
-    float: right;
-  }
-}
-.center-col {
-  border: solid @debug-border-width green;
-  width: (300px - (@debug-border-width * 2));
-  padding-left: 5px;
-  float: left;
+.signin-form {
+  border-radius: 5px;
+  background: #FFFFFF;
+
+  -moz-box-shadow:    2px 4px 22px 0 rgba(3,41,64,0.50), 0px 2px 4px 0 rgba(0,0,0,0.50);
+  -webkit-box-shadow: 2px 4px 22px 0 rgba(3,41,64,0.50), 0px 2px 4px 0 rgba(0,0,0,0.50);
+  box-shadow:         2px 4px 22px 0 rgba(3,41,64,0.50), 0px 2px 4px 0 rgba(0,0,0,0.50);
+/*
+  -moz-box-shadow:    0px 2px 4px 0 rgba(0,0,0,0.50);
+  -webkit-box-shadow: 0px 2px 4px 0 rgba(0,0,0,0.50);
+  box-shadow:         0px 2px 4px 0 rgba(0,0,0,0.50);
+*/
+  width: 319px;
+  height: 200px;
+  position: absolute;
+  top: 100px;
+  left: 120px;
+
+  padding-bottom: 1em;
 }
 
-html[dir=rtl] {
-  .center-col {
-    padding-right: 5px;
-  }
+.signin-form label { display: block; text-align: right; padding-right: 5px; }
+.signin-form input { width: 85%; }
+
+.signin-continue {
+  background-color: #2C9ED4; color: #FFF;
+  background-image: -moz-linear-gradient(center top , rgb(78, 181, 229), rgb(49, 150, 207));
+  margin-right: 1em;
 }
-html[dir=ltr] {
-  .left-col {
-    padding-right: 5px;
-  }
-}
-html[dir=rtl] {
-  .right-col {
-    padding-left: 5px;
-  }
+.signin-cancel {
+  background-color: #EEE; color: #034;
 }
 
-.left-col, .center-col, -right-col {
-  margin-bottom: 5px;
+.signin-overlay {
+  width: 249px;
+  height: 211px;
+  background-image: url(/i/jumping_fox_front.png);
+  position: absolute;
+  top: 31px;
+  left: 55px;
+  z-index: 666;
 }
 
-.clear {
-  clear: both;
-}
-
-/* === Basic Style === */
-body {
-  background-color: #efe7d4;
-  font-family: Times;
-}
-
-.signin-panel {
-  background-color: #FFF;
-  // color: rgb(166, 7, 53);
-  color: #333;
-  .borderRadius(5px);
-  //.boxShadow(2px 2px 6px #000);
-  .boxShadow3(2px 2px 6px rgba(0, 0, 0, 0.25), 3px 3px 60px rgba(0, 0, 0, 0.25), 5px 2px 16px rgba(0, 0, 0, 0.25));
-  .gradientV3(#FFF, #FFF, 40, #EEE);
-
-}
-
-label {
-  font-family: Arial;
-}
-
-.logo {
-  padding-top: 10px;
-}
-
-/* === Heading === */
-h1 {
-  color: #333;
-  font-size: 1.5em;
-  margin-bottom: -0.3em;
-}
-
-/* === Labels === */
-label {
-  font-weight: bold;
-}
-
-/* === Inputs === */
-input {
-  width: 100%;
-}
-
-button {
-
-  font-size: 1.2em;
-  line-height: 1.5;
-}
-
-.last {
-  padding-bottom: 10px;
-}
-
-@import '../static/css/media_max_480';
+/* @import '../static/css/media_max_480'; */
