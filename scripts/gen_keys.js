@@ -10,8 +10,8 @@
    scripts/gen_keys.js
 
    Will create a new keypair at
-     var/server_public_key.json
-     var/server_secret_key.json
+       server/config/public-key.json
+       server/config/private-key.json
 
    If these files already exist, this script will show an error message
    and exit. You must remove both keys if you want to generate a new
@@ -21,40 +21,42 @@ const path = require('path');
 // ./server is our current working directory
 process.chdir(path.join(path.dirname(__dirname), 'server'));
 
-const jwcrypto = require("jwcrypto"),
-      store = require('../server/lib/keypair_store'),
-      util = require('util');
+const jwcrypto = require("jwcrypto")
+      , util = require('util')
+      , fs = require('fs')
+      , assert = require("assert")
+      , configDir = fs.realpathSync(__dirname + "/../server/config")
+      , pubKeyFile = configDir + "/public-key.json"
+      , secretKeyFile = configDir + "/secret-key.json"
+      ;
 
 require("jwcrypto/lib/algs/rs");
 
-var error_remove_keypair = function () {
-    console.error("Old keypair detected, you must remove these files to generate new ones.")
-    console.log("Usage: gen_keys.js\n\nWill create a new keypair under var.");
-    process.exit(1);
+try {
+  assert(fs.existsSync(configDir), "Config dir" + configDir + " not found");
+  assert(! fs.existsSync(pubKeyFile), "public key file: ["+pubKeyFile+"] already exists");
+  assert(! fs.existsSync(secretKeyFile), "public key file: ["+secretKeyFile+"] already exists");
+
+} catch(e) {
+  console.error("Error: " + e.message);
+  process.exit(1);
 }
 
-store.files_exist(function (exists) {
-  if (exists) {
-    error_remove_keypair();
-  } else {
-    // generate a fresh 1024 bit RSA key
-    jwcrypto.generateKeypair(
-      {algorithm: 'RS', keysize: 256},
-      function(err, keypair) {
-        if (err) {
-          console.error("error generating keys:", err);
-          process.exit(1);
-        } else {
-          store.write_files(keypair, function (err) {
-            console.error("Problem writing public key, existing");
-            console.error(err);
-            process.exist(2);
-          }, function (err) {
-            console.error("Problem writing secret key, existing");
-            console.error(err);
-            process.exist(3);
-          });
-        }
-      });
-    }
-});
+
+console.log("Generating Public/Secret key files. This could take a few seconds...");
+jwcrypto.generateKeypair(
+  // keysize: 256 = 2048bit key
+  // confusing? yes. ref: https://github.com/mozilla/jwcrypto/blob/master/lib/algs/ds.js#L37-L57
+  {algorithm: 'RS', keysize: 256},
+  function(err, keypair) {
+
+    var pubKey = keypair.publicKey.serialize()
+    var secretKey = keypair.secretKey.serialize()
+
+    console.log("Public Key: ", pubKey);
+    console.log("Secret Key: ", secretKey);
+
+    fs.writeFileSync(pubKeyFile, pubKey);
+    fs.writeFileSync(secretKeyFile, secretKey);
+  }
+);
