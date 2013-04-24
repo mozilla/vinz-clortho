@@ -76,5 +76,4 @@ describe('binding to the ldap server via our library', function() {
       done();
     });
   });
-
 });
