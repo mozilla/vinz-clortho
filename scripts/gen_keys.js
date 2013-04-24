@@ -36,7 +36,7 @@ try {
   process.exit(1);
 }
 
-console.log("Generating Public/Secret key files. This could take a few seconds...");
+console.log("Generating keypair. (install libgmp if this takes more than a second)");
 
 // wondering about `keysize: 256`?
 // well, 257 = 2048bit key
@@ -48,10 +48,11 @@ jwcrypto.generateKeypair(
     var pubKey = keypair.publicKey.serialize()
     var secretKey = keypair.secretKey.serialize()
 
-    console.log("Public Key: ", pubKey);
-    console.log("Secret Key: ", secretKey);
 
     fs.writeFileSync(pubKeyFile, pubKey);
+    console.log("Public Key saved:", pubKeyFile);
+
     fs.writeFileSync(secretKeyFile, secretKey);
+    console.log("Secret Key saved:", pubKeyFile);
   }
 );
