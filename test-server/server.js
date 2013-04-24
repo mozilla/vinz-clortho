@@ -36,4 +36,9 @@ ldapMock.server.listen(1389, function() {
         -D cn=vinz,dc=mozilla,o=com -w OOPS \
         -LLL -b "dc=mozilla, o=com" mail=user@mozilla.org 
 
+   Don't bind at all
+   --------------------------
+   > ldapsearch -H ldap://localhost:1389 -x \
+        -LLL -b "dc=mozilla, o=com" mail=*
+
 */

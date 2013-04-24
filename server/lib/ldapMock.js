@@ -25,7 +25,7 @@ var directory = [
 
 ldapServer = ldap.createServer()
 
-
+// make sure binds are correct
 ldapServer.bind('dc=mozilla, o=com', function(req, res, next) {
     var bindDN = req.dn.toString();
     var credentials = req.credentials;
@@ -39,7 +39,7 @@ ldapServer.bind('dc=mozilla, o=com', function(req, res, next) {
     return next(new ldap.InvalidCredentialsError());
 });
 
-// some middleware to make sure the user has successful bound
+// some middleware to make sure the user has a successfully bind 
 function authorize(req, res, next) {
     for(var i=0; i < directory.length; i++) {
         if (req.connection.ldap.bindDN.equals(directory[i].dn)) {
