@@ -127,7 +127,7 @@ app.use(function(req, res, next) {
 });
 
 function startup(cb) {
-  app.listen(config.get('http_port'), "127.0.0.1", function(err) {
+  app.listen(config.get('http_port'), config.get('http_address'), function(err) {
     if (cb) cb(err, app.address());
   });
 }
