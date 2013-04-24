@@ -3,25 +3,27 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 const jwcrypto = require("jwcrypto"),
+      fs = require("fs"),
+      assert = require("assert"),
       cert = jwcrypto.cert,
-      config = require('./configuration'),
-      store = require('./keypair_store');
+      config = require('./configuration');
 
 // load desired algorithms
 require("jwcrypto/lib/algs/rs");
 require("jwcrypto/lib/algs/ds");
 
-var _privKey = null;
+// TODO move these to a shared constants/config file eventually
+// and share it with scripts/gen_keys.js
+var configDir = fs.realpathSync(__dirname + "/../config");
+var pubKeyFile = configDir + "/public-key.json";
+var secretKeyFile = configDir + "/secret-key.json";
 
 // Load Pub/Private keys from the filesystem
-try {
-  store.read_files_sync(function (err, publicKey, secretKey) {
-    if (! err) {
-      exports.pubKey = publicKey;
-      _privKey = jwcrypto.loadSecretKey(JSON.stringify(secretKey));
-    }
-  });
-} catch (e) { }
+assert(fs.existsSync(pubKeyFile), "Public Key file ["+ pubKeyFile + "] does not exist");
+assert(fs.existsSync(secretKeyFile), "Secret Key file ["+secretKeyFile+"] does not exist");
+
+var _privKey = fs.readFileSync(secretKeyFile);
+exports.pubKey = fs.readFileSync(pubKeyFile);
 
 exports.cert_key = function(pubkey, email, duration_s, cb) {
   var pubKey = jwcrypto.loadPublicKey(pubkey);
