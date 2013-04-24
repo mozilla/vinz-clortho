@@ -98,17 +98,15 @@ var winston = require('winston');
     next();
   });
 
-  app.get('/', function(req, res) {
-    res.render('home', {title: 'Testing homepage'});
-  });
-
   app.get('/.well-known/browserid', routes.well_known_browserid);
+
+  app.get('/', routes.signin_from_form);
+  app.get('/sign_in', routes.signin_from_form);
+  app.post('/sign_in', routes.check_signin_from_form);
 
   app.get('/provision', routes.provision);
   app.post('/provision', routes.provision_key);
 
-  app.get('/sign_in', routes.signin_from_form);
-  app.post('/sign_in', routes.check_signin_from_form);
 
   // Dev and Stage only
   app.get('/signout', routes.signout);
