@@ -21,6 +21,20 @@ You will need a public and secret key pair to act as a
 The `gen_keys.js` command can be run directly. It will write two files into `server/config`, 
 `public-key.json` and `secret-key.json`.
 
+Note: this process takes much longer without libgmp installed. Basically javascript vs native
+code. Here's how to install the library: 
+
+    Scientific Linux (our production distro)
+    ----------------------------------------
+    
+    TODO
+
+    Ubuntu
+    ------
+
+    TODO
+
+
 ### Step N: Creating a Configuration File 
 
     > cd server/config
