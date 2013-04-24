@@ -10,14 +10,15 @@ const path = require('path');
 process.chdir(path.dirname(__dirname));
 
 const config = require('../lib/configuration'),
-      crypto = require("crypto"),
-      express = require("express"),
-      fs = require("fs"),
-      http = require("http"),
+      crypto = require('crypto'),
+      express = require('express'),
+      fs = require('fs'),
+      http = require('http'),
       i18n = require('i18n-abide'),
-      routes = require("../routes").routes()
-      sessions = require("client-sessions"),
-      util = require("util");
+      routes = require('../routes').routes()
+      sessions = require('client-sessions'),
+      staticMount = require('../lib/static_mount');
+      util = require('util');
 
 process.on('uncaughtException', function(err) {
   console.error('uncaught exception', err);
@@ -31,7 +32,7 @@ var app, options = {};
 
 app = express.createServer();
 
-app.configure('development', function () {
+app.configure('development', function() {
   app.use(express.responseTime());
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 });
@@ -68,43 +69,30 @@ app.configure(function(){
     locale_directory: config.get('locale_directory')
   }));
 
-  app.use(function (req, resp, next) {
-    resp.local('csrf_token', req.session._csrf);
-    resp.local('browserid_server', config.get('browserid_server'));
+  app.use(function(req, res, next) {
+    res.local('csrf_token', req.session._csrf);
+    res.local('browserid_server', config.get('browserid_server'));
     var s = req.session || null;
-    resp.local('session', s);
+    res.local('session', s);
 
-    // static_mount_path support, allows for putting all static files under
-    // a specific url mount path
-    // In practise... our IT team will always set this to /browserid, so there are
-    // Two top level paths:
-    // 1) /.well-known/browserid
-    // 2) /browserid/*
-    // So static files and express routes live under /browserid and we strip it from the url
-    var static_mount_path = config.get('static_mount_path');
-    resp.local('static_mount_path', static_mount_path);
-    if (req.url.indexOf(static_mount_path) === 0) {
-      req.url = req.url.replace(static_mount_path, '');
-    }
-    if (req.url[0] !== '/') {
-      req.url = '/' + req.url;
-    }
-    next();
+    staticMount.mount(req, res, function() {
+      next();
+    });
   });
 
   app.use(app.router);
 
   // .well-known file must be served with a content-type of application/json
-  app.use(function (req, resp, next) {
+  app.use(function(req, res, next) {
     if ('/.well-known/browserid' === req.url) {
-      resp.setHeader('Content-Type', 'application/json');
-      resp.setHeader('Last-Modified', routes.well_known_last_mod);
+      res.setHeader('Content-Type', 'application/json');
+      res.setHeader('Last-Modified', routes.well_known_last_mod);
     }
     next();
   });
 
-  app.get('/', function (req, resp) {
-    resp.render('home', {title: 'Testing homepage'});
+  app.get('/', function(req, res) {
+    res.render('home', {title: 'Testing homepage'});
   });
 
   app.get('/.well-known/browserid', routes.well_known_browserid);
@@ -126,8 +114,8 @@ app.configure(function(){
 
 app.use(express.static(static_dir));
 
-app.use(function (req, resp, next) {
-    routes.handle404(req, resp);
+app.use(function(req, res, next) {
+    routes.handle404(req, res);
   });
 });
 
