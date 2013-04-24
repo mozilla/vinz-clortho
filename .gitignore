@@ -1,9 +1,9 @@
 .DS_Store
-server/config/*.json
-server/config/*.pem
-server/config/*.csr
-server/var
+/server/config/*.json
+/server/config/*.pem
+/server/config/*.csr
+/server/var
 *~
 #*#
 locale
-node_modules
+/node_modules
