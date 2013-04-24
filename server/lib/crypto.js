@@ -3,47 +3,27 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 const jwcrypto = require("jwcrypto"),
+      fs = require("fs"),
+      assert = require("assert"),
       cert = jwcrypto.cert,
-      config = require('./configuration'),
-      store = require('./keypair_store');
+      config = require('./configuration');
 
 // load desired algorithms
 require("jwcrypto/lib/algs/rs");
 require("jwcrypto/lib/algs/ds");
 
-var _privKey = null;
+// TODO move these to a shared constants/config file eventually
+// and share it with scripts/gen_keys.js
+var configDir = fs.realpathSync(__dirname + "/../config");
+var pubKeyFile = configDir + "/public-key.json";
+var secretKeyFile = configDir + "/secret-key.json";
 
-// ENV Variables
-try {
-  exports.pubKey = JSON.parse(process.env['PUBLIC_KEY']);
-  _privKey = jwcrypto.loadSecretKey(process.env['PRIVATE_KEY']);
-} catch(e) { }
+// Load Pub/Private keys from the filesystem
+assert(fs.existsSync(pubKeyFile), "Public Key file ["+ pubKeyFile + "] does not exist");
+assert(fs.existsSync(secretKeyFile), "Secret Key file ["+secretKeyFile+"] does not exist");
 
-// or var file system cache
-if (!exports.pubKey) {
-  try {
-    store.read_files_sync(function (err, publicKey, secretKey) {
-      if (! err) {
-        exports.pubKey = publicKey;
-        _privKey = jwcrypto.loadSecretKey(JSON.stringify(secretKey));
-      }
-    });
-  } catch (e) { }
-}
-
-// or ephemeral
-if (!exports.pubKey) {
-  if (exports.pubKey != _privKey) {
-    throw "inconsistent configuration!  if privKey is defined, so must be pubKey";
-  }
-  // if no keys are provided emit a nasty message and generate some
-  console.warn("WARNING: you're using ephemeral keys.  They will be purged at restart.");
-
-  jwcrypto.generateKeypair({algorithm: 'RS', keysize: 256}, function(err, keypair) {
-    exports.pubKey = JSON.parse(keypair.publicKey.serialize());
-    _privKey = keypair.secretKey;
-  });
-}
+var _privKey = fs.readFileSync(secretKeyFile);
+exports.pubKey = fs.readFileSync(pubKeyFile);
 
 exports.cert_key = function(pubkey, email, duration_s, cb) {
   var pubKey = jwcrypto.loadPublicKey(pubkey);

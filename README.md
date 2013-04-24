@@ -7,6 +7,24 @@
 When deployed, this will allow mozillans with `mozilla.com` or `mozilla.org` email addresses
 to authenticate with Persona enabled websites using their Mozilla (LDAP) password.
 
+## Configuration
+
+Note: This section is still in changing. 
+
+### Step N: Creating Public/Private Keypairs
+
+You will need a public and secret key pair to act as a 
+[Persona IdP](https://developer.mozilla.org/en-US/docs/Persona/Implementing_a_Persona_IdP). 
+
+    > scripts/gen_keys.js
+
+The `gen_keys.js` command can be run directly. It will write two files into `server/config`, 
+`public-key.json` and `secret-key.json`.
+
+### Step N: Creating a Configuration File 
+
+    > cd server/config
+    > cp local.json-dist local.json
 
 ## Deployment 
 
