@@ -143,14 +143,18 @@ exports.authEmail = function(opts, callback) {
       filter: '(|(mail=' + opts.email + ')(emailAlias=' + opts.email + '))',
       attributes: ['mail']
     }, function (err, res) {
+      var bindDN; 
+
       if (err) {
         logger.warn('error during LDAP search ' + err.toString());
         return callback(err, false);
       }
+
       res.on('searchEntry', function(entry) {
         bindDN = entry.dn;
         results++;
       });
+
       res.on('end', function () {
         if (results == 1) {
           client.bind(bindDN, opts.password, function (err) {
