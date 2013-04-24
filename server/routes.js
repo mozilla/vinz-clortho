@@ -15,8 +15,10 @@ exports.routes = function () {
     private_key: null,
     ttl: null,
     well_known_browserid: function (req, resp) {
-      // 2 minutes in seconds
-      var timeout = 120 ; //2 * 60; // in seconds
+      // uber-short caching.  we don't mind the requests and it
+      // reduces user impact of key changing
+      var cacheValue = 'max-age=5, public';
+
       if (req.headers['if-modified-since'] !== undefined) {
         var since = new Date(req.headers['if-modified-since']);
         if (isNaN(since.getTime())) {
@@ -25,7 +27,7 @@ exports.routes = function () {
         } else {
           // Does the client already have the latest copy?
           if (since >= well_known_last_mod) {
-            resp.setHeader('Cache-Control', 'max-age=' + timeout);
+            resp.setHeader('Cache-Control', cacheValue);
             return resp.send(304);
           }
         }
@@ -33,7 +35,7 @@ exports.routes = function () {
       // On startup, keys need to be pulled from memcache or some such
       var pk = JSON.stringify(crypto.pubKey);
       resp.setHeader('Content-Type', 'application/json');
-      resp.setHeader('Cache-Control', 'max-age=' + timeout);
+      resp.setHeader('Cache-Control', cacheValue);
       resp.setHeader('Last-Modified', new Date(well_known_last_mod).toUTCString());
       resp.render('well_known_browserid', {
         public_key: pk,
