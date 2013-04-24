@@ -12,7 +12,7 @@ process.on('uncaughtException', function(err) {
   console.error('uncaught exception', err);
 });
 
-var auth = require('../server/lib/auth').auth(config);
+var auth = require('../server/lib/auth');
 
 if (process.argv.length !== 4) {
   var progName = path.basename(process.argv[1]);
@@ -22,7 +22,9 @@ if (process.argv.length !== 4) {
   process.exit(1);
 }
 
-auth.login(process.argv[2], process.argv[3], function (err, passed) {
+auth.authEmail({
+  email: process.argv[2],
+  password: process.argv[3]
+}, function (err, passed) {
   console.log(err, passed);
-  console.log(Object.keys(auth));
 });
