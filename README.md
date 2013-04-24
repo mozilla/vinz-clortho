@@ -11,18 +11,19 @@ Note: This section is still in changing.
 
 ### Step N: Creating Public/Private Keypairs
 
-You will need a public and private key pair to act as a 
+You will need a public and secret key pair to act as a 
 [Persona IdP](https://developer.mozilla.org/en-US/docs/Persona/Implementing_a_Persona_IdP). 
 
-    > cd server/config
-    > openssl genrsa -out private-key.pem 2048
-    > openssl rsa -in private-key.pem -pubout > public-key.pem
+    > cd scripts
+    > ./gen_keys.js
+
+The `gen_keys.js` command can be run directly. It will write two files into `server/config`, 
+`public-key.json` and `secret-key.json`.
 
 ### Step N: Creating a Configuration File 
 
     > cd server/config
     > cp local.json-dist local.json
-
 
 ## Deployment 
 
