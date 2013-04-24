@@ -13,37 +13,15 @@ require("jwcrypto/lib/algs/ds");
 
 var _privKey = null;
 
-// ENV Variables
+// Load Pub/Private keys from the filesystem
 try {
-  exports.pubKey = JSON.parse(process.env['PUBLIC_KEY']);
-  _privKey = jwcrypto.loadSecretKey(process.env['PRIVATE_KEY']);
-} catch(e) { }
-
-// or var file system cache
-if (!exports.pubKey) {
-  try {
-    store.read_files_sync(function (err, publicKey, secretKey) {
-      if (! err) {
-        exports.pubKey = publicKey;
-        _privKey = jwcrypto.loadSecretKey(JSON.stringify(secretKey));
-      }
-    });
-  } catch (e) { }
-}
-
-// or ephemeral
-if (!exports.pubKey) {
-  if (exports.pubKey != _privKey) {
-    throw "inconsistent configuration!  if privKey is defined, so must be pubKey";
-  }
-  // if no keys are provided emit a nasty message and generate some
-  console.warn("WARNING: you're using ephemeral keys.  They will be purged at restart.");
-
-  jwcrypto.generateKeypair({algorithm: 'RS', keysize: 256}, function(err, keypair) {
-    exports.pubKey = JSON.parse(keypair.publicKey.serialize());
-    _privKey = keypair.secretKey;
+  store.read_files_sync(function (err, publicKey, secretKey) {
+    if (! err) {
+      exports.pubKey = publicKey;
+      _privKey = jwcrypto.loadSecretKey(JSON.stringify(secretKey));
+    }
   });
-}
+} catch (e) { }
 
 exports.cert_key = function(pubkey, email, duration_s, cb) {
   var pubKey = jwcrypto.loadPublicKey(pubkey);
