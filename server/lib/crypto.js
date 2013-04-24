@@ -18,9 +18,16 @@ var configDir = fs.realpathSync(__dirname + "/../config");
 var pubKeyFile = configDir + "/public-key.json";
 var secretKeyFile = configDir + "/secret-key.json";
 
-// Load Pub/Private keys from the filesystem
-assert(fs.existsSync(pubKeyFile), "Public Key file ["+ pubKeyFile + "] does not exist");
-assert(fs.existsSync(secretKeyFile), "Secret Key file ["+secretKeyFile+"] does not exist");
+// Load Pub/Private keys from the filesystem, exit loudly if you can't read them
+var missingFileErr = null;
+if (!fs.existsSync(pubKeyFile)) missingFileErr = "Public Key file ["+ pubKeyFile + "] does not exist";
+if (!fs.existsSync(secretKeyFile)) missingFileErr =  "Secret Key file ["+secretKeyFile+"] does not exist";
+if (missingFileErr) {
+  console.error('ERROR:', missingFileErr);
+  console.log("\n---> run scripts/gen_keys.js to fix this\n");
+  console.log()
+  process.exit(1);
+}
 
 var _privKey = fs.readFileSync(secretKeyFile);
 exports.pubKey = fs.readFileSync(pubKeyFile);
