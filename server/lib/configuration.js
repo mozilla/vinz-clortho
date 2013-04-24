@@ -23,6 +23,7 @@ var conf = module.exports = convict({
     },
   },
   http_port: { format: 'int', env: "PORT", default: 3000 },
+  http_address: { format: 'string', env: "ADDRESS", default: '127.0.0.1' },
   issuer: { format: 'string', default: "mozilla.personatest.org" },
   ldap_bind_dn: { format: 'string', default: "mail=USERNAME@mozilla.com,o=com,dc=mozilla" },
   ldap_bind_password: { format: 'string', default: "password" },
@@ -84,4 +85,9 @@ if (process.env['CONFIG_FILES']) {
 // if var path has not been set, let's default to var/
 if (!conf.has('var_path')) {
   conf.set('var_path', path.join(__dirname, "..", "var"));
+}
+
+// massage bind address to something node will understand
+if ([ '0.0.0.0', '*' ].indexOf(conf.get('http_address'))) {
+    conf.set('http_address', null);
 }
