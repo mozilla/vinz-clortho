@@ -17,15 +17,11 @@ const config = require('../lib/configuration'),
       i18n = require('i18n-abide'),
       routes = require('../routes').routes()
       sessions = require('client-sessions'),
-      staticMount = require('../lib/static_mount');
-      util = require('util');
-
-process.on('uncaughtException', function(err) {
-  console.error('uncaught exception', err);
-});
+      staticMount = require('../lib/static_mount'),
+      util = require('util'),
+      logger = require('../lib/logging').logger;
 
 // TODO unknown email address
-// TODO Add Winston
 // TODO add statsd
 
 var app, options = {};
@@ -44,6 +40,17 @@ app.configure('production', function(){
 app.configure(function(){
   app.set('views', path.join(process.cwd(), 'views'));
   app.set('view engine', 'ejs');
+
+var winston = require('winston');
+
+  // send web log messages to our logging abstraction
+  app.use(express.logger({
+    stream: {
+      write: function(message, encoding){
+        logger.info(message);
+      }
+    }}));
+
   app.use(express.logger());
 
   app.use(express.bodyParser());
@@ -129,7 +136,7 @@ function startup(cb) {
 if (process.argv[1] === __filename) {
   // command line invocation
   startup(function(err, address) {
-    console.log(util.format("running on http://%s:%s",
+    logger.info(util.format("running on http://%s:%s",
                             address.address, address.port));
   });
 } else {

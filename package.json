@@ -19,7 +19,8 @@
     "jwcrypto": "0.4.3",
     "ldapjs": "0.6.2",
     "less": "1.2.2",
-    "node-statsd": "0.0.2"
+    "node-statsd": "0.0.2",
+    "winston": "0.7.1"
   },
   "devDependencies": {
     "awsbox": "0.4.4",

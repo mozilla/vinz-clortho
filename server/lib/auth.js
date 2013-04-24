@@ -3,13 +3,16 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 const ldap = require('ldapjs'),
-    config = require('./configuration');
+    config = require('./configuration'),
+    logger = require('./logging').logger;
 
-// check configuration at startup
-if (!config.get('ldap_server_url')) throw "Configuration error, you must specifiy an ldap_server_url";
-if (!config.get('ldap_bind_dn')) throw "Configuration error, you must specifiy a ldap_bind_dn";
-if (!config.get('ldap_bind_password')) throw "Configuration error, you must specifiy a ldap_bind_password";
-
+// check required configuration at startup
+[ 'ldap_server_url', 'ldap_bind_dn', 'ldap_bind_password' ].forEach(function(k) {
+  if (!config.has(k)) {
+    logger.error(util.format("Configuration error, you must specifiy '%s'", k));
+    process.exit(1);
+  }
+});
 
 function connectAndBind(opts, cb) {
   opts.url = opts.url || config.get('ldap_server_url');
@@ -28,17 +31,16 @@ function connectAndBind(opts, cb) {
         cb(err);
         cb = null;
       } else {
-        console.error(err);
+        logger.debug(util.format('LDAP connection closed%s', err ? " with an error" : ""));
       }
     }
   });
   client.on('error', function(err) {
     if (err) {
+      logger.warn('LDAP connection errored:', err);
       if (cb) {
         cb(err);
         cb = null;
-      } else {
-        console.error(err);
       }
     }
   });
@@ -48,7 +50,8 @@ function connectAndBind(opts, cb) {
     opts.bindPassword,
     function(err) {
       client.removeAllListeners('close');
-      if (err) console.error('Unable to bind to LDAP as', opts.dn, err);
+      client.removeAllListeners('error');
+      logger.warn('Unable to bind to LDAP as', opts.dn, err);
       if (cb) {
         cb(err, client);
         cb = null;
@@ -104,7 +107,7 @@ exports.authEmail = function(opts, callback) {
       try {
         client.unbind();
       } catch(e) {
-        console.error(e);
+        logger.warn('failed to unbind LDAP connection', e);
       }
       if (_callback) {
         _callback.apply(null, arguments);
@@ -112,14 +115,23 @@ exports.authEmail = function(opts, callback) {
       }
     };
 
-    // ensure client is called if the connection drops
+    // ensure callback called if the connection drops
     client.on('close', function(err) {
       if (err) {
-        if (_callback) {
-          _callback(err);
-          _callback = null;
+        if (callback) {
+          callback(err);
+          callback = null;
         } else {
-          console.error(err);
+          logger.debug(util.format('LDAP connection closed after initial bind%s', err ? " with an error" : ""));
+        }
+      }
+    });
+    client.on('error', function(err) {
+      if (err) {
+        logger.warn('LDAP connection errored after successful initial bind:', err);
+        if (callback) {
+          callback(err);
+          callback = null;
         }
       }
     });
@@ -132,7 +144,7 @@ exports.authEmail = function(opts, callback) {
       attributes: ['mail']
     }, function (err, res) {
       if (err) {
-        console.error('error on search ' + err.toString());
+        logger.warn('error during LDAP search ' + err.toString());
         return callback(err, false);
       }
       res.on('searchEntry', function(entry) {
@@ -143,7 +155,7 @@ exports.authEmail = function(opts, callback) {
         if (results == 1) {
           client.bind(bindDN, opts.password, function (err) {
             if (err) {
-              console.warn('Wrong username or password ' + err.toString());
+              logger.warn('Wrong credentials for user', bindDN, err);
               callback(err, false);
             } else {
               // Successful LDAP authentication

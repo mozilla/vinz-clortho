@@ -6,7 +6,8 @@ const config = require('./lib/configuration'),
       crypto = require('./lib/crypto'),
         util = require('util'),
 emailRewrite = require('./lib/email_rewrite.js'),
-        auth = require('./lib/auth');
+        auth = require('./lib/auth'),
+      logger = require('./lib/logging.js').logger;
 
 exports.routes = function () {
   var well_known_last_mod = new Date().getTime();
@@ -22,8 +23,8 @@ exports.routes = function () {
       if (req.headers['if-modified-since'] !== undefined) {
         var since = new Date(req.headers['if-modified-since']);
         if (isNaN(since.getTime())) {
-          console.error('Bad date in If-Modified-Since header [' +
-                        req.headers['if-modified-since'] + ']');
+          logger.error('Bad date in If-Modified-Since header [' +
+                       req.headers['if-modified-since'] + ']');
         } else {
           // Does the client already have the latest copy?
           if (since >= well_known_last_mod) {
