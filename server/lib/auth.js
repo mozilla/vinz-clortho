@@ -102,7 +102,7 @@ exports.authEmail = function(opts, authCallback) {
 
     // the bind connection was successful!  ensure we unbind() before
     // returning to not leave stale connections about.
-    callback = function() {
+    var callback = function() {
       try {
         client.unbind();
       } catch(e) {
