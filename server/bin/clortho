@@ -107,6 +107,9 @@ var winston = require('winston');
   app.get('/provision', routes.provision);
   app.post('/provision', routes.provision_key);
 
+  // Monitoring to make sure things are working OK
+  app.get('/node_status', routes.elb_check);
+  app.get('/ldap_status', routes.checkStatus);
 
   // Dev and Stage only
   app.get('/signout', routes.signout);
