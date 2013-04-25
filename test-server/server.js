@@ -1,10 +1,22 @@
 #!/usr/bin/env node
 
+const util = require("util")
+
 /**
  * This just starts our mock ldap server on the default port 
  */
 
-ldapMock = require("../server/lib/ldapMock")
+ldapMock = require("../server/lib/ldapMock");
+
+ldapMock.server.on('bind', function(bindEvent) {
+    console.log(util.format("Bind Event: Success - %s, dn: %s, credentials: %s", 
+            bindEvent.success, bindEvent.dn, bindEvent.credentials));
+});
+
+ldapMock.server.on('authorize', function(e) {
+    console.log(util.format("Auth %s, dn: %s", (e.success) ? "OK" : "FAIL", e.dn));
+});
+
 ldapMock.server.listen(1389, function() {
     console.log("Directory Entries: ", JSON.stringify(ldapMock.directory, null, "    "));
     console.log("Listening on port 1389");
