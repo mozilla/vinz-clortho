@@ -27,25 +27,25 @@ ldapMock.server.listen(1389, function() {
    Get all emails 
    ---------------------
    > ldapsearch -H ldap://localhost:1389 -x \
-        -D mail=user@mozilla.com,dc=mozilla,o=com -w test \
+        -D mail=user@mozilla.com,o=com,dc=mozilla -w test \
         -LLL -b "dc=mozilla, o=com" mail=*
 
    Search by email
    ---------------
    > ldapsearch -H ldap://localhost:1389 -x \
-        -D mail=user@mozilla.com,dc=mozilla,o=com -w test \
+        -D mail=user@mozilla.com,o=com,dc=mozilla -w test \
         -LLL -b "dc=mozilla, o=com" mail=user@mozilla.org 
 
    Bind wrong w/ invalid user
    --------------------------
    > ldapsearch -H ldap://localhost:1389 -x \
-        -D cn=not_here,dc=mozilla,o=com -w test \
+        -D cn=not_here,o=com,dc=mozilla -w test \
         -LLL -b "dc=mozilla, o=com" mail=user@mozilla.org 
 
    Bind wrong w/ bad password
    --------------------------
    > ldapsearch -H ldap://localhost:1389 -x \
-        -D cn=vinz,dc=mozilla,o=com -w OOPS \
+        -D cn=vinz,o=com,dc=mozilla -w OOPS \
         -LLL -b "dc=mozilla, o=com" mail=user@mozilla.org 
 
    Don't bind at all

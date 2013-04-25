@@ -8,25 +8,25 @@ const ldap = require("ldapjs");
 // mmmmm... all passwords are "test"
 var directory = [
     // the vinz clortho binds as this user
-    {dn: "cn=vinz, dc=mozilla, o=com", attributes: { cn: "vinz" }}, 
+    {dn: "cn=vinz, o=com, dc=mozilla", attributes: { cn: "vinz" }}, 
 
-    {dn: "mail=user@mozilla.com, dc=mozilla, o=com", 
+    {dn: "mail=user@mozilla.com, o=com, dc=mozilla", 
         attributes: { mail: "user@mozilla.com" }}, 
 
-    {dn: "mail=user@mozilla.org, dc=mozilla, o=com", 
+    {dn: "mail=user@mozilla.org, o=org, dc=mozilla", 
         attributes: { mail: "user@mozilla.org" }},
 
-    {dn: "mail=user@mozilla.org.localdomain, dc=mozilla, o=com", 
-        attributes: { mail: "user@mozilla.org.localdomain" }},
+    {dn: "mail=user@mozilla.com.localdomain, o=com, dc=mozilla.localdomain", 
+        attributes: { mail: "user@mozilla.com.localdomain" }},
 
-    {dn: "mail=user@mozilla.org.localdomain, dc=mozilla, o=com", 
+    {dn: "mail=user@mozilla.org.localdomain, o=org, dc=mozilla.localdomain", 
         attributes: { mail: "user@mozilla.org.localdomain" }},
 ];
 
 ldapServer = ldap.createServer()
 
 // make sure binds are correct
-ldapServer.bind('dc=mozilla, o=com', function(req, res, next) {
+ldapServer.bind('dc=mozilla', function(req, res, next) {
     var bindDN = req.dn.toString();
     var credentials = req.credentials;
     for(var i=0; i < directory.length; i++) {
@@ -72,7 +72,7 @@ function authorize(req, res, next) {
     return next(new ldap.InsufficientAccessRightsError());
 }
 
-ldapServer.search('dc=mozilla, o=com', [authorize], function(req, res, next) {
+ldapServer.search('dc=mozilla', [authorize], function(req, res, next) {
     directory.forEach(function(user) {
         if (req.filter.matches(user.attributes)) {
             res.send(user);
