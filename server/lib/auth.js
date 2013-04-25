@@ -90,28 +90,27 @@ exports.checkBindAuth = function(opts, cb) {
  *        email: the user's email address (or alias) (used in #2)
  *     password: the user's LDAP password
  */
-exports.authEmail = function(opts, callback) {
+exports.authEmail = function(opts, authCallback) {
   if (!opts) throw "argument required";
   if (!opts.password) throw "email address required";
   if (!opts.email) throw "email address required";
 
   connectAndBind(opts, function(err, client) {
     if (err) {
-      return callback(err);
+      return authCallback(err);
     }
 
     // the bind connection was successful!  ensure we unbind() before
     // returning to not leave stale connections about.
-    var _callback = callback;
-    callback = function() {
+    var callback = function() {
       try {
         client.unbind();
       } catch(e) {
         logger.warn('failed to unbind LDAP connection', e);
       }
-      if (_callback) {
-        _callback.apply(null, arguments);
-        _callback = null;
+      if (authCallback) {
+        authCallback.apply(null, arguments);
+        authCallback = null;
       }
     };
 
@@ -143,14 +142,18 @@ exports.authEmail = function(opts, callback) {
       filter: '(|(mail=' + opts.email + ')(emailAlias=' + opts.email + '))',
       attributes: ['mail']
     }, function (err, res) {
+      var bindDN; 
+
       if (err) {
         logger.warn('error during LDAP search ' + err.toString());
         return callback(err, false);
       }
+
       res.on('searchEntry', function(entry) {
         bindDN = entry.dn;
         results++;
       });
+
       res.on('end', function () {
         if (results == 1) {
           client.bind(bindDN, opts.password, function (err) {
