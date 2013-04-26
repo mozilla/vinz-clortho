@@ -83,6 +83,22 @@ ldapServer.search('dc=mozilla', [authorize], function(req, res, next) {
     return next();
 });
 
+// a stub for testing
+ldapServer.search('o=example', function(req, res, next) {
+  var obj = {
+    dn: req.dn.toString(),
+    attributes: {
+      objectclass: ['organization', 'top'],
+      o: 'example'
+    }
+  };
+
+  if (req.filter.matches(obj.attributes))
+    res.send(obj);
+
+  res.end();
+});
+
 module.exports = exports = {
     directory: directory,
     server: ldapServer
