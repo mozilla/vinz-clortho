@@ -101,8 +101,8 @@ exports.routes = function () {
           password: req.body.pass
         }, function (err, passed) {
           if (err || ! passed) {
-            resp.write('Email or Password incorrect');
             resp.writeHead(401);
+            resp.write('Email or Password incorrect');
           } else {
             req.session.email = req.body.user;
             resp.writeHead(200);
