@@ -235,4 +235,46 @@ body {
   left: 55px;
   z-index: 666;
 }
-/* @import '../static/css/media_max_480'; */
+/* === Hey brother */
+@media only screen and (max-width: 480px) {
+  .l-30,
+  .l-70 {
+    margin-left: 10px;
+    float: none;
+    width: 90%;
+    clear: none;
+  }
+  .signin-panel {
+    margin-left: 5%;
+    /* TODO all 30px should be a less variable */
+  
+    width: 345px;
+    height: 383px;
+    background-image: url(/i/strut_fox_back.png);
+    background-position: 30px;
+    border: solid 1px black;
+  }
+  .signin-form {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: 230px;
+    height: auto;
+    margin-top: 3em;
+  }
+  .signin-form p {
+    font-size: 11pt;
+  }
+  .signin-form label {
+    text-align: left;
+  }
+  .signin-overlay {
+    width: 133px;
+    height: 138px;
+    background-image: url(/i/strut_fox_front_head.png);
+    position: absolute;
+    top: 120px;
+    left: 180px;
+    z-index: 666;
+  }
+}
