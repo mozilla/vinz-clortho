@@ -34,8 +34,7 @@ exports.routes = function () {
           }
         }
       }
-      // On startup, keys need to be pulled from memcache or some such
-      var pk = JSON.stringify(crypto.pubKey);
+      var pk = crypto.pubKey;
       resp.setHeader('Content-Type', 'application/json');
       resp.setHeader('Cache-Control', cacheValue);
       resp.setHeader('Last-Modified', new Date(well_known_last_mod).toUTCString());
