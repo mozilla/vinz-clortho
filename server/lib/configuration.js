@@ -88,6 +88,6 @@ if (!conf.has('var_path')) {
 }
 
 // massage bind address to something node will understand
-if ([ '0.0.0.0', '*' ].indexOf(conf.get('http_address'))) {
+if ([ '0.0.0.0', '*' ].indexOf(conf.get('http_address')) != -1) {
     conf.set('http_address', null);
 }
