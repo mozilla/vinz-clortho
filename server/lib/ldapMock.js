@@ -5,22 +5,20 @@
 
 const ldap = require("ldapjs");
 
-// mmmmm... all passwords are "test"
+// mmmmm... all passwords are "testtest"
 var directory = [
     // the vinz clortho binds as this user
     {dn: "cn=vinz, o=com, dc=mozilla", attributes: { cn: "vinz" }}, 
+
+    // for testing of actual live hosts
+    {dn: "mail=user@clortho.personatest.org, o=com, dc=mozilla", 
+        attributes: { mail: "user@clortho.personatest.org" }}, 
 
     {dn: "mail=user@mozilla.com, o=com, dc=mozilla", 
         attributes: { mail: "user@mozilla.com" }}, 
 
     {dn: "mail=user@mozilla.org, o=org, dc=mozilla", 
-        attributes: { mail: "user@mozilla.org" }},
-
-    {dn: "mail=user@mozilla.com.localdomain, o=com, dc=mozilla.localdomain", 
-        attributes: { mail: "user@mozilla.com.localdomain" }},
-
-    {dn: "mail=user@mozilla.org.localdomain, o=org, dc=mozilla.localdomain", 
-        attributes: { mail: "user@mozilla.org.localdomain" }},
+        attributes: { mail: "user@mozilla.org" }}
 ];
 
 ldapServer = ldap.createServer()
@@ -30,7 +28,7 @@ ldapServer.bind('dc=mozilla', function(req, res, next) {
     var bindDN = req.dn.toString();
     var credentials = req.credentials;
     for(var i=0; i < directory.length; i++) {
-        if(directory[i].dn === bindDN && credentials == "test") {
+        if(directory[i].dn === bindDN && credentials == "testtest") {
 
             this.emit('bind', {
                 success: true,
