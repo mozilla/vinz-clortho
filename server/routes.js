@@ -7,6 +7,7 @@ const config = require('./lib/configuration'),
         util = require('util'),
 emailRewrite = require('./lib/email_rewrite.js'),
         auth = require('./lib/auth'),
+        ldap = require('ldapjs'),
       logger = require('./lib/logging.js').logger;
 
 exports.routes = function () {
@@ -85,6 +86,7 @@ exports.routes = function () {
         email: email
       });
     },
+
     check_signin_from_form: function (req, resp) {
       var mozillaUser = "";
       if (req.body.user) {
@@ -109,6 +111,41 @@ exports.routes = function () {
           resp.end();
         });
       }
+    },
+
+
+    // Monitoring End points
+    
+    // the ELB (elastic load balancer) check is just to make
+    // sure that node returns a response
+    elb_check: function(req, res, next) {
+      res.setHeader('Content-Type', 'text/plain');
+      res.send("OK")
+    }, 
+
+    // checks that we can bind against the LDAP server
+    // this check is for our global load balancers so they
+    // can add / remove regions if LDAP connectivity drops
+    checkStatus: function(req, res, next) {
+      var dn   = config.get('ldap_bind_dn'),
+          pass = config.get('ldap_bind_password');
+
+      client = ldap.createClient({
+        url: config.get("ldap_server_url"),
+        connectTimeout: config.get('ldap_server_connect_timeout')
+      });
+
+      client.bind(dn, pass, function(err) {
+        res.setHeader('Content-Type', 'text/plain')
+        if (err) {
+          // try message, no? has name? no ... "unknown"
+          var output = "Error: " + err.name;
+          res.send(output);
+
+        } else {
+          res.send('OK');
+        }
+      });
     },
 
     // QA Only URLs
