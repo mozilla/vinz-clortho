@@ -1,35 +1,19 @@
 const
 should = require('should'),
-ldapServer = require('./lib/ldap-server.js'),
+ldapMock = require('../server/lib/ldapMock'),
 ldap = require('ldapjs'),
 auth = require('../server/lib/auth.js'),
 testUtil = require('./lib/test-util.js');
 
-var ldapServerInstance;
-
-describe('creating an ldap server', function() {
-  it('should succeed', function(done) {
-    ldapServer.create(function(err, server) {
-      should.not.exist(err);
-      (server).should.not.equal(null);
-      (server.url).should.not.equal(null);
-      ldapServerInstance = server;
-      done();
-    })
-  });
-
-  it('should respond to a basic query', function(done) {
-    var client = ldap.createClient({
-      url: ldapServerInstance.url
-    });
-    client.search('o=example', {}, function(err) {
-      should.not.exist(err);
-      done();
-    });
-  });
-})
+var ldapServerInstance = null;
 
 describe('binding to the ldap server via our library', function() {
+
+  before(function(done) {
+      ldapServerInstance = ldapMock.server;
+      ldapServerInstance.listen(65077, '127.0.0.1', done);
+  });
+
   it('should fail with an unbound port', function(done) {
     auth.checkBindAuth({
       url: 'ldap://127.0.0.10:777',
@@ -70,8 +54,8 @@ describe('binding to the ldap server via our library', function() {
   it('should succeed when params are correct', function(done) {
     auth.checkBindAuth({
       url: ldapServerInstance.url,
-      dn: 'o=example',
-      bindPassword: 'secret'
+      dn: 'mail=user@mozilla.com, o=com, dc=mozilla',
+      bindPassword: 'test'
     }, function(err) {
       should.not.exist(err);
       done();
