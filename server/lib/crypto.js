@@ -29,7 +29,7 @@ if (missingFileErr) {
   process.exit(1);
 }
 
-var _privKey = fs.readFileSync(secretKeyFile);
+var _privKey = jwcrypto.loadSecretKey(fs.readFileSync(secretKeyFile));
 exports.pubKey = fs.readFileSync(pubKeyFile);
 
 exports.cert_key = function(pubkey, email, duration_s, cb) {
