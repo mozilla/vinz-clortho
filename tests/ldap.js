@@ -55,7 +55,7 @@ describe('binding to the ldap server via our library', function() {
     auth.checkBindAuth({
       url: ldapServerInstance.url,
       dn: 'mail=user@mozilla.com, o=com, dc=mozilla',
-      bindPassword: 'test'
+      bindPassword: 'testtest'
     }, function(err) {
       should.not.exist(err);
       done();
