@@ -143,138 +143,174 @@ ul {
   visibility: hidden;
 }
 /* === Layout === */
-.l-center-vh {
-  margin: auto;
-}
-.l-center {
-  text-align: center;
-}
-.l-30,
-.l-70 {
-  min-height: 1em;
-  height: auto;
-  float: left;
-  padding: 3px 0px;
-}
-.l-30 {
-  width: 30%;
-  clear: left;
-}
-.l-70 {
-  width: 70%;
-}
-/* === Modules === */
 body {
-  background: #2D9ED2;
-  background-image: -o-radial-gradient(64% 96%, #2c9ed4 19%, #299ad2 42%, rgba(4, 60, 85, 0.2) 100%), url(/i/jumping_fox_back.png);
-  background-image: -moz-radial-gradient(64% 96%, #2c9ed4 19%, #299ad2 42%, rgba(4, 60, 85, 0.2) 100%);
-  background-image: -webkit-radial-gradient(64% 96%, #2c9ed4 19%, #299ad2 42%, rgba(4, 60, 85, 0.2) 100%), url(/i/jumping_fox_back.png);
-  background-image: -ms-radial-gradient(64% 96%, #2c9ed4 19%, #299ad2 42%, rgba(4, 60, 85, 0.2) 100%), url(/i/jumping_fox_back.png);
-  background-image: radial-gradient(64% 96%, #2c9ed4 19%, #299ad2 42%, rgba(4, 60, 85, 0.2) 100%);
-}
-.btn {
-  font-size: 12pt;
-  line-height: 1;
-  padding: 6px 10px 7px;
-  border: 0px none;
-  text-shadow: 0px 1px rgba(0, 0, 0, 0.5);
-  cursor: pointer;
-  white-space: nowrap;
-  border-radius: 3px 3px 3px 3px;
-  box-shadow: 0px -1px 0px rgba(0, 0, 0, 0.3) inset, 0px 1px 0px rgba(0, 0, 0, 0.2);
+  line-height: 1.5;
 }
 .signin-panel {
-  width: 524px;
-  height: 286px;
-  background-image: url(/i/jumping_fox_back.png);
-  position: relative;
+  border: solid 0px #ff0000;
+  width: 500px;
+  margin-top: 1.5rem;
+  margin-left: auto;
+  margin-right: auto;
 }
-.signin-form {
-  border-radius: 5px;
-  background: #FFFFFF;
-  -moz-box-shadow: 2px 4px 22px 0 rgba(3, 41, 64, 0.5), 0px 2px 4px 0 rgba(0, 0, 0, 0.5);
-  -webkit-box-shadow: 2px 4px 22px 0 rgba(3, 41, 64, 0.5), 0px 2px 4px 0 rgba(0, 0, 0, 0.5);
-  box-shadow: 2px 4px 22px 0 rgba(3, 41, 64, 0.5), 0px 2px 4px 0 rgba(0, 0, 0, 0.5);
-  /*
-  -moz-box-shadow:    0px 2px 4px 0 rgba(0,0,0,0.50);
-  -webkit-box-shadow: 0px 2px 4px 0 rgba(0,0,0,0.50);
-  box-shadow:         0px 2px 4px 0 rgba(0,0,0,0.50);
-*/
-
-  width: 319px;
-  height: 200px;
-  position: absolute;
-  top: 100px;
-  left: 120px;
-  padding-bottom: 1em;
-}
-.signin-form label {
-  display: block;
+.left-col {
+  clear: left;
   text-align: right;
+}
+html[dir=rtl] .left-col {
+  clear: right;
+  text-align: left;
+}
+.left-col {
+  border: solid 0px #0000ff;
+  min-width: 113px;
+  max-width: 173px;
+  min-height: 1px;
+  overflow: hidden;
+  float: left;
+}
+html[dir=rtl] .left-col,
+html[dir=rtl] .right-col,
+html[dir=rtl] .center-col {
+  float: right;
+}
+.center-col {
+  border: solid 0px #008000;
+  width: 300px;
+  padding-left: 5px;
+  float: left;
+}
+html[dir=rtl] .center-col {
   padding-right: 5px;
 }
-.signin-form input {
-  width: 85%;
+html[dir=ltr] .left-col {
+  padding-right: 5px;
 }
-.signin-continue {
-  background-color: #2C9ED4;
-  color: #FFF;
-  background-image: -moz-linear-gradient(center top, #4eb5e5, #3196cf);
-  margin-right: 1em;
+html[dir=rtl] .right-col {
+  padding-left: 5px;
 }
-.signin-cancel {
-  background-color: #EEE;
-  color: #034;
+.left-col,
+.center-col,
+-right-col {
+  margin-bottom: 5px;
 }
-.signin-overlay {
-  width: 249px;
-  height: 211px;
-  background-image: url(/i/jumping_fox_front.png);
-  position: absolute;
-  top: 31px;
-  left: 55px;
-  z-index: 666;
+.clear {
+  clear: both;
+}
+/* === Basic Style === */
+body {
+  background-color: #efe7d4;
+  font-family: Times;
+}
+.signin-panel {
+  background-color: #FFF;
+  color: #333;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  -moz-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.25), 3px 3px 60px rgba(0, 0, 0, 0.25), 5px 2px 16px rgba(0, 0, 0, 0.25);
+  -webkit-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.25), 3px 3px 60px rgba(0, 0, 0, 0.25), 5px 2px 16px rgba(0, 0, 0, 0.25);
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.25), 3px 3px 60px rgba(0, 0, 0, 0.25), 5px 2px 16px rgba(0, 0, 0, 0.25);
+  background: #f7f7f7;
+  background-image: -moz-linear-gradient(top, #ffffff, #ffffff 40%, #eeeeee);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), color-stop(0.4, #ffffff), to(#eeeeee));
+  background-image: -webkit-linear-gradient(top, from(#ffffff), color-stop(0.4, #ffffff), to(#eeeeee));
+  background-image: -o-linear-gradient(top, #ffffff 0%, #ffffff 40%, #eeeeee 100%);
+  filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#ffffff, endColorstr=#eeeeee)";
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#ffffff, endColorstr=#eeeeee)";
+  background-image: linear-gradient(top, #ffffff 0%, #ffffff 40%, #eeeeee 100%);
+}
+label {
+  font-family: Arial;
+}
+.logo {
+  padding-top: 10px;
+}
+/* === Heading === */
+h1 {
+  color: #333;
+  font-size: 1.5em;
+  margin-bottom: -0.3em;
+}
+/* === Labels === */
+label {
+  font-weight: bold;
+}
+/* === Inputs === */
+input {
+  width: 100%;
+}
+button {
+  font-size: 1.2em;
+  line-height: 1.5;
+}
+.last {
+  padding-bottom: 10px;
 }
 /* === Hey brother */
 @media only screen and (max-width: 480px) {
-  .l-30,
-  .l-70 {
-    margin-left: 10px;
-    float: none;
-    width: 90%;
-    clear: none;
+  body {
+    max-width: 100%;
+  }
+  img {
+    max-width: 100%;
   }
   .signin-panel {
-    margin-left: 5%;
-    /* TODO all 30px should be a less variable */
-  
-    width: 345px;
-    height: 383px;
-    background-image: url(/i/strut_fox_back.png);
-    background-position: 30px;
-    border: solid 1px black;
+    border: solid 0px #ff0000;
+    margin-top: 1.5rem;
+    margin-left: auto;
+    margin-right: auto;
+    width: 300px;
   }
-  .signin-form {
-    position: relative;
-    top: auto;
-    left: auto;
-    width: 230px;
-    height: auto;
-    margin-top: 3em;
+  html[dir=rtl] .signin-panel {
+    margin-left: 1em;
   }
-  .signin-form p {
-    font-size: 11pt;
+  .right-col {
+    width: 1em;
   }
-  .signin-form label {
+  .left-col {
+    clear: auto;
     text-align: left;
+    padding-left: 20px;
   }
-  .signin-overlay {
-    width: 133px;
-    height: 138px;
-    background-image: url(/i/strut_fox_front_head.png);
-    position: absolute;
-    top: 120px;
-    left: 180px;
-    z-index: 666;
+  html[dir=rtl] .left-col {
+    clear: none;
+    text-align: right;
+    padding-right: 20px;
+  }
+  .left-col,
+  .right-col {
+    border: solid 0px #0000ff;
+    min-width: 400px);
+    max-width: 400px);
+    min-height: 1px;
+    overflow: hidden;
+    float: none;
+  }
+  html[dir=rtl] .left-col,
+  html[dir=rtl] .right-col,
+  html[dir=rtl] .center-col {
+    float: none;
+  }
+  .center-col {
+    border: auto;
+    width: 80%;
+    padding-left: 20px;
+    padding-right: 20px;
+    float: none;
+  }
+  html[dir=rtl] .center-col {
+    padding-right: 20px;
+  }
+  html[dir=ltr] .left-col {
+    padding-right: 20px;
+  }
+  html[dir=rtl] .right-col {
+    padding-left: 20px;
+  }
+  .left-col,
+  .center-col,
+  -right-col {
+    margin-bottom: auto;
   }
 }
