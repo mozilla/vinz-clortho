@@ -1,26 +1,119 @@
 #!/usr/bin/env node
 
-const util = require("util")
+const util = require("util"),
+      path = require("path"),
+      express = require('express');
+
+var fakeLatency = 1;
+
 
 /**
- * This just starts our mock ldap server on the default port 
+ * This provides *TWO*, yes *TWO* servers. 
+ *
+ * 1. the Mock LDAP server that provides some basic 
+ *    users for testing
+ *
+ * 2. a HTTP server that provides an interface for changing
+ *    LDAP data and various other tweaks to make Q/A easier
  */
 
-ldapMock = require("../server/lib/ldapMock");
+var ldap = require("ldapjs");
+var ldapMock = require("../server/lib/ldapMock")();
 
-ldapMock.server.on('bind', function(bindEvent) {
+
+ldapServer = ldap.createServer();
+ldapServer.bind('dc=mozilla', function(req, res, next) {
+    setTimeout(function() {
+        ldapMock.bindHandler(req, res, next);
+    }, fakeLatency);
+});
+
+ldapServer.search('dc=mozilla', function(req, res, next) {
+    setTimeout(function() {
+        ldapMock.searchHandler(req, res, next);
+    }, fakeLatency)
+});
+
+ldapServer.on('bind', function(bindEvent) {
     console.log(util.format("Bind Event: Success - %s, dn: %s, credentials: %s", 
             bindEvent.success, bindEvent.dn, bindEvent.credentials));
 });
 
-ldapMock.server.on('authorize', function(e) {
+ldapServer.on('authorize', function(e) {
     console.log(util.format("Auth %s, dn: %s", (e.success) ? "OK" : "FAIL", e.dn));
 });
 
-ldapMock.server.listen(1389, function() {
-    console.log("Directory Entries: ", JSON.stringify(ldapMock.directory, null, "    "));
-    console.log("Listening on port 1389");
+
+var LDAP_LISTENING = false;
+ldapServer.on('listening', function() { 
+    console.log("LDAP SERVER LISTENING on port: " + ldapServer.port);
 });
+
+ldapServer.on('close', function() { 
+    LDAP_LISTENING = false;
+    console.log("LDAP SERVER STOPPED LISTENING");
+});
+
+
+function startLDAP() {
+    if (LDAP_LISTENING == true) {
+        return;
+    }
+    LDAP_LISTENING = true;
+    ldapServer.listen(1389, function() {
+        ldapServer.emit("listening");
+    });
+};
+
+startLDAP();
+
+/**
+ * HTTP Back-channel server for mucking w/ things ;)
+ */
+app = express.createServer();
+app.use(express.basicAuth('QAUser', 'QAUser'));
+app.configure(function() {
+  app.set('views', __dirname + '/views');
+  app.set('view engine', 'ejs');
+});
+app.get('/', function(req, res, next) {
+    res.render("main")
+});
+
+// Updates the LDAP database of users
+app.post('/update-users', function(req, res, next) { 
+});
+
+// Changes how long the LDAP server will wait to respond
+app.post('/set-latency', function(req, res, next) { 
+    fakeLatency = parseInt(req.body.lag);
+});
+
+// Sets LDAP state up/down
+app.post('/set-ldap-status', function(req, res, next) { 
+
+    var status = req.body.status;
+
+    if (status == "up") {
+    }
+
+});
+
+// resets everything back to defaults
+app.post('/reset-all', function(req, res, next) {
+
+});
+
+app.listen('3001', function(err) {
+    if (err) {
+        console.error("ERROR", err);
+    } else {
+        console.log("Web Server running on 0.0.0.0:3001")
+    }
+});
+
+
+
 
 /* Example queries you can run! 
 

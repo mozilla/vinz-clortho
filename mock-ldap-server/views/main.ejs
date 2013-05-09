@@ -1,0 +1,63 @@
+<h1>LDAP Server Q/A Tool</h1>
+
+<h2>Server Status</h2>
+<form>
+  <p>Current State: <span>--state--</span></p>
+  <input type="radio" name="state" value="up" id="state_up"/> 
+    <label for="state_up">UP</label>
+
+  <br/>
+
+  <input type="radio" name="state" value="down" id="state_down"/> 
+    <label for="state_down">DOWN</label>
+
+  <br/>
+  <input type="button" value="Change Server State">
+</form>
+
+<hr/>
+
+<h2>User Editor</h2>
+  <form>
+    <table border="1" cellpadding="2" cellspacing="0">
+      <tr>
+        <th>Email Address</th>
+        <th>Password</th>
+      </tr>
+      <% for(var i=1; i<=6; i++) { %>
+      <tr>
+        <td>user<%= i %>@mozilla.com</td>
+        <td><input type="text" name="password_<%=i%>" value="testtest"></td>
+      </tr>
+      <% } %>
+
+      <% for(var i=1; i<=6; i++) { %>
+      <tr>
+        <td>user<%= i %>@mozilla.org</td>
+        <td><input type="text" name="password_<%=i%>" value="testtest"></td>
+      </tr>
+      <% } %>
+    </table>
+    <br/>
+    <input type="submit" value="Update Users">
+  </form>
+
+<hr/>
+
+<h2>Response Latency</h2>
+
+<form>
+  <p>Current Latency: <span>--lag--</span></p>
+
+  <select name="latency">
+    <option value="1">1 ms</option>
+    <option value="30">30 ms</option>
+    <option value="1000">1 second</option>
+    <option value="5000">5 seconds</option>
+    <option value="10000">10 seconds</option>
+    <option value="-1">Blackhole</option>
+  </select>
+  <input type="submit" value="Set Latency"/>
+</form>
+
+

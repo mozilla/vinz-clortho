@@ -1,6 +1,6 @@
 const
 should = require('should'),
-ldapMock = require('../server/lib/ldapMock'),
+ldapMock = require('../server/lib/ldapMock')(),
 ldap = require('ldapjs'),
 auth = require('../server/lib/auth.js'),
 testUtil = require('./lib/test-util.js');
@@ -54,7 +54,7 @@ describe('binding to the ldap server via our library', function() {
   it('should succeed when params are correct', function(done) {
     auth.checkBindAuth({
       url: ldapServerInstance.url,
-      dn: 'mail=user@mozilla.com, o=com, dc=mozilla',
+      dn: 'mail=user1@mozilla.com, o=com, dc=mozilla',
       bindPassword: 'testtest'
     }, function(err) {
       should.not.exist(err);
