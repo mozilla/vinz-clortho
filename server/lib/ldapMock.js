@@ -24,7 +24,7 @@ module.exports = module = function() {
         directory.push({
             dn: "mail=user"+i+"@mozilla.com, o=com, dc=mozilla",
             attributes: { 
-                mail: "user6@mozilla.com", 
+                mail: "user"+i+"@mozilla.com", 
                 password:"testtest"  
             }
         });
@@ -34,7 +34,7 @@ module.exports = module = function() {
         directory.push({
             dn: "mail=user"+i+"@mozilla.org, o=org, dc=mozilla",
             attributes: { 
-                mail: "user6@mozilla.org", 
+                mail: "user"+i+"@mozilla.org", 
                 password: "testtest"  
             }
         });

@@ -4,7 +4,6 @@ const util = require("util"),
       path = require("path"),
       express = require('express');
 
-var fakeLatency = 1;
 
 
 /**
@@ -18,42 +17,56 @@ var fakeLatency = 1;
  */
 
 var ldap = require("ldapjs");
-var ldapMock = require("../server/lib/ldapMock")();
+var createLdapMock = require("../server/lib/ldapMock");
+var ldapMock = createLdapMock();
 
 
-ldapServer = ldap.createServer();
-ldapServer.bind('dc=mozilla', function(req, res, next) {
-    setTimeout(function() {
-        ldapMock.bindHandler(req, res, next);
-    }, fakeLatency);
-});
-
-ldapServer.search('dc=mozilla', function(req, res, next) {
-    setTimeout(function() {
-        ldapMock.searchHandler(req, res, next);
-    }, fakeLatency)
-});
-
-ldapServer.on('bind', function(bindEvent) {
-    console.log(util.format("Bind Event: Success - %s, dn: %s, credentials: %s", 
-            bindEvent.success, bindEvent.dn, bindEvent.credentials));
-});
-
-ldapServer.on('authorize', function(e) {
-    console.log(util.format("Auth %s, dn: %s", (e.success) ? "OK" : "FAIL", e.dn));
-});
-
-
+var fakeLatency = 1;
 var LDAP_LISTENING = false;
-ldapServer.on('listening', function() { 
-    console.log("LDAP SERVER LISTENING on port: " + ldapServer.port);
-});
+var ldapServer = null;
 
-ldapServer.on('close', function() { 
-    LDAP_LISTENING = false;
-    console.log("LDAP SERVER STOPPED LISTENING");
-});
+function resetServer() {
 
+    if (ldapServer && ldapServer.close) {
+        try { ldapServer.close(); } catch (e) {}
+    }
+
+    ldapServer = ldap.createServer();
+    ldapServer.bind('dc=mozilla', function(req, res, next) {
+        if (fakeLatency == -1 ) return;
+
+        setTimeout(function() {
+            ldapMock.bindHandler(req, res, next);
+        }, fakeLatency);
+    });
+
+    ldapServer.search('dc=mozilla', function(req, res, next) {
+        if (fakeLatency == -1 ) return;
+
+        setTimeout(function() {
+            ldapMock.searchHandler(req, res, next);
+        }, fakeLatency)
+    });
+
+    ldapServer.on('bind', function(bindEvent) {
+        console.log(util.format("Bind Event: Success - %s, dn: %s, credentials: %s", 
+                bindEvent.success, bindEvent.dn, bindEvent.credentials));
+    });
+
+    ldapServer.on('authorize', function(e) {
+        console.log(util.format("Auth %s, dn: %s", (e.success) ? "OK" : "FAIL", e.dn));
+    });
+
+
+    ldapServer.on('listening', function() { 
+        console.log("LDAP SERVER LISTENING on port: " + ldapServer.port);
+    });
+
+    ldapServer.on('close', function() { 
+        LDAP_LISTENING = false;
+        console.log("LDAP SERVER STOPPED LISTENING");
+    });
+}
 
 function startLDAP() {
     if (LDAP_LISTENING == true) {
@@ -65,6 +78,7 @@ function startLDAP() {
     });
 };
 
+resetServer();
 startLDAP();
 
 /**
@@ -72,30 +86,57 @@ startLDAP();
  */
 app = express.createServer();
 app.use(express.basicAuth('QAUser', 'QAUser'));
+app.use(express.bodyParser());
 app.configure(function() {
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
 });
+
 app.get('/', function(req, res, next) {
-    res.render("main")
+    res.render("main", {
+        latency: fakeLatency,
+        state: LDAP_LISTENING,
+        directory: ldapMock.directory
+    });
+});
+
+app.post('/reset', function(req, res, next) {
+    fakeLatency = 1;
+    ldapMock = createLdapMock();
+    resetServer();
+    startLDAP();
+    res.redirect('/');
 });
 
 // Updates the LDAP database of users
 app.post('/update-users', function(req, res, next) { 
+    var dir = ldapMock.directory;
+    for (email in req.body) {
+        for(var i=0; i<dir.length;i++) {
+            if (dir[i].attributes.mail == email) {
+                dir[i].attributes.password = req.body[email];
+            }
+        }
+    }
+
+    res.redirect('/');
 });
 
 // Changes how long the LDAP server will wait to respond
 app.post('/set-latency', function(req, res, next) { 
-    fakeLatency = parseInt(req.body.lag);
+    fakeLatency = parseInt(req.body.latency);
+    res.redirect('/');
 });
 
 // Sets LDAP state up/down
-app.post('/set-ldap-status', function(req, res, next) { 
-
-    var status = req.body.status;
-
-    if (status == "up") {
+app.post('/set-state', function(req, res, next) { 
+    if (req.body.state == "up") {
+        startLDAP();
+    } else {
+        ldapServer.close();
     }
+
+    res.redirect('/');
 
 });
 
