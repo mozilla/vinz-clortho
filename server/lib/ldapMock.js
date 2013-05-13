@@ -12,7 +12,7 @@ module.exports = module = function() {
     // mmmmm... all passwords are "testtest"
     var directory = [
         // the vinz clortho binds as this user
-        {dn: "cn=vinz, o=com, dc=mozilla", attributes: { cn: "vinz" }}, 
+        {dn: "cn=vinz, o=com, dc=mozilla", attributes: { cn: "vinz", password: "testtest" }}, 
 
         // for testing of actual live hosts
         {dn: "mail=user@clortho.personatest.org, o=com, dc=mozilla", 
