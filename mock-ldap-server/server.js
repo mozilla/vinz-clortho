@@ -36,7 +36,7 @@ function resetServer() {
         if (fakeLatency == -1 ) return;
 
         setTimeout(function() {
-            ldapMock.bindHandler(req, res, next);
+            ldapMock.bindHandler.call(ldapServer, req, res, next);
         }, fakeLatency);
     });
 
@@ -44,8 +44,8 @@ function resetServer() {
         if (fakeLatency == -1 ) return;
 
         setTimeout(function() {
-            ldapMock.searchHandler(req, res, next);
-        }, fakeLatency)
+            ldapMock.searchHandler.call(ldapServer, req, res, next);
+        }, fakeLatency);
     });
 
     ldapServer.on('bind', function(bindEvent) {
@@ -69,14 +69,14 @@ function resetServer() {
 }
 
 function startLDAP() {
-    if (LDAP_LISTENING == true) {
+    if (LDAP_LISTENING === true) {
         return;
     }
     LDAP_LISTENING = true;
     ldapServer.listen(1389, function() {
         ldapServer.emit("listening");
     });
-};
+}
 
 resetServer();
 startLDAP();
@@ -111,7 +111,7 @@ app.post('/reset', function(req, res, next) {
 // Updates the LDAP database of users
 app.post('/update-users', function(req, res, next) { 
     var dir = ldapMock.directory;
-    for (email in req.body) {
+    for (var email in req.body) {
         for(var i=0; i<dir.length;i++) {
             if (dir[i].attributes.mail == email) {
                 dir[i].attributes.password = req.body[email];
@@ -124,7 +124,7 @@ app.post('/update-users', function(req, res, next) {
 
 // Changes how long the LDAP server will wait to respond
 app.post('/set-latency', function(req, res, next) { 
-    fakeLatency = parseInt(req.body.latency);
+    fakeLatency = parseInt(req.body.latency, "10");
     res.redirect('/');
 });
 
@@ -149,7 +149,7 @@ app.listen('3001', function(err) {
     if (err) {
         console.error("ERROR", err);
     } else {
-        console.log("Web Server running on 0.0.0.0:3001")
+        console.log("Web Server running on 0.0.0.0:3001");
     }
 });
 
