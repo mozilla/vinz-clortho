@@ -84,8 +84,15 @@ startLDAP();
 /**
  * HTTP Back-channel server for mucking w/ things ;)
  */
+if (!process.env.QAUser || !process.env.QAPass) {
+    console.log("NO QAUser/QAPass set");
+    process.exit(1)
+} else {
+    var QAUser = process.env.QAUser, 
+        QAPass = process.env.QAPass;
+}
 app = express.createServer();
-app.use(express.basicAuth('QAUser', 'QAUser'));
+app.use(express.basicAuth(QAUser, QAPass));
 app.use(express.bodyParser());
 app.configure(function() {
   app.set('views', __dirname + '/views');
