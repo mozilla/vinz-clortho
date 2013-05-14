@@ -148,7 +148,7 @@ exports.routes = function () {
     },
 
     // QA Only URLs
-    signout: function (req, resp) { req.session.reset(); resp.redirect(config.get('static_mount_path')); },
+    signout: function (req, resp) { req.session.reset(); resp.redirect('/'); },
 
     handle404: function (req, resp) {
       resp.render('404', {
