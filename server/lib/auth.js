@@ -25,6 +25,7 @@ function connectAndBind(opts, cb) {
     connectTimeout: connectTimeout
   });
 
+
   client.on('close', function(err) {
     if (err) {
       if (cb) {

@@ -1,0 +1,64 @@
+<h1>LDAP Server Q/A Tool</h1>
+
+<h2>RESET!</h2>
+
+<form method="post" action="/reset">
+  <input type="submit" value="RESET BACK TO DEFAULTS">
+</form>
+
+<h2>Server Status</h2>
+
+<form method="POST" action="/set-state">
+  <p>Current State: <span><%=((state==true)? "UP" : "DOWN")%></span></p>
+
+  <input type="radio" name="state" value="up" id="state_up"/> 
+  <label for="state_up">UP</label>
+  <br/>
+
+  <input type="radio" name="state" value="down" id="state_down"/> 
+  <label for="state_down">DOWN</label>
+  <br/>
+
+  <input type="submit" value="Change Server State">
+</form>
+
+<hr/>
+
+<h2>User Editor</h2>
+  <form method="POST" action="/update-users">
+    <table border="1" cellpadding="2" cellspacing="0">
+      <tr>
+        <th>Email Address</th>
+        <th>Password</th>
+      </tr>
+      <% for(var i=1; i<directory.length; i++) { %>
+      <% if(directory[i].attributes.mail.indexOf("mozilla") == -1) { continue;} %>
+      <tr>
+        <td><%=directory[i].attributes.mail%></td>
+        <td><input type="text" name="<%=directory[i].attributes.mail%>" value="<%=directory[i].attributes.password%>"></td>
+      </tr>
+      <% } %>
+    </table>
+    <br/>
+    <input type="submit" value="Update Users">
+  </form>
+
+<hr/>
+
+<h2>Response Latency</h2>
+
+<form method="POST" action="/set-latency">
+  <p>Current Latency: <span><%=((latency == -1)? "Blackhole" : latency + "ms")%></span></p>
+
+  <select name="latency">
+    <option value="1">1 ms</option>
+    <option value="30">30 ms</option>
+    <option value="1000">1 second</option>
+    <option value="5000">5 seconds</option>
+    <option value="10000">10 seconds</option>
+    <option value="-1">Blackhole</option>
+  </select>
+  <input type="submit" value="Set Latency"/>
+</form>
+
+
