@@ -18,6 +18,7 @@ const config = require('../lib/configuration'),
       routes = require('../routes').routes()
       sessions = require('client-sessions'),
       staticMount = require('../lib/static_mount'),
+      statsd = require('../lib/statsd'),
       util = require('util'),
       logger = require('../lib/logging').logger;
 
@@ -132,6 +133,8 @@ function startup(cb) {
     if (cb) cb(err, app.address());
   });
 }
+
+statsd.increment('server.started');
 
 // Startup
 if (process.argv[1] === __filename) {

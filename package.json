@@ -20,6 +20,7 @@
     "ldapjs": "0.6.2",
     "less": "1.2.2",
     "node-statsd": "0.0.2",
+    "node-statsd": "https://github.com/downloads/lloyd/node-statsd/0509f85.tgz",
     "winston": "0.7.1"
   },
   "devDependencies": {
