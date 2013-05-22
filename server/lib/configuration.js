@@ -59,11 +59,6 @@ var conf = module.exports = convict({
   },
 });
 
-// At the time this file is required, we'll determine the "process name" for this proc
-// if we can determine what type of process it is (browserid or verifier) based
-// on the path, we'll use that, otherwise we'll name it 'ephemeral'.
-conf.set('process_type', path.basename(process.argv[1], ".js"));
-
 var dev_config_path = path.join(__dirname, '..', 'config', 'local.json');
 
 if (! process.env['CONFIG_FILES'] &&
