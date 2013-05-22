@@ -7,8 +7,8 @@ StatsD = require("node-statsd").StatsD,
 config = require('./configuration'),
 logger = require('./logging').logger;
 
-// Per @fetep browserid.bigtent.somekey
-const PREFIX = "browserid." + config.get('process_type') + ".";
+// report statistics with a "mozillaidp" prefix.
+const PREFIX = "mozillaidp.";
 
 var statsd;
 
