@@ -51,11 +51,11 @@ var conf = module.exports = convict({
     default: [ "en-US" ],
     env: 'SUPPORTED_LANGUAGES'
   },
-  var_path: {
-    doc: "The path where deployment specific resources will be sought (keys, etc), and logs will be kept.",
+  config_path: {
+    doc: "The path where deployment specific resources, such as keys, will be sought.",
     format: 'string',
-    default: "",
-    env: 'VAR_PATH'
+    env: 'CONFIG_PATH',
+    default: ""
   },
 });
 
@@ -83,8 +83,10 @@ if (process.env['CONFIG_FILES']) {
 }
 
 // if var path has not been set, let's default to var/
-if (!conf.has('var_path')) {
-  conf.set('var_path', path.join(__dirname, "..", "var"));
+// XXX: due to a bug in convict, .has() seems to not be working properly,
+// thus we must explicitly check for the empty string
+if (conf.get('config_path') === "") {
+  conf.set('config_path', path.join(__dirname, "..", "config"));
 }
 
 // massage bind address to something node will understand
