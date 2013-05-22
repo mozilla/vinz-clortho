@@ -8,7 +8,8 @@ const config = require('./lib/configuration'),
 emailRewrite = require('./lib/email_rewrite.js'),
         auth = require('./lib/auth'),
         ldap = require('ldapjs'),
-      logger = require('./lib/logging.js').logger;
+      logger = require('./lib/logging.js').logger,
+      statsd = require('../lib/statsd');
 
 exports.routes = function () {
   var well_known_last_mod = new Date().getTime();
@@ -134,14 +135,18 @@ exports.routes = function () {
         connectTimeout: config.get('ldap_server_connect_timeout')
       });
 
+      var start = new Date();
       client.bind(dn, pass, function(err) {
-        res.setHeader('Content-Type', 'text/plain')
+        res.setHeader('Content-Type', 'text/plain');
+        statsd.timing('routes.checkStatus', new Date() - start);
         if (err) {
+          statsd.increment('routes.checkStatus.ldap.err');
           // try message, no? has name? no ... "unknown"
           var output = "Error: " + err.name;
           res.send(output);
 
         } else {
+          statsd.increment('routes.checkStatus.ldap.ok');
           res.send('OK');
         }
       });

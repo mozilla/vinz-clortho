@@ -4,7 +4,8 @@
 
 const ldap = require('ldapjs'),
     config = require('./configuration'),
-    logger = require('./logging').logger;
+    logger = require('./logging').logger,
+    statsd = require('../lib/statsd');
 
 // check required configuration at startup
 [ 'ldap_server_url', 'ldap_bind_dn', 'ldap_bind_password' ].forEach(function(k) {
@@ -36,6 +37,7 @@ function connectAndBind(opts, cb) {
     }
   });
   client.on('error', function(err) {
+    statsd.increment('ldap.error');
     if (err) {
       logger.warn('LDAP connection errored:', err);
       if (cb) {
@@ -95,11 +97,12 @@ exports.authEmail = function(opts, authCallback) {
   if (!opts.password) throw "email address required";
   if (!opts.email) throw "email address required";
 
+  var start = new Date();
   connectAndBind(opts, function(err, client) {
+    statsd.timing('auth.authEmail.ldap', new Date() - start);
     if (err) {
       return authCallback(err);
     }
-
     // the bind connection was successful!  ensure we unbind() before
     // returning to not leave stale connections about.
     var callback = function() {
@@ -144,7 +147,9 @@ exports.authEmail = function(opts, authCallback) {
     }, function (err, res) {
       var bindDN; 
 
+      statsd.timing('routes.checkStatus.ldap.bind_search', new Date() - start);
       if (err) {
+        statsd.increment('auth.authEmail.search.ldap.err');
         logger.warn('error during LDAP search ' + err.toString());
         return callback(err, false);
       }
@@ -156,11 +161,15 @@ exports.authEmail = function(opts, authCallback) {
 
       res.on('end', function () {
         if (results == 1) {
+          start = new Date();
           client.bind(bindDN, opts.password, function (err) {
+            statsd.timing('routes.checkStatus.ldap.bind_as_user', new Date() - start);
             if (err) {
+              statsd.increment('auth.authEmail.wrong_password');
               logger.warn('Wrong credentials for user', bindDN, err);
               callback(err, false);
             } else {
+              statsd.increment('auth.authEmail.successful_auth');
               // Successful LDAP authentication
               callback(null, true);
             }
