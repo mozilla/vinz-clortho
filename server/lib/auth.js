@@ -37,7 +37,8 @@ function connectAndBind(opts, cb) {
     }
   });
   client.on('error', function(err) {
-    statsd.increment('ldap.error');
+    // count errors during connect
+    statsd.increment('ldap.error.connect');
     if (err) {
       logger.warn('LDAP connection errored:', err);
       if (cb) {
@@ -51,6 +52,8 @@ function connectAndBind(opts, cb) {
     opts.dn,
     opts.bindPassword,
     function(err) {
+      // count errors during bind (would indicate an error with connect
+      if (err) statsd.increment('ldap.error.bind');
       client.removeAllListeners('close');
       client.removeAllListeners('error');
       logger.warn('Unable to bind to LDAP as', opts.dn, err);
@@ -99,7 +102,8 @@ exports.authEmail = function(opts, authCallback) {
 
   var start = new Date();
   connectAndBind(opts, function(err, client) {
-    statsd.timing('auth.authEmail.ldap', new Date() - start);
+    // report time required to connect and bind to ldap.
+    statsd.timing('ldap.timing.bind', new Date() - start);
     if (err) {
       return authCallback(err);
     }
@@ -140,16 +144,19 @@ exports.authEmail = function(opts, authCallback) {
 
     var results = 0;
 
+    start = new Date();
     client.search('o=com,dc=mozilla', {
       scope: 'sub',
       filter: '(|(mail=' + opts.email + ')(emailAlias=' + opts.email + '))',
       attributes: ['mail']
     }, function (err, res) {
-      var bindDN; 
+      var bindDN;
 
-      statsd.timing('routes.checkStatus.ldap.bind_search', new Date() - start);
+      // total time required to connect, bind, and then search for an
+      // alias
+      statsd.timing('ldap.timing.search', new Date() - start);
       if (err) {
-        statsd.increment('auth.authEmail.search.ldap.err');
+        statsd.increment('ldap.error.search');
         logger.warn('error during LDAP search ' + err.toString());
         return callback(err, false);
       }
@@ -163,13 +170,15 @@ exports.authEmail = function(opts, authCallback) {
         if (results == 1) {
           start = new Date();
           client.bind(bindDN, opts.password, function (err) {
-            statsd.timing('routes.checkStatus.ldap.bind_as_user', new Date() - start);
+            // report total time required to connect, bind, search, and
+            // bind as target user
+            statsd.timing('ldap.timing.bind_as_user', new Date() - start);
             if (err) {
-              statsd.increment('auth.authEmail.wrong_password');
+              statsd.increment('ldap.auth.wrong_password');
               logger.warn('Wrong credentials for user', bindDN, err);
               callback(err, false);
             } else {
-              statsd.increment('auth.authEmail.successful_auth');
+              statsd.increment('ldap.auth.success');
               // Successful LDAP authentication
               callback(null, true);
             }
