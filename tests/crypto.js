@@ -15,8 +15,8 @@ require("jwcrypto/lib/algs/ds");
 
 var serverURL;
 
-describe('starting up the server', function() {
-  it('should succeed', function(done) {
+describe('the server', function() {
+  it('should start', function(done) {
     clorthoServer.startup(function(err, address) {
       should.not.exist(err);
       serverURL = util.format('http://%s:%s', address.address, address.port);
