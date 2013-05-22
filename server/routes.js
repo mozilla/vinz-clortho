@@ -9,7 +9,7 @@ emailRewrite = require('./lib/email_rewrite.js'),
         auth = require('./lib/auth'),
         ldap = require('ldapjs'),
       logger = require('./lib/logging.js').logger,
-      statsd = require('../lib/statsd');
+      statsd = require('./lib/statsd');
 
 exports.routes = function () {
   var well_known_last_mod = new Date().getTime();
