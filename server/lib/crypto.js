@@ -14,7 +14,7 @@ require("jwcrypto/lib/algs/ds");
 
 // TODO move these to a shared constants/config file eventually
 // and share it with scripts/gen_keys.js
-var configDir = fs.realpathSync(__dirname + "/../config");
+var configDir = fs.realpathSync(config.get('config_path'));
 var pubKeyFile = configDir + "/public-key.json";
 var secretKeyFile = configDir + "/secret-key.json";
 
