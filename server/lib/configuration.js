@@ -8,6 +8,26 @@ const convict = require('convict'),
 
 var conf = module.exports = convict({
   browserid_server: { format: "url", default: "https://login.persona.org", },
+  // configuration for "cef" logging, which is used to inject application level
+  // security events into syslog
+  security_logging: {
+    vendor: { format: 'string',  default: "Mozilla" },
+    product: { format: 'string',  default: "mozilla-idp" },
+    version: { format: 'string', default: "0.0.0" },
+    syslog_tag: { format: 'string',  default: "mozilla-idp" },
+    syslog_host: {
+      doc: 'Host where syslog service is listening',
+      format: 'string',
+      default: "127.0.0.1",
+      env: 'CEF_SYSLOG_HOST'
+    },
+    syslog_port: {
+      doc: 'Port on which syslog service will receive UDP messages',
+      format: 'integer',
+      default: 514,
+      env: 'CEF_SYSLOG_PORT'
+    }
+  },
   client_sessions: {
     cookie_name: { format: 'string', default: "session_state" },
     secret: { format: 'string', default: "YOU MUST CHANGE ME" },
