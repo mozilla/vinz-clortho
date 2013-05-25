@@ -39,17 +39,15 @@ app.configure(function(){
   app.set('views', path.join(process.cwd(), 'views'));
   app.set('view engine', 'ejs');
 
-var winston = require('winston');
-
   // send web log messages to our logging abstraction
   app.use(express.logger({
     stream: {
       write: function(message, encoding){
+        // trim newlines as our logger inserts them for us.
+        if (typeof message === 'string') message = message.trim();
         logger.info(message);
       }
     }}));
-
-  app.use(express.logger());
 
   app.use(express.bodyParser());
 
