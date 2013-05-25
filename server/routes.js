@@ -9,7 +9,8 @@ emailRewrite = require('./lib/email_rewrite.js'),
         auth = require('./lib/auth'),
         ldap = require('ldapjs'),
       logger = require('./lib/logging.js').logger,
-      statsd = require('./lib/statsd');
+      statsd = require('./lib/statsd'),
+    throttle = require('./lib/throttle');
 
 exports.routes = function () {
   var well_known_last_mod = new Date().getTime();
@@ -79,18 +80,36 @@ exports.routes = function () {
         resp.writeHead(400);
         return resp.end();
       } else {
-        auth.authEmail({
-          email: mozillaUser,
-          password: req.body.pass
-        }, function (err, passed) {
-          if (err || ! passed) {
-            resp.writeHead(401);
-            resp.write('Email or Password incorrect');
-          } else {
-            req.session.email = req.body.user;
-            resp.writeHead(200);
+        throttle.check(mozillaUser, function(err) {
+          if (err) {
+            // XXX: cef logging to occur here - this is an interesting
+            // security event
+            resp.writeHead(403);
+            resp.write('Too many failed login attempts');
+            resp.end();
+            return;
           }
-          resp.end();
+          auth.authEmail({
+            email: mozillaUser,
+            password: req.body.pass
+          }, function (err, passed) {
+            if (err || ! passed) {
+              // if this is a password failure, note it in our password
+              // throttling
+              if (err && err.name === 'InvalidCredentialsError') {
+                throttle.failed(mozillaUser);
+              }
+              resp.writeHead(401);
+              resp.write('Email or Password incorrect');
+            } else {
+              // upon successful authentication, clear any throttling
+              // for this user
+              throttle.clear(mozillaUser);
+              req.session.email = req.body.user;
+              resp.writeHead(200);
+            }
+            resp.end();
+          });
         });
       }
     },

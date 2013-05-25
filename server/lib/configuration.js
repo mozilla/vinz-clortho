@@ -70,6 +70,16 @@ var conf = module.exports = convict({
     env: 'CONFIG_PATH',
     default: ""
   },
+  auth_lockout_ms: {
+    doc: "The amount of time to lockout a user upon successive fail auth attemtps",
+    format: 'int',
+    default: (5 * 60 * 1000)
+  },
+  auth_lockout_attempts: {
+    doc: "The number of failed authentcation attempts before a user will be locked out",
+    format: 'int',
+    default: 5
+  }
 });
 
 var dev_config_path = path.join(__dirname, '..', 'config', 'local.json');
