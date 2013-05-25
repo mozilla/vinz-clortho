@@ -109,16 +109,7 @@ exports.routes = function () {
     // this check is for our global load balancers so they
     // can add / remove regions if LDAP connectivity drops
     checkStatus: function(req, res, next) {
-      var dn   = config.get('ldap_bind_dn'),
-          pass = config.get('ldap_bind_password');
-
-      client = ldap.createClient({
-        url: config.get("ldap_server_url"),
-        connectTimeout: config.get('ldap_server_connect_timeout')
-      });
-
-      var start = new Date();
-      client.bind(dn, pass, function(err) {
+      auth.checkBindAuth({}, function(err) {
         res.setHeader('Content-Type', 'text/plain');
         if (err) {
           statsd.increment('healthcheck.error');
