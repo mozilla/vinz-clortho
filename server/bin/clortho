@@ -26,110 +26,90 @@ var app, options = {};
 
 app = express.createServer();
 
-app.configure('development', function() {
-  app.use(express.responseTime());
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-});
+app.use(express.errorHandler());
 
-app.configure('production', function(){
-  app.use(express.errorHandler());
-});
+app.set('views', path.join(process.cwd(), 'views'));
+app.set('view engine', 'ejs');
 
-app.configure(function(){
-  app.set('views', path.join(process.cwd(), 'views'));
-  app.set('view engine', 'ejs');
-
-  // send web log messages to our logging abstraction
-  app.use(express.logger({
-    stream: {
-      write: function(message, encoding){
-        // trim newlines as our logger inserts them for us.
-        if (typeof message === 'string') message = message.trim();
-        logger.info(message);
-      }
-    }}));
-
-  app.use(express.bodyParser());
-
-  app.use(express.methodOverride());
-
-  var sess_config = config.get('client_sessions');
-  app.use(sessions({
-    cookieName: sess_config.cookie_name,
-    secret: sess_config.secret,
-    duration: sess_config.duration, // 1 day
-    cookie: {
-      maxAge: 14 * 24 * 60 * 60 * 1000 // 2 weeks
+// send web log messages to our logging abstraction
+app.use(express.logger({
+  stream: {
+    write: function(message, encoding){
+      // trim newlines as our logger inserts them for us.
+      if (typeof message === 'string') message = message.trim();
+      logger.info(message);
     }
-  }));
+  }}));
 
-  app.use(express.csrf());
+app.use(express.bodyParser());
+app.use(express.methodOverride());
 
-  app.use(i18n.abide({
-    supported_languages: config.get('supported_languages'),
-    default_lang: config.get('default_lang'),
-    debug_lang: config.get('debug_lang'),
-    locale_directory: config.get('locale_directory')
-  }));
+var sess_config = config.get('client_sessions');
+app.use(sessions({
+  cookieName: sess_config.cookie_name,
+  secret: sess_config.secret,
+  duration: sess_config.duration, // 1 day
+  cookie: {
+    maxAge: 14 * 24 * 60 * 60 * 1000 // 2 weeks
+  }
+}));
 
-  app.use(function(req, res, next) {
-    res.local('csrf_token', req.session._csrf);
-    res.local('browserid_server', config.get('browserid_server'));
-    var s = req.session || null;
-    res.local('session', s);
+app.use(express.csrf());
 
-    staticMount.mount(req, res, function() {
-      next();
-    });
-  });
+app.use(i18n.abide({
+  supported_languages: config.get('supported_languages'),
+  default_lang: config.get('default_lang'),
+  debug_lang: config.get('debug_lang'),
+  locale_directory: config.get('locale_directory')
+}));
 
-  app.use(app.router);
+app.use(function(req, res, next) {
+  res.local('csrf_token', req.session._csrf);
+  res.local('browserid_server', config.get('browserid_server'));
+  var s = req.session || null;
+  res.local('session', s);
 
-  // .well-known file must be served with a content-type of application/json
-  app.use(function(req, res, next) {
-    if ('/.well-known/browserid' === req.url) {
-      res.setHeader('Content-Type', 'application/json');
-      res.setHeader('Last-Modified', routes.well_known_last_mod);
-    }
+  staticMount.mount(req, res, function() {
     next();
   });
+});
 
-  app.get('/.well-known/browserid', routes.well_known_browserid);
+app.use(app.router);
 
-  app.get('/', routes.signin_from_form);
-  app.get('/sign_in', routes.signin_from_form);
-  app.post('/sign_in', routes.check_signin_from_form);
+app.get('/.well-known/browserid', routes.well_known_browserid);
 
-  app.get('/provision', routes.provision);
-  app.post('/provision', routes.provision_key);
+app.get('/', routes.signin_from_form);
+app.get('/sign_in', routes.signin_from_form);
+app.post('/sign_in', routes.check_signin_from_form);
 
-  // Monitoring to make sure things are working OK
-  app.get('/node_status', routes.elb_check);
-  app.get('/ldap_status', routes.checkStatus);
+app.get('/provision', routes.provision);
+app.post('/provision', routes.provision_key);
 
-  // Dev and Stage only
-  app.get('/signout', routes.signout);
+// Monitoring to make sure things are working OK
+app.get('/node_status', routes.elb_check);
+app.get('/ldap_status', routes.checkStatus);
 
-  // Static
-  var static_dir = path.join(process.cwd(), '..', 'static');
-  app.use(express.compiler({ enable: ['less'],
-                             src: '../static'}
-));
+// Dev and Stage only
+app.get('/signout', routes.signout);
+
+// Static
+var static_dir = path.join(process.cwd(), '..', 'static');
+app.use(express.compiler({ enable: ['less'],
+                           src: '../static'}
+                        ));
 
 app.use(express.static(static_dir));
 
 app.use(function(req, res, next) {
-    routes.handle404(req, res);
-  });
+  routes.handle404(req, res);
 });
 
 function startup(cb) {
   app.listen(config.get('http_port'), config.get('http_address'), function(err) {
+    statsd.increment('server.started');
     if (cb) cb(err, app.address());
   });
 }
-
-statsd.increment('server.started');
 
 // Startup
 if (process.argv[1] === __filename) {
@@ -141,4 +121,3 @@ if (process.argv[1] === __filename) {
 } else {
   exports.startup = startup;
 }
-

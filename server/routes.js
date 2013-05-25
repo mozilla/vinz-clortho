@@ -18,27 +18,9 @@ exports.routes = function () {
     private_key: null,
     ttl: null,
     well_known_browserid: function (req, resp) {
-      // uber-short caching.  we don't mind the requests and it
-      // reduces user impact of key changing
-      var cacheValue = 'max-age=5, public';
-
-      if (req.headers['if-modified-since'] !== undefined) {
-        var since = new Date(req.headers['if-modified-since']);
-        if (isNaN(since.getTime())) {
-          logger.error('Bad date in If-Modified-Since header [' +
-                       req.headers['if-modified-since'] + ']');
-        } else {
-          // Does the client already have the latest copy?
-          if (since >= well_known_last_mod) {
-            resp.setHeader('Cache-Control', cacheValue);
-            return resp.send(304);
-          }
-        }
-      }
       var pk = crypto.pubKey;
       resp.setHeader('Content-Type', 'application/json');
-      resp.setHeader('Cache-Control', cacheValue);
-      resp.setHeader('Last-Modified', new Date(well_known_last_mod).toUTCString());
+      resp.setHeader('Cache-Control', 'max-age=5, public');
       resp.render('well_known_browserid', {
         public_key: pk,
         layout: false
@@ -115,13 +97,13 @@ exports.routes = function () {
 
 
     // Monitoring End points
-    
+
     // the ELB (elastic load balancer) check is just to make
     // sure that node returns a response
     elb_check: function(req, res, next) {
       res.setHeader('Content-Type', 'text/plain');
       res.send("OK")
-    }, 
+    },
 
     // checks that we can bind against the LDAP server
     // this check is for our global load balancers so they
