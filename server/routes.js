@@ -120,15 +120,13 @@ exports.routes = function () {
       var start = new Date();
       client.bind(dn, pass, function(err) {
         res.setHeader('Content-Type', 'text/plain');
-        statsd.timing('routes.checkStatus', new Date() - start);
         if (err) {
-          statsd.increment('routes.checkStatus.ldap.err');
+          statsd.increment('healthcheck.error');
           // try message, no? has name? no ... "unknown"
           var output = "Error: " + err.name;
           res.send(output);
-
         } else {
-          statsd.increment('routes.checkStatus.ldap.ok');
+          statsd.increment('healthcheck.ok');
           res.send('OK');
         }
       });

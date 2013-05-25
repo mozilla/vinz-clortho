@@ -11,6 +11,12 @@ Here is the statsd hierarchy:
       * `error` - counter of specific types of LDAP errors
       * `auth` - counter of authentication attempts (success & failure)
       * `timing` - granular timing for interactions with LDAP
+    * `server` - high level application events
+      * `uncaught_exception` - a js exception was thrown that wasn't caught
+      * `started` - the server started up
+    * `healthcheck` - status of health check when requested by load balancers
+      * `ok`
+      * `error`
 
 The ultimate source of truth is always the code, but an effort
 should be made to keep this document up to date to describe the general
