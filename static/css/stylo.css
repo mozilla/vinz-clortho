@@ -147,12 +147,16 @@ ul {
 body {
   line-height: 1.5;
 }
+div.title {
+  width: 200px;
+  margin: 1em auto 0 auto;
+}
 .signin-panel {
   border: solid 0px #ff0000;
-  width: 500px;
-  margin-top: 1.5rem;
+  width: 280px;
   margin-left: auto;
   margin-right: auto;
+  padding: 40px 20px;
 }
 .left-col {
   clear: left;
@@ -175,33 +179,90 @@ html[dir=rtl] .right-col,
 html[dir=rtl] .center-col {
   float: right;
 }
+.prompt {
+    text-align: center;
+    margin-bottom: 1em;
+    font-size: 1.1em;
+    font-weigth: 300;
+}
 .center-col {
-  border: solid 0px #008000;
-  width: 300px;
-  padding-left: 5px;
-  float: left;
+  width: 200px;
+  margin: auto;
+  margin-top: .5em;
 }
-html[dir=rtl] .center-col {
-  padding-right: 5px;
-}
-html[dir=ltr] .left-col {
-  padding-right: 5px;
-}
-html[dir=rtl] .right-col {
-  padding-left: 5px;
-}
-.left-col,
-.center-col,
--right-col {
-  margin-bottom: 5px;
+.center-col.last {
+    margin-top: 1em;
+    position: relative;
 }
 .clear {
   clear: both;
 }
+button {
+    font-size: .8em;
+    font-weight: bold;
+    line-height: 1.5;
+    padding-right: 1.8em;
+    padding-left: 1.8em;
+    margin: 0;
+    display: inline-block;
+    -moz-border-radius: .25em;
+    border-radius: .25em;
+    box-shadow: 0 1px 0 0 rgba(0,0,0,0.2),inset 0 -1px 0 0 rgba(0,0,0,0.3);
+    background-color: #43a6e2;
+    background-color: #277ac1;
+    background-repeat: repeat-x;
+    background-image: -khtml-gradient(linear,left top,left bottom,from(#43a6e2),to(#277ac1));
+    background-image: -moz-linear-gradient(#43a6e2,#277ac1);
+    background-image: -ms-linear-gradient(#43a6e2,#277ac1);
+    background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#43a6e2),color-stop(100%,#277ac1));
+    background-image: -webkit-linear-gradient(#43a6e2,#277ac1);
+    background-image: -o-linear-gradient(#43a6e2,#277ac1);
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#43a6e2', endColorstr='#277ac1', GradientType=0)";
+    background-image: linear-gradient(#43a6e2,#277ac1);
+    color: #fff;
+    border: 0;
+    text-shadow: 0 1px 0 rgba(0,0,0,0.25);
+    position: absolute;
+    cursor: pointer;
+}
+
+button.cancel {
+    position: absolute;
+    left: clear;
+    right: 0;
+    background-color: #a91300;
+    background-color: #a91300;
+    background-repeat: repeat-x;
+    background-image: -khtml-gradient(linear,left top,left bottom,from(#da5132),to(#a91300));
+    background-image: -moz-linear-gradient(#da5132,#a91300);
+    background-image: -ms-linear-gradient(#da5132,#a91300);
+    background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#da5132),color-stop(100%,#a91300));
+    background-image: -webkit-linear-gradient(#da5132,#a91300);
+    background-image: -o-linear-gradient(#da5132,#a91300);
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#da5132', endColorstr='#a91300', GradientType=0)";
+    background-image: linear-gradient(#da5132,#a91300);
+}
+
 /* === Basic Style === */
 body {
-  background-color: #efe7d4;
-  font-family: 'Open Sans', 'sans-serif', 'serif';
+    font-family: 'Open Sans', 'sans-serif', 'serif';
+    background-image: linear-gradient(bottom, rgb(62,72,79) 39%, rgb(91,104,112) 70%);
+    background-image: -o-linear-gradient(bottom, rgb(62,72,79) 39%, rgb(91,104,112) 70%);
+    background-image: -moz-linear-gradient(bottom, rgb(62,72,79) 39%, rgb(91,104,112) 70%);
+    background-image: -webkit-linear-gradient(bottom, rgb(62,72,79) 39%, rgb(91,104,112) 70%);
+    background-image: -ms-linear-gradient(bottom, rgb(62,72,79) 39%, rgb(91,104,112) 70%);
+
+    background-image: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(0.39, rgb(62,72,79)),
+        color-stop(0.7, rgb(91,104,112))
+    );
+    background-color: #4D4E53;
+}
+html, body {
+    height: 100%;
 }
 .signin-panel {
   background-color: #FFF;
@@ -239,14 +300,15 @@ label {
 }
 /* === Inputs === */
 input {
-  width: 100%;
-}
-button {
-  font-size: 1.2em;
-  line-height: 1.5;
+  width: 187px;
+  border: 1px solid #666;
+  padding: .4em .5em;
+  -moz-border-radius: .3em;
+  border-radius: .3em;
+  font-size: .8em;
 }
 .last {
-  padding-bottom: 10px;
+    margin-top: .4em;
 }
 /* === Hey brother */
 @media only screen and (max-width: 480px) {
@@ -296,22 +358,7 @@ button {
   .center-col {
     border: auto;
     width: 80%;
-    padding-left: 20px;
-    padding-right: 20px;
     float: none;
-  }
-  html[dir=rtl] .center-col {
-    padding-right: 20px;
-  }
-  html[dir=ltr] .left-col {
-    padding-right: 20px;
-  }
-  html[dir=rtl] .right-col {
-    padding-left: 20px;
-  }
-  .left-col,
-  .center-col,
-  -right-col {
-    margin-bottom: auto;
+    margin-top: 2em;
   }
 }
