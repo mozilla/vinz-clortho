@@ -1,14 +1,14 @@
 <div class="signin-panel">
   <div class="left-col"></div>
   <div class="center-col">
-    <img class="logo" src="<%= static_mount_path %>/i/mozilla_corp.jpeg" width="300" alt="Mozilla Logo" />
+    <img class="logo" src="/i/mozilla_corp.jpeg" width="300" alt="Mozilla Logo" />
     <h1><%= title %></h1>
     <div class="error"></div>
     <p><%= gettext("Please use your LDAP password") %></p>
   </div>
   <div class="right-col"></div>
 
-  <form action="<%= static_mount_path %>/sign_in" method="POST">
+  <form action="/sign_in" method="POST">
     <input type="hidden" name="_csrf" value="<%= csrf_token %>" />
     <div class="left-col">
       <label for="user"><%= gettext('Email') %></label>

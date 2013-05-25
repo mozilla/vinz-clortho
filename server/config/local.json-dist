@@ -1,7 +1,6 @@
 {
   "basic_auth_realm": "Basic realm=\"Mozilla Corporation - LDAP Login\"",
   "browserid_server": "http://127.0.0.1:10002",
-  "static_mount_path", "",
   "client_sessions": {
     "cookie_name": "session_state",
     "secret": "YOU MUST CHANGE ME",

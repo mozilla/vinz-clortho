@@ -7,8 +7,8 @@
 <body>
 <input type="hidden" name="_csrf" value="<%= csrf_token %>" />
 <script type="text/javascript" src="<%= browserid_server %>/provisioning_api.js"></script>
-<script type="text/javascript" src="<%= static_mount_path %>/js/lib/jquery.min.js"></script>
-<script type="text/javascript" src="<%= static_mount_path %>/js/provision.js" /></script>
+<script type="text/javascript" src="/js/lib/jquery.min.js"></script>
+<script type="text/javascript" src="/js/provision.js" /></script>
 <script>
 window.provision(
 <% if (user) { %>

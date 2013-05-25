@@ -17,7 +17,6 @@ const config = require('../lib/configuration'),
       i18n = require('i18n-abide'),
       routes = require('../routes').routes()
       sessions = require('client-sessions'),
-      staticMount = require('../lib/static_mount'),
       statsd = require('../lib/statsd'),
       util = require('util'),
       logger = require('../lib/logging').logger;
@@ -75,12 +74,8 @@ app.use(function(req, res, next) {
   var s = req.session || null;
   res.local('session', s);
 
-  staticMount.mount(req, res, function() {
-    next();
-  });
+  next();
 });
-
-app.use(app.router);
 
 app.get('/.well-known/browserid', routes.well_known_browserid);
 
@@ -117,7 +112,7 @@ function startup(cb) {
   });
 }
 
-// Startup
+// allow clortho to be invoked from the command line or as a library
 if (process.argv[1] === __filename) {
   // command line invocation
   startup(function(err, address) {
