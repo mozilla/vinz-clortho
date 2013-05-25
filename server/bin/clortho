@@ -19,7 +19,9 @@ const config = require('../lib/configuration'),
       sessions = require('client-sessions'),
       statsd = require('../lib/statsd'),
       util = require('util'),
-      logger = require('../lib/logging').logger;
+      logger = require('../lib/logging').logger,
+      font_middleware = require("connect-fonts"),
+      opensans = require("connect-fonts-opensans");
 
 // log uncaught exceptions
 process.on('uncaughtException', function(err) {
@@ -58,6 +60,12 @@ app.use(sessions({
   cookie: {
     maxAge: 14 * 24 * 60 * 60 * 1000 // 2 weeks
   }
+}));
+
+app.use(font_middleware.setup({
+  fonts: [ opensans ],
+  ua: "all",
+  maxage: 180 * 24 * 60 * 60 * 1000   // 180 days
 }));
 
 app.use(express.csrf());

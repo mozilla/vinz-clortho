@@ -118,6 +118,7 @@ html {
 body {
   margin: 0;
   padding: 0;
+  font-family: 'Open Sans', 'sans-serif', 'serif';
   font-family: helvetica, arial, verdana, sans-serif;
   text-rendering: optimizeLegibility;
   line-height: 1.5;
@@ -200,7 +201,7 @@ html[dir=rtl] .right-col {
 /* === Basic Style === */
 body {
   background-color: #efe7d4;
-  font-family: Times;
+  font-family: 'Open Sans', 'sans-serif', 'serif';
 }
 .signin-panel {
   background-color: #FFF;
