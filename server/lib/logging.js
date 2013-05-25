@@ -7,7 +7,7 @@
 exports.logger = require('winston');
 
 // enable logging of uncaught exceptions
-exports.logger.handleExceptions(new exports.logger.transports.Console);
+exports.logger.handleExceptions(new exports.logger.transports.Console());
 
 exports.disable = function() {
   exports.logger.remove(exports.logger.transports.Console);

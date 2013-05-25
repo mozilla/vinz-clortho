@@ -15,7 +15,7 @@ const config = require('../lib/configuration'),
       fs = require('fs'),
       http = require('http'),
       i18n = require('i18n-abide'),
-      routes = require('../routes').routes()
+      routes = require('../routes').routes(),
       sessions = require('client-sessions'),
       statsd = require('../lib/statsd'),
       util = require('util'),
@@ -23,11 +23,11 @@ const config = require('../lib/configuration'),
 
 // log uncaught exceptions
 process.on('uncaughtException', function(err) {
-  if (statsd) statsd.increment(PREFIX + 'uncaught_exception');
+  if (statsd) statsd.increment('server.uncaught_exception');
   logger.error(err.stack || err);
 });
 
-var app, options = {};
+var app;
 
 app = express.createServer();
 
@@ -39,12 +39,13 @@ app.set('view engine', 'ejs');
 // send web log messages to our logging abstraction
 app.use(express.logger({
   stream: {
-    write: function(message, encoding){
+    write: function(message){
       // trim newlines as our logger inserts them for us.
       if (typeof message === 'string') message = message.trim();
       logger.info(message);
     }
-  }}));
+  }
+}));
 
 app.use(express.bodyParser());
 app.use(express.methodOverride());
@@ -101,9 +102,7 @@ app.use(express.compiler({ enable: ['less'],
 
 app.use(express.static(static_dir));
 
-app.use(function(req, res, next) {
-  routes.handle404(req, res);
-});
+app.use(routes.handle404);
 
 function startup(cb) {
   app.listen(config.get('http_port'), config.get('http_address'), function(err) {

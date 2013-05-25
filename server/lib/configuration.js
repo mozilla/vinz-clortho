@@ -70,16 +70,16 @@ var conf = module.exports = convict({
 
 var dev_config_path = path.join(__dirname, '..', 'config', 'local.json');
 
-if (! process.env['CONFIG_FILES'] &&
+if (! process.env.CONFIG_FILES &&
     fs.existsSync(dev_config_path)) {
-  process.env['CONFIG_FILES'] = dev_config_path;
+  process.env.CONFIG_FILES = dev_config_path;
 }
 
 // handle configuration files.  you can specify a CSV list of configuration
 // files to process, which will be overlayed in order, in the CONFIG_FILES
 // environment variable
-if (process.env['CONFIG_FILES']) {
-  var files = process.env['CONFIG_FILES'].split(',');
+if (process.env.CONFIG_FILES) {
+  var files = process.env.CONFIG_FILES.split(',');
   files.forEach(function(file) {
     var c = JSON.parse(fs.readFileSync(file, 'utf8'));
     conf.load(c);
@@ -94,6 +94,6 @@ if (conf.get('config_path') === "") {
 }
 
 // massage bind address to something node will understand
-if ([ '0.0.0.0', '*' ].indexOf(conf.get('http_address')) != -1) {
-    conf.set('http_address', null);
+if ([ '0.0.0.0', '*' ].indexOf(conf.get('http_address')) !== -1) {
+  conf.set('http_address', null);
 }

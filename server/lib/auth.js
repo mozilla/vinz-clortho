@@ -5,7 +5,8 @@
 const ldap = require('ldapjs'),
     config = require('./configuration'),
     logger = require('./logging').logger,
-    statsd = require('../lib/statsd');
+    statsd = require('../lib/statsd'),
+      util = require('util');
 
 // check required configuration at startup
 [ 'ldap_server_url', 'ldap_bind_dn', 'ldap_bind_password' ].forEach(function(k) {
@@ -19,7 +20,7 @@ function connectAndBind(opts, cb) {
   opts.url = opts.url || config.get('ldap_server_url');
   opts.dn = opts.dn || config.get('ldap_bind_dn');
   opts.bindPassword = opts.bindPassword || config.get('ldap_bind_password');
-  var connectTimeout = opts.connectTimeout || config.get('ldap_server_connect_timeout')
+  var connectTimeout = opts.connectTimeout || config.get('ldap_server_connect_timeout');
 
   var client = ldap.createClient({
     url: opts.url,
@@ -168,7 +169,7 @@ exports.authEmail = function(opts, authCallback) {
       });
 
       res.on('end', function () {
-        if (results == 1) {
+        if (results === 1) {
           start = new Date();
           client.bind(bindDN, opts.password, function (err) {
             // report total time required to connect, bind, search, and

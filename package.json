@@ -27,7 +27,9 @@
     "awsbox": "0.4.5",
     "mocha": "1.9.0",
     "should": "1.2.2",
-    "request": "2.20.0"
+    "request": "2.20.0",
+    "jshint": "2.1.2",
+    "walk": "2.2.1"
   },
   "scripts": {
     "start": "node ./server/bin/clortho",

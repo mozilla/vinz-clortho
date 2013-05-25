@@ -16,11 +16,10 @@
   "indent": 2,
   "white": false,
   "predef": [
-    "exports", 
+    "exports",
     "require",
     "process"
   ],
-  "es5": true,
   "esnext": true,
   "shadow": false,
   "supernew": false,

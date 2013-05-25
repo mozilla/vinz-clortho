@@ -25,7 +25,7 @@ if (!fs.existsSync(secretKeyFile)) missingFileErr =  "Secret Key file ["+secretK
 if (missingFileErr) {
   console.error('ERROR:', missingFileErr);
   console.log("\n---> run scripts/gen_keys.js to fix this\n");
-  console.log()
+  console.log();
   process.exit(1);
 }
 
