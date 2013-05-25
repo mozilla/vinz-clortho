@@ -22,9 +22,6 @@ const config = require('../lib/configuration'),
       util = require('util'),
       logger = require('../lib/logging').logger;
 
-// TODO unknown email address
-// TODO add statsd
-
 var app, options = {};
 
 app = express.createServer();
