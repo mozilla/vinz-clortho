@@ -10,7 +10,7 @@ logger = require('./logging').logger;
 // report statistics with a "mozillaidp" prefix.
 const PREFIX = "mozillaidp.";
 
-var statsd;
+var statsd = new StatsD(config.get('statsd.host'), config.get('statsd.port'));
 
 // start by exporting a stubbed no-op stats reporter
 module.exports = {
@@ -21,19 +21,3 @@ module.exports = {
     if (statsd) { statsd.increment(PREFIX + s, v); }
   }
 };
-
-var statsd_config = config.get('statsd');
-
-if (statsd_config && statsd_config.enabled) {
-  var options = {};
-  options.host = config.host || "localhost";
-  options.port = config.port || 8125;
-
-  statsd = new StatsD(options.host, options.port);
-}
-
-process.on('uncaughtException', function(err) {
-  console.error(err.stack);
-  if (statsd) statsd.increment(PREFIX + 'uncaught_exception');
-  logger.error(err.stack || err);
-});

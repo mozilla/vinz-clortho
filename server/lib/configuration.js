@@ -51,12 +51,6 @@ var conf = module.exports = convict({
   ldap_server_connect_timeout: { format: 'int', default: 10000 },
   locale_directory: { format: 'string', default: "locale" },
   statsd: {
-    enabled: {
-      doc: "enable UDP based statsd reporting",
-      format: Boolean,
-      default: true,
-      env: 'ENABLE_STATSD'
-    },
     host: { format: "string", default: "" },
     port: { format: "int", default: 6000 }
   },
