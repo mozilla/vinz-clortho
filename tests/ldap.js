@@ -16,7 +16,7 @@ describe('binding to the ldap server via our library', function() {
 
   it('should fail with an unbound port', function(done) {
     auth.checkBindAuth({
-      url: 'ldap://127.0.0.10:777',
+      url: 'ldap://127.0.0.1:777',
       dn: 'o=example',
       bindPassword: 'secret'
     }, function(err) {
