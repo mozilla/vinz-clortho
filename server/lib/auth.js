@@ -99,7 +99,7 @@ exports.checkBindAuth = function(opts, cb) {
  */
 exports.authEmail = function(opts, authCallback) {
   if (!opts) throw "argument required";
-  if (!opts.password) throw "email address required";
+  if (!opts.password) throw "password required";
   if (!opts.email) throw "email address required";
 
   var start = new Date();
