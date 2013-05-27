@@ -102,6 +102,9 @@ app.get('/ldap_status', routes.checkStatus);
 // Dev and Stage only
 app.get('/signout', routes.signout);
 
+// API, currently used only for testing, maybe we'll grow this into more
+app.get('/api/session_context', routes.session_context);
+
 // Static
 var static_dir = path.join(process.cwd(), '..', 'static');
 app.use(express.compiler({ enable: ['less'],

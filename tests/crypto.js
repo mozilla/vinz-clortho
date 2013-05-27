@@ -1,11 +1,12 @@
-/* tests of static file serving */
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-// start server on an ephemeral port
-process.env['PORT'] = 0;
+// tests of crypto routines of the server
 
 const
 should = require('should'),
-clorthoServer = require('../server/bin/clortho'),
+testUtil = require('./lib/test-util'),
 request = require('request'),
 jwcrypto = require('jwcrypto');
 
@@ -17,9 +18,9 @@ var serverURL;
 
 describe('the server', function() {
   it('should start', function(done) {
-    clorthoServer.startup(function(err, address) {
+    testUtil.startServers(function(err, ctx) {
       should.not.exist(err);
-      serverURL = util.format('http://%s:%s', address.address, address.port);
+      serverURL = ctx.mozillaidp.url;
       done();
     });
   });

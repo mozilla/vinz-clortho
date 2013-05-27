@@ -29,7 +29,7 @@ exports.check = function(email, cb) {
 
   process.nextTick(function() {
     if (fails[email] &&
-        fails[email].count > config.get('auth_lockout_attempts')) {
+        fails[email].count >= config.get('auth_lockout_attempts')) {
       cb("lockout");
     } else {
       cb(null);

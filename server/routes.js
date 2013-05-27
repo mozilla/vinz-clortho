@@ -114,6 +114,12 @@ exports.routes = function () {
       }
     },
 
+    // API end points
+    session_context: function(req, res, next) {
+      res.send({
+        csrf: req.session._csrf
+      });
+    },
 
     // Monitoring End points
 
