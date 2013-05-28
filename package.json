@@ -23,7 +23,8 @@
     "winston": "0.7.1",
     "cef": "~0.3.3",
     "connect-fonts": "0.0.9",
-    "connect-fonts-opensans": "0.0.4"
+    "connect-fonts-opensans": "0.0.4",
+    "lockdown": "0.0.3"
   },
   "devDependencies": {
     "awsbox": "0.4.5",
@@ -35,6 +36,7 @@
   },
   "scripts": {
     "start": "LOCAL_DEV=true node ./server/bin/clortho",
-    "test": "LOCAL_DEV=true mocha -R spec tests/"
+    "test": "LOCAL_DEV=true mocha -R spec tests/",
+    "preinstall": "./scripts/lockdown.js"
   }
 }
