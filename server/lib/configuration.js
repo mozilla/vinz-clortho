@@ -28,6 +28,11 @@ var conf = module.exports = convict({
       env: 'CEF_SYSLOG_PORT'
     }
   },
+  certificate_validity_s: {
+    doc: 'the amount of time certificates are valid',
+    format: 'int',
+    default: (5 * 60) // five minute default certification validity.
+  },
   client_sessions: {
     cookie_name: { format: 'string', default: "session_state" },
     secret: { format: 'string', default: "YOU MUST CHANGE ME" },

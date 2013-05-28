@@ -11,8 +11,12 @@ window.provision = function (user) {
       },
       msg = "user is not authenticated as target user";
 
-  navigator.id.beginProvisioning(function(email, cert_duration) {
-    if (! user) {
+  // Note: we explicitly ignore persona suggested certificate duration
+  // and issue short-lived certs.  Because re-provisioning is
+  // user invisible, this allows us a means of remote session
+  // termination in case of security breaches.
+  navigator.id.beginProvisioning(function(email /* , cert_duration */) {
+    if (!user) {
       navigator.id.raiseProvisioningFailure(msg);
     } else {
       if (cmpi(user, email)) {
@@ -21,7 +25,6 @@ window.provision = function (user) {
             url: window.location.href,
             data: JSON.stringify({
               pubkey: pubkey,
-              duration: cert_duration,
               "_csrf": $('[name=_csrf]').val()
             }),
             type: 'POST',

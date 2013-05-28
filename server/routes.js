@@ -39,7 +39,7 @@ exports.routes = function () {
         resp.writeHead(401);
         return resp.end();
       }
-      if (!req.body.pubkey || !req.body.duration) {
+      if (!req.body.pubkey) {
         resp.writeHead(400);
         return resp.end();
       }
@@ -47,7 +47,7 @@ exports.routes = function () {
       crypto.cert_key(
         req.body.pubkey,
         req.session.email,
-        req.body.duration,
+        config.get('certificate_validity_s'),
         function(err, cert) {
           if (err) {
             resp.writeHead(500);
