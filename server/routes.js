@@ -89,7 +89,7 @@ exports.routes = function () {
               signature: 'AUTH_LOCKOUT',
               name: "attempted login to a throttled account",
               extensions: {
-                email: mozillaUser
+                suser: mozillaUser
               }
             });
             resp.writeHead(403);
