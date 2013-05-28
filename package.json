@@ -37,6 +37,6 @@
   "scripts": {
     "start": "LOCAL_DEV=true node ./server/bin/clortho",
     "test": "LOCAL_DEV=true mocha -R spec tests/",
-    "preinstall": "./scripts/lockdown.js"
+    "preinstall": "node ./scripts/lockdown.js"
   }
 }
