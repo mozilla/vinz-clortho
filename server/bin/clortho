@@ -97,15 +97,14 @@ app.use(function(req, res, next) {
   res.local('browserid_server', config.get('browserid_server'));
   var s = req.session || null;
   res.local('session', s);
-
   next();
 });
 
 app.get('/.well-known/browserid', routes.well_known_browserid);
 
-app.get('/', routes.signin_from_form);
-app.get('/sign_in', routes.signin_from_form);
-app.post('/sign_in', routes.check_signin_from_form);
+app.get('/', routes.signin);
+app.get('/sign_in', routes.signin);
+app.post('/sign_in', routes.check_signin);
 
 app.get('/provision', routes.provision);
 app.post('/provision', routes.provision_key);
