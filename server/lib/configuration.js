@@ -79,6 +79,12 @@ var conf = module.exports = convict({
     doc: "The number of failed authentcation attempts before a user will be locked out",
     format: 'int',
     default: 5
+  },
+  local_development: {
+    doc: "Run in local development mode, disables secure cookies",
+    format: 'boolean',
+    default: false,
+    env: 'LOCAL_DEV'
   }
 });
 
