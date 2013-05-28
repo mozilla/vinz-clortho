@@ -16,8 +16,8 @@ require("jwcrypto/lib/algs/ds");
 
 var serverURL;
 
-describe('the server', function() {
-  it('should start', function(done) {
+describe('the public key', function() {
+  it('servers should start', function(done) {
     testUtil.startServers(function(err, ctx) {
       should.not.exist(err);
       serverURL = ctx.mozillaidp.url;
@@ -25,7 +25,7 @@ describe('the server', function() {
     });
   });
 
-  it('should respond serve a valid public key in .well-known/browserid', function(done) {
+  it('.well-known/browserid should be properly formatted', function(done) {
     request(
       util.format('%s/.well-known/browserid', serverURL),
       function(err, resp, body) {
