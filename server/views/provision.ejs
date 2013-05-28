@@ -9,14 +9,5 @@
 <script type="text/javascript" src="<%= browserid_server %>/provisioning_api.js"></script>
 <script type="text/javascript" src="/js/lib/jquery.min.js"></script>
 <script type="text/javascript" src="/js/provision.js" /></script>
-<script>
-window.provision(
-<% if (user) { %>
-  "<%= user %>"
-<% } else { %>
-  null
-<% } %>
-);
-</script>
 </body>
 </html>

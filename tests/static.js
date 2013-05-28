@@ -8,11 +8,14 @@ const
 should = require('should'),
 testUtil = require('./lib/test-util'),
 request = require('request'),
+util = require('util'),
 config = require('../server/lib/configuration');
 
 // explicitly disable development mode to test STS headers
 config.set('local_development', false);
 
+var securityPolicyValue = util.format("default-src 'self' %s",
+                                     config.get('browserid_server'));
 var serverURL;
 
 describe('static file serving', function() {
@@ -59,6 +62,8 @@ describe('static file serving', function() {
         should.exist(body);
         (resp.headers['content-type']).should.equal('text/html; charset=utf-8');
         (resp.headers['strict-transport-security']).should.equal("max-age=10886400; includeSubdomains");
+        (resp.headers['x-content-security-policy']).should.equal(
+          securityPolicyValue);
         done();
       });
   });
@@ -72,8 +77,10 @@ describe('static file serving', function() {
         (resp.headers['content-type']).should.equal('text/html; charset=utf-8');
         (resp.headers['x-frame-options']).should.equal('DENY');
         (resp.headers['strict-transport-security']).should.equal("max-age=10886400; includeSubdomains");
+        (resp.headers['x-content-security-policy']).should.equal(
+          securityPolicyValue);
+
         done();
       });
   });
-
 });
