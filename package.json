@@ -22,7 +22,7 @@
     "node-statsd": "https://github.com/downloads/lloyd/node-statsd/0509f85.tgz",
     "winston": "0.7.1",
     "cef": "~0.3.3",
-    "connect-fonts": "0.0.9-beta1",
+    "connect-fonts": "0.0.9",
     "connect-fonts-opensans": "0.0.4"
   },
   "devDependencies": {

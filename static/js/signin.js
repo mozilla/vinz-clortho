@@ -8,6 +8,7 @@ $(document).ready(function() {
   // their substituted email address.
   //
   // We need the client to bounce the email off the server and sub it in.
+
   navigator.id.beginAuthentication(function(email) {
     var msg;
 
@@ -26,7 +27,8 @@ $(document).ready(function() {
 
       // validate password client side
       if (pass.length < 6) {
-        $("div.error").hide().text("Yikes, Passwords have to be at least 6 characters").fadeIn(600);
+        showTooltip("Yikes, Passwords have to be at least 6 characters",
+            "#pass");
         return;
       }
 
@@ -39,9 +41,64 @@ $(document).ready(function() {
           navigator.id.completeAuthentication();
         },
         error: function() {
-          $("div.error").hide().text("Yikes, that password looks wrong.  Try again.").fadeIn(600);
+          showTooltip("The account cannot be logged in with this username and password", "#user");
         }
       });
     });
   });
+
+  // From here below is tooltip code
+
+  var ANIMATION_TIME = 250,
+      TOOLTIP_MIN_DISPLAY = 2000,
+      TOOLTIP_OFFSET_TOP_PX = 5,
+      TOOLTIP_OFFSET_LEFT_PX = 10,
+      READ_WPM = 200,
+      hideTimer;
+
+  function showTooltip(msg, anchor) {
+    if (hideTimer) {
+      clearTimeout(hideTimer);
+      hideTimer = null;
+    }
+
+    $(".tooltip").hide();
+    $(".tooltip .contents").text(msg);
+    $(".tooltip").fadeIn(ANIMATION_TIME);
+
+    anchorTooltip(".tooltip", anchor);
+
+    var displayTimeMS = calculateDisplayTime(msg);
+
+    hideTimeout = setTimeout(function() {
+      hideTimeout = null;
+      $(".tooltip").fadeOut(ANIMATION_TIME);
+    }, displayTimeMS);
+  }
+
+  function anchorTooltip(tooltip, anchor) {
+    tooltip = $(tooltip);
+    anchor = $(anchor);
+    var tooltipOffset = anchor.offset();
+    tooltipOffset.top -= (tooltip.outerHeight() + TOOLTIP_OFFSET_TOP_PX);
+    tooltipOffset.left += TOOLTIP_OFFSET_LEFT_PX;
+
+    tooltip.css(tooltipOffset);
+  }
+
+  function calculateDisplayTime(text) {
+    // Calculate the amount of time a tooltip should display based on the
+    // number of words in the content divided by the number of words an average
+    // person can read per minute.
+    var contents = text.replace(/\s+/, ' ').trim(),
+        words = contents.split(' ').length,
+        // The average person can read ± 250 wpm.
+        wordTimeMS = (words / READ_WPM) * 60 * 1000,
+        displayTimeMS = Math.max(wordTimeMS, TOOLTIP_MIN_DISPLAY);
+
+        return displayTimeMS;
+  }
+
+
+
 });

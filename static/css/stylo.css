@@ -98,9 +98,14 @@ nav,
 section {
   display: block;
 }
-body {
-  position: relative;
+
+* {
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+       -o-box-sizing: border-box;
+          box-sizing: border-box;
 }
+
 .outer {
   float: left;
   clear: both;
@@ -111,18 +116,14 @@ body {
   position: relative;
   left: -50%;
 }
-html {
-  margin: 0;
-  padding: 0;
-}
+
 body {
-  margin: 0;
-  padding: 0;
   font-family: 'Open Sans', 'sans-serif', 'serif';
-  font-family: helvetica, arial, verdana, sans-serif;
   text-rendering: optimizeLegibility;
   line-height: 1.5;
+  position: relative;
 }
+
 .floatClear {
   float: left;
   clear: both;
@@ -149,13 +150,12 @@ body {
 }
 div.title {
   width: 200px;
-  margin: 1em auto 0 auto;
+  margin: 0 auto;
 }
 .signin-panel {
   border: solid 0px #ff0000;
-  width: 280px;
-  margin-left: auto;
-  margin-right: auto;
+  width: 325px;
+  margin: 0 auto;
   padding: 40px 20px;
 }
 .left-col {
@@ -183,7 +183,7 @@ html[dir=rtl] .center-col {
     text-align: center;
     margin-bottom: 1em;
     font-size: 1.1em;
-    font-weigth: 300;
+    font-weight: 300;
 }
 .center-col {
   width: 200px;
@@ -200,9 +200,7 @@ html[dir=rtl] .center-col {
 button {
     font-size: .8em;
     font-weight: bold;
-    line-height: 1.5;
-    padding-right: 1.8em;
-    padding-left: 1.8em;
+    padding: .3em 1.8em .4em;
     margin: 0;
     display: inline-block;
     -moz-border-radius: .25em;
@@ -222,30 +220,97 @@ button {
     color: #fff;
     border: 0;
     text-shadow: 0 1px 0 rgba(0,0,0,0.25);
-    position: absolute;
     cursor: pointer;
+    float: left;
+}
+
+button:hover,
+button:focus,
+.button:hover,
+.button:focus {
+    box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.3), 0 1px 0 rgba(0, 0, 0, 0.2), 0 2px 0 rgba(0, 0, 0, 0.1);
+
+    background-color: #4aafe5;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#4aafe5), to(#2c89c8));
+    background-image: -webkit-linear-gradient(top, #4aafe5, #2c89c8);
+    background-image:    -moz-linear-gradient(top, #4aafe5, #2c89c8);
+    background-image:      -ms-linear-gradient(top, #4aafe5, #2c89c8);
+    background-image:       -o-linear-gradient(top, #4aafe5, #2c89c8);
+    background-image:          linear-gradient(top, #4aafe5, #2c89c8);
+}
+
+button:focus,
+.button:focus {
+    box-shadow: 0 0 1px #fff, 0 0 1px 3px #49ADE3;
+    box-shadow: 0 0 1px rgba(255, 255, 255, 0.5), 0 0 1px 3px rgba(73, 173, 227, 0.6);
+}
+
+button:active,
+.button:active {
+    background-color: #184a73;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#184a73), to(#276084));
+    background-image: -webkit-linear-gradient(top, #184a73, #276084);
+    background-image:    -moz-linear-gradient(top, #184a73, #276084);
+    background-image:      -ms-linear-gradient(top, #184a73, #276084);
+    background-image:       -o-linear-gradient(top, #184a73, #276084);
+    background-image:          linear-gradient(top, #184a73, #276084);
+    color: #97b6ca;
+    text-shadow: 0 1px rgba(0,0,0,0.4);
+    box-shadow: inset 0 2px 1px rgba(0,0,0,0.3);
+}
+
+button::-moz-focus-inner, .button::-moz-focus-inner {
+  padding: 0;
+  border: 0
 }
 
 button.cancel {
-    position: absolute;
-    left: clear;
-    right: 0;
-    background-color: #a91300;
-    background-color: #a91300;
-    background-repeat: repeat-x;
-    background-image: -khtml-gradient(linear,left top,left bottom,from(#da5132),to(#a91300));
-    background-image: -moz-linear-gradient(#da5132,#a91300);
-    background-image: -ms-linear-gradient(#da5132,#a91300);
-    background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#da5132),color-stop(100%,#a91300));
-    background-image: -webkit-linear-gradient(#da5132,#a91300);
-    background-image: -o-linear-gradient(#da5132,#a91300);
-    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#da5132', endColorstr='#a91300', GradientType=0)";
-    background-image: linear-gradient(#da5132,#a91300);
+    float: right;
+    background-color: #d94f30;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#d94f30), to(#ad1804));
+    background-image: -webkit-linear-gradient(top, #d94f30, #ad1804);
+    background-image:    -moz-linear-gradient(top, #d94f30, #ad1804);
+    background-image:     -ms-linear-gradient(top, #d94f30, #ad1804);
+    background-image:      -o-linear-gradient(top, #d94f30, #ad1804);
+    background-image:         linear-gradient(top, #d94f30, #ad1804);
+    filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#d93f30, endColorstr=#ad1804)";
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#d93f30, endColorstr=#ad1804)";
 }
 
+button.cancel:hover,
+button.cancel:focus {
+    background-color: #e3653f;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#e3653f), to(#c01c03));
+    background-image: -webkit-linear-gradient(top, #e3653f, #c01c03);
+    background-image:    -moz-linear-gradient(top, #e3653f, #c01c03);
+    background-image:     -ms-linear-gradient(top, #e3653f, #c01c03);
+    background-image:      -o-linear-gradient(top, #e3653f, #c01c03);
+    background-image:         linear-gradient(top, #e3653f, #c01c03);
+}
+
+button.cancel:active,
+.button.cancel:active {
+    box-shadow: 0 0 5px #333 inset;
+    color: #cfa391;
+
+    background-color: #83311e;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#83311e), to(#670d01));
+    background-image: -webkit-linear-gradient(top, #83311e, #670d01);
+    background-image:    -moz-linear-gradient(top, #83311e, #670d01);
+    background-image:     -ms-linear-gradient(top, #83311e, #670d01);
+    background-image:      -o-linear-gradient(top, #83311e, #670d01);
+    background-image:         linear-gradient(top, #83311e, #670d01);
+}
+
+
 /* === Basic Style === */
+html {
+  height: 100%;
+}
+
 body {
     font-family: 'Open Sans', 'sans-serif', 'serif';
+    color: #555;
     background-image: linear-gradient(bottom, rgb(62,72,79) 39%, rgb(91,104,112) 70%);
     background-image: -o-linear-gradient(bottom, rgb(62,72,79) 39%, rgb(91,104,112) 70%);
     background-image: -moz-linear-gradient(bottom, rgb(62,72,79) 39%, rgb(91,104,112) 70%);
@@ -260,13 +325,12 @@ body {
         color-stop(0.7, rgb(91,104,112))
     );
     background-color: #4D4E53;
+    background-repeat: no-repeat;
+    overflow-y: auto;
 }
-html, body {
-    height: 100%;
-}
+
 .signin-panel {
   background-color: #FFF;
-  color: #333;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
   border-radius: 5px;
@@ -282,15 +346,22 @@ html, body {
   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#ffffff, endColorstr=#eeeeee)";
   background-image: linear-gradient(top, #ffffff 0%, #ffffff 40%, #eeeeee 100%);
 }
+
 label {
   font-family: Arial;
+}
+
+.hidden {
+  /* This funkiness is so that labels still appear for screen readers */
+  height: 0;
+  visibility: hidden;
+  display: block;
 }
 .logo {
   padding-top: 10px;
 }
 /* === Heading === */
 h1 {
-  color: #333;
   font-size: 1.5em;
   margin-bottom: -0.3em;
 }
@@ -300,18 +371,70 @@ label {
 }
 /* === Inputs === */
 input {
-  width: 187px;
+  width: 100%;
   border: 1px solid #666;
   padding: .4em .5em;
   -moz-border-radius: .3em;
   border-radius: .3em;
   font-size: .8em;
+  border-color: #b2b2b2;
+  color: #383838;
 }
-.last {
-    margin-top: .4em;
+
+input:focus {
+  border: 1px solid #0096dc;
+  box-shadow: 0 0 5px 0 #0096dc;
 }
+
+input[type=password]:focus {
+  color: #2d79c1;
+}
+
+input:disabled {
+  background-color: #fff;
+}
+
+.tooltip {
+  color: #fff;
+  font-size: 0.8em;
+  font-weight: bold;
+  text-shadow: 0 1px #333;
+  line-height: 16px;
+  background-color: #aa1401;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(218, 81, 50, 0.9)), to(rgba(169, 19, 0, 1)));
+  background-image: -webkit-linear-gradient(top, rgba(218, 81, 50, 0.9), rgba(169, 19, 0, 1));
+  background-image:    -moz-linear-gradient(top, rgba(218, 81, 50, 0.9), rgba(169, 19, 0, 1));
+  background-image:     -ms-linear-gradient(top, rgba(218, 81, 50, 0.9), rgba(169, 19, 0, 1));
+  background-image:      -o-linear-gradient(top, rgba(218, 81, 50, 0.9), rgba(169, 19, 0, 1));
+  background-image:         linear-gradient(top, rgba(218, 81, 50, 0.9), rgba(169, 19, 0, 1));
+  border-radius: 4px;
+  padding: 10px 15px;
+  box-shadow: 0 1px #666;
+
+  display: none;
+  max-width: 275px;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 5;
+}
+
+.tooltip .arrow-down {
+  /* This is an awesome CSS only arrow! */
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid #aa1401;
+  border-top: 10px solid rgba(169, 19, 0, 1);
+  position: absolute;
+  bottom: -10px;
+  left: 20px;
+}
+
+
 /* === Hey brother */
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: 345px) {
   body {
     max-width: 100%;
   }
@@ -320,10 +443,9 @@ input {
   }
   .signin-panel {
     border: solid 0px #ff0000;
-    margin-top: 1.5rem;
-    margin-left: auto;
-    margin-right: auto;
-    width: 300px;
+    margin: 0 auto;
+    width: 95%;
+    padding: 20px;
   }
   html[dir=rtl] .signin-panel {
     margin-left: 1em;
@@ -357,8 +479,41 @@ input {
   }
   .center-col {
     border: auto;
-    width: 80%;
+    width: 100%;
     float: none;
-    margin-top: 2em;
+    margin-top: 15px;
   }
+
+  button {
+    height: 40px;
+    font-size: 14px;
+  }
+
+  input {
+    padding: 9px 5px;
+  }
+}
+
+@media only screen and (max-width: 275px) {
+  /**
+   * At this width, the buttons start to overlay each other. Put them each on
+   * their own line and let them expand to the full width.
+   */
+  button, button.cancel {
+    float: none;
+    width: 100%;
+  }
+
+  button.cancel {
+    margin-top: 15px;
+  }
+
+  /**
+   * Give a little border to make the buttons look more balanced
+   */
+  .center-col.last {
+    border-top: 1px dashed #ddd;
+    padding-top: 15px;
+  }
+
 }
