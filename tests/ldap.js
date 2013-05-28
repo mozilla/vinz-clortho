@@ -13,7 +13,7 @@ testUtil = require('./lib/test-util.js');
 
 var ldapServerInstance = null;
 
-describe('binding to the ldap server via our library', function() {
+describe('the LDAP authentication library', function() {
   before(function(done) {
       ldapServerInstance = ldapMock.server;
     ldapServerInstance.listen(65077, '127.0.0.1', done);

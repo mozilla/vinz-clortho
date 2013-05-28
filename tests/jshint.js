@@ -17,23 +17,21 @@ function jshintFormatter(errors) {
   });
 }
 
-// read jshintrc
-var jshintrc;
+describe('source code syntax', function() {
+  // read jshintrc
+  var jshintrc;
 
-describe('reading the .jshintrc file', function() {
-  it('should work', function(done) {
+  it('.jshintrc should be readable', function(done) {
     jshintrc = JSON.parse(fs.readFileSync(path.join(__dirname, '../.jshintrc')).toString());
     (jshintrc).should.be.a('object');
     done();
   });
-});
 
-var filesToLint = [
-  path.join(__dirname, '../server/bin/clortho')
-];
+  var filesToLint = [
+    path.join(__dirname, '../server/bin/clortho')
+  ];
 
-describe('discovering files to check syntax of', function() {
-  it('should succeed', function(done) {
+  it('we should be able to discover files to lint', function(done) {
     var walker = walk.walkSync(path.join(__dirname, '../server/lib'), {});
 
     walker.on("file", function(root, fStat, next) {
@@ -45,15 +43,15 @@ describe('discovering files to check syntax of', function() {
     });
     walker.on("end", done);
   });
-});
 
-describe('checking syntax', function() {
-  it('should report no errors', function(done) {
+  it('syntax checking should yield no errors', function(done) {
     var errors = [];
 
     function checkNext() {
       if (!filesToLint.length) {
-        if (errors.length) {          var buf = util.format("\n        %d errors:\n        * ", errors.length);
+        if (errors.length) {
+          var buf = util.format("\n        %d errors:\n        * ",
+                                errors.length);
           buf += errors.join("\n        * ");
           done(buf);
         } else {
