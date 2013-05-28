@@ -11,7 +11,18 @@ emailRewrite = require('./lib/email_rewrite.js'),
       logger = require('./lib/logging.js').logger,
       statsd = require('./lib/statsd'),
     throttle = require('./lib/throttle'),
-      secLog = require('./lib/security_logging');
+      secLog = require('./lib/security_logging'),
+         url = require('url');
+
+// apply X-Content-Security-Policy headers to HTML resources served
+function applyContentSecurityPolicy(res) {
+  ['X-Content-Security-Policy',
+   'Content-Security-Policy'].forEach(function(header) {
+     res.setHeader(header,
+                   util.format("default-src 'self' %s",
+                               config.get('browserid_server')));
+   });
+}
 
 exports.routes = function () {
   var well_known_last_mod = new Date().getTime();
@@ -29,6 +40,7 @@ exports.routes = function () {
       });
     },
     provision: function (req, resp) {
+      applyContentSecurityPolicy(resp);
       resp.render('provision', {
         user: req.session.email,
         browserid_server: config.get('browserid_server'),
@@ -64,6 +76,7 @@ exports.routes = function () {
 
       // prevent framing of authentication page.
       resp.setHeader('X-Frame-Options', 'DENY');
+      applyContentSecurityPolicy(resp);
       resp.render('signin', {
         title: req.gettext("Sign In"),
         email: email
