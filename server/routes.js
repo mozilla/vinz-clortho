@@ -10,7 +10,8 @@ emailRewrite = require('./lib/email_rewrite.js'),
         ldap = require('ldapjs'),
       logger = require('./lib/logging.js').logger,
       statsd = require('./lib/statsd'),
-    throttle = require('./lib/throttle');
+    throttle = require('./lib/throttle'),
+      secLog = require('./lib/security_logging');
 
 exports.routes = function () {
   var well_known_last_mod = new Date().getTime();
@@ -82,8 +83,15 @@ exports.routes = function () {
       } else {
         throttle.check(mozillaUser, function(err) {
           if (err) {
-            // XXX: cef logging to occur here - this is an interesting
-            // security event
+            // Send an event to the security log for every authentication
+            // attempt to a throttle account.
+            secLog.warn({
+              signature: 'AUTH_LOCKOUT',
+              name: "attempted login to a throttled account",
+              extensions: {
+                email: mozillaUser
+              }
+            });
             resp.writeHead(403);
             resp.write('Too many failed login attempts');
             resp.end();
