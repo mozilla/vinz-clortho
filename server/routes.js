@@ -47,13 +47,18 @@ exports.routes = function () {
         layout: false});
     },
     provision_key: function (req, resp) {
+      // check that there is an authenticated user
       if (!req.session || !req.session.email) {
-        resp.writeHead(401);
-        return resp.end();
+        return resp.send(401);
       }
-      if (!req.body.pubkey) {
-        resp.writeHead(400);
-        return resp.end();
+      // check that required arguments are supplied
+      if (!req.body.pubkey || !req.body.user) {
+        return resp.send(400);
+      }
+      // check that the user is authenticated as the target user
+      // XXX: alias support, see issue #64
+      if (req.session.email !== req.body.user) {
+        return resp.send(409);
       }
 
       crypto.cert_key(

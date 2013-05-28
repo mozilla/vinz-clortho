@@ -57,6 +57,7 @@ describe('certificate signing', function() {
     request.post({
       url: util.format('%s/provision', context.mozillaidp.url),
       json: {
+        user: 'user2@mozilla.com',
         pubkey: keypair.publicKey.serialize()
       }
     }, function(err, resp, body) {
@@ -71,6 +72,7 @@ describe('certificate signing', function() {
     request.post({
       url: util.format('%s/provision', context.mozillaidp.url),
       json: {
+        user: 'user2@mozilla.com',
         pubkey: keypair.publicKey.serialize(),
         _csrf: csrf_token
       }
@@ -101,6 +103,7 @@ describe('certificate signing', function() {
     request.post({
       url: util.format('%s/provision', context.mozillaidp.url),
       json: {
+        user: 'user2@mozilla.com',
         pubkey: keypair.publicKey.serialize(),
         _csrf: csrf_token
       }
