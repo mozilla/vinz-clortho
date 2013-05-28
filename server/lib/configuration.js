@@ -31,7 +31,7 @@ var conf = module.exports = convict({
   client_sessions: {
     cookie_name: { format: 'string', default: "session_state" },
     secret: { format: 'string', default: "YOU MUST CHANGE ME" },
-    duration: { format: 'int', default: (24 * 60 * 60 * 1000) }
+    duration_ms: { format: 'int', default: (24 * 60 * 60 * 1000) }
   },
   default_lang: { format: 'string', default: 'en-US' },
   debug_lang: { format: 'string', default: "it-CH" },

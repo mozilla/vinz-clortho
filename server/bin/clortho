@@ -56,9 +56,10 @@ var sess_config = config.get('client_sessions');
 app.use(sessions({
   cookieName: sess_config.cookie_name,
   secret: sess_config.secret,
-  duration: sess_config.duration, // 1 day
+  duration: sess_config.duration_ms,
   cookie: {
-    maxAge: 14 * 24 * 60 * 60 * 1000 // 2 weeks
+    maxAge: sess_config.duration_ms,
+    httpOnly: true
   }
 }));
 
