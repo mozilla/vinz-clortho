@@ -52,12 +52,18 @@ app.use(express.logger({
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 
-var sess_config = config.get('client_sessions');
 app.use(function(req, res, next) {
   // We will always be deployed behind an SSL terminator.  This
   // flag tells client-sessions that it's ok to send cookies which
   // will only be returned over SSL.
   req.connection.proxySecure = true;
+  if (!config.get('local_development')) {
+    // when we're not running local development, append STS headers to
+    // all requests to force browsers to use SSL
+
+    // expires in 30 days
+    res.setHeader("Strict-Transport-Security", "max-age=10886400; includeSubdomains");
+  }
   next();
 });
 
@@ -65,6 +71,7 @@ if (config.get('local_development')) {
   logger.warn("Running with insecure cookies, no appropriate for production");
 }
 
+var sess_config = config.get('client_sessions');
 app.use(sessions({
   cookieName: sess_config.cookie_name,
   secret: sess_config.secret,

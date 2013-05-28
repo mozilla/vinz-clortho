@@ -7,7 +7,11 @@
 const
 should = require('should'),
 testUtil = require('./lib/test-util'),
-request = require('request');
+request = require('request'),
+config = require('../server/lib/configuration');
+
+// explicitly disable development mode to test STS headers
+config.set('local_development', false);
 
 var serverURL;
 
@@ -35,6 +39,9 @@ describe('static file serving', function() {
         // cache headers are important, controls how long verifiers can cache the public key
         (resp.headers['cache-control']).should.equal('max-age=5, public');
 
+        // we use STS everywhere
+        (resp.headers['strict-transport-security']).should.equal("max-age=10886400; includeSubdomains");
+
         should.exist(parsed.authentication);
         signInPath = parsed.authentication
         should.exist(parsed.provisioning);
@@ -51,6 +58,7 @@ describe('static file serving', function() {
         should.not.exist(err);
         should.exist(body);
         (resp.headers['content-type']).should.equal('text/html; charset=utf-8');
+        (resp.headers['strict-transport-security']).should.equal("max-age=10886400; includeSubdomains");
         done();
       });
   });
@@ -63,6 +71,7 @@ describe('static file serving', function() {
         should.exist(body);
         (resp.headers['content-type']).should.equal('text/html; charset=utf-8');
         (resp.headers['x-frame-options']).should.equal('DENY');
+        (resp.headers['strict-transport-security']).should.equal("max-age=10886400; includeSubdomains");
         done();
       });
   });
