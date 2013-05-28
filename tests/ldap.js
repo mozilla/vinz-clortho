@@ -1,3 +1,9 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+// Tests of our ldap abstraction against a local node.js LDAP server
+
 const
 should = require('should'),
 ldapMock = require('../server/lib/ldapMock')(),
@@ -8,10 +14,9 @@ testUtil = require('./lib/test-util.js');
 var ldapServerInstance = null;
 
 describe('binding to the ldap server via our library', function() {
-
   before(function(done) {
       ldapServerInstance = ldapMock.server;
-      ldapServerInstance.listen(65077, '127.0.0.1', done);
+    ldapServerInstance.listen(65077, '127.0.0.1', done);
   });
 
   it('should fail with an unbound port', function(done) {
