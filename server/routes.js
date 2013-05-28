@@ -92,9 +92,11 @@ exports.routes = function () {
                 suser: mozillaUser
               }
             });
-            resp.writeHead(403);
-            resp.write('Too many failed login attempts');
-            resp.end();
+            // as per security guidelines, account throttling should
+            // be indistiguishable from wrong password.  This is a
+            // usability loss in the name of security
+            // https://wiki.mozilla.org/WebAppSec/Secure_Coding_Guidelines
+            resp.send('Email or Password incorrect', 401);
             return;
           }
           auth.authEmail({

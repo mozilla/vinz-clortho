@@ -23,12 +23,7 @@ describe('authentication throttling', function() {
         _csrf: csrf_token
       }
     }, function(err, resp, body) {
-      var curErr;
-      switch (resp.statusCode) {
-      case 200: curErr = null; break;
-      case 403: curErr = 'throttled'; break;
-      case 401: curErr = 'failed'; break;
-      };
+      var curErr = resp.statusCode === 200 ? null : 'failed';
       authNTimes(--n, password, cb, err || curErr);
     });
   }
@@ -79,13 +74,13 @@ describe('authentication throttling', function() {
 
   it('which results in a locked out user', function(done) {
     authNTimes(1, "testtest", function(err) {
-      done(err === 'throttled' ? null : "failed to throttle");
+      done(err === 'failed' ? null : "failed to throttle");
     });
   });
 
   it('user is locked out with a bad password', function(done) {
     authNTimes(1, "bad password", function(err) {
-      done(err === 'throttled' ? null : "failed to throttle");
+      done(err === 'failed' ? null : "failed to throttle");
     });
   });
 
