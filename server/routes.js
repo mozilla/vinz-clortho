@@ -58,20 +58,19 @@ exports.routes = function () {
         });
     },
 
-    /* signin_from_form and check_signin_from_form are used for
-       processing form based authentication, used when
-       signin_method is 'form' */
-    signin_from_form: function (req, resp) {
+    signin: function (req, resp) {
       var email = (req.query ? req.query.email : null);
       if (email) email = emailRewrite(email);
 
+      // prevent framing of authentication page.
+      resp.setHeader('X-Frame-Options', 'DENY');
       resp.render('signin', {
         title: req.gettext("Sign In"),
         email: email
       });
     },
 
-    check_signin_from_form: function (req, resp) {
+    check_signin: function (req, resp) {
       var mozillaUser = "";
       if (req.body.user) {
         mozillaUser = emailRewrite(req.body.user).toLowerCase();
