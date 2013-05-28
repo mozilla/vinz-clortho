@@ -1,24 +1,35 @@
-<div class="title"><img src="/i/mozilla-wordmark-200.png"></div>
+<div class="title">
+  <img src="/i/mozilla-wordmark-200.png" alt="<%= gettext("Mozilla Logo") %>" />
+</div>
 <div class="signin-panel">
   <div class="prompt">
-    <div class="error"></div>
     <p><%= gettext("Please use your LDAP password") %></p>
   </div>
 
-  <form action="/sign_in" method="POST">
+  <form action="/sign_in" method="POST" novalidate>
 
     <input type="hidden" name="_csrf" value="<%= csrf_token %>" />
-      <div class="center-col">
-        <input id="user" type="email" name="user" value="<%= email %>"
-               autocorrect="off" autocapitalize="off" disable="true">
-      </div>
+    <div class="center-col">
+      <label class="hidden" for="user"><%= gettext("Email address") %></label>
+      <input id="user" type="email" name="user" value="<%= email %>"
+             autocorrect="off" autocapitalize="off" disabled="true" />
+    </div>
 
 
     <div class="center-col">
-      <input type="password" id="pass" name="pass" value="" />
+      <label class="hidden" for="pass"><%= gettext("password") %></label>
+      <input type="password" id="pass" name="pass" value="" autofocus />
     </div>
 
-    <div class="center-col last"><button><%= gettext('sign in') %></button><button class="cancel"><%= gettext('cancel') %></button></div>
+    <div class="center-col last clearfix">
+      <button><%= gettext('sign in') %></button>
+      <button class="cancel"><%= gettext('cancel') %></button>
+    </div>
   </form>
-  <br class="clear" />
 </div><!-- #sign-in-panel -->
+
+<div class="tooltip">
+  <span class="contents"></span>
+  <div class="arrow-down"></div>
+</div>
+
