@@ -11,8 +11,8 @@ request = require('request');
 
 var serverURL;
 
-describe('the server', function() {
-  it('should startup', function(done) {
+describe('static file serving', function() {
+  it('the server should startup', function(done) {
     testUtil.startServers(function(err, context) {
       should.not.exist(err);
       serverURL = context.mozillaidp.url;
@@ -46,7 +46,7 @@ describe('the server', function() {
 
   it('should serve provisioning page', function(done) {
     request(
-      util.format('%s/%s', serverURL, provisioningPath),
+      util.format('%s%s', serverURL, provisioningPath),
       function(err, resp, body) {
         should.not.exist(err);
         should.exist(body);
@@ -57,11 +57,12 @@ describe('the server', function() {
 
   it('should serve authenticate page', function(done) {
     request(
-      util.format('%s/%s', serverURL, signInPath),
+      util.format('%s%s', serverURL, signInPath),
       function(err, resp, body) {
         should.not.exist(err);
         should.exist(body);
         (resp.headers['content-type']).should.equal('text/html; charset=utf-8');
+        (resp.headers['x-frame-options']).should.equal('DENY');
         done();
       });
   });
