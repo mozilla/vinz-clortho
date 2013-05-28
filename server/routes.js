@@ -88,6 +88,15 @@ exports.routes = function () {
       });
     },
 
+    handle404: function (req, resp) {
+      resp.setHeader('X-Frame-Options', 'DENY');
+      applyContentSecurityPolicy(resp);
+      resp.render('404', {
+        title: req.gettext("No Content Found"),
+        status: 404
+      });
+    },
+
     check_signin: function (req, resp) {
       var mozillaUser = "";
       if (req.body.user) {
@@ -176,15 +185,6 @@ exports.routes = function () {
     },
 
     // QA Only URLs
-    signout: function (req, resp) { req.session.reset(); resp.redirect('/'); },
-
-    handle404: function (req, resp) {
-      resp.render('404', {
-        title: '',
-        status: 404,
-
-        layout: null
-      });
-    }
+    signout: function (req, resp) { req.session.reset(); resp.redirect('/'); }
   };
 };

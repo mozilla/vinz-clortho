@@ -83,4 +83,21 @@ describe('static file serving', function() {
         done();
       });
   });
+
+  it('should serve 404 page', function(done) {
+    request(
+      util.format('%s%s', serverURL, "/not_found"),
+      function(err, resp, body) {
+        should.not.exist(err);
+        should.exist(body);
+        (resp.statusCode).should.equal(404);
+        (resp.headers['content-type']).should.equal('text/html; charset=utf-8');
+        (resp.headers['x-frame-options']).should.equal('DENY');
+        (resp.headers['strict-transport-security']).should.equal("max-age=10886400; includeSubdomains");
+        (resp.headers['x-content-security-policy']).should.equal(
+          securityPolicyValue);
+
+        done();
+      });
+  });
 });
