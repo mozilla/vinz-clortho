@@ -24,7 +24,7 @@ describe('CSRF checking', function() {
 
   it('auth should fail without proper token', function(done) {
     request.post({
-      url: util.format('%s/sign_in', context.mozillaidp.url),
+      url: util.format('%s/api/sign_in', context.mozillaidp.url),
       json: {
         user: 'user2@mozilla.com',
         pass: 'testtest',
@@ -46,6 +46,7 @@ describe('CSRF checking', function() {
       should.not.exist(err);
       (body).should.be.a('object');
       (body.csrf).should.be.a('string');
+      (resp.headers['cache-control']).should.equal('no-cache, max-age=0');
       csrf_token = body.csrf;
       done();
     });
@@ -53,7 +54,7 @@ describe('CSRF checking', function() {
 
   it('auth should succeed with proper token', function(done) {
     request.post({
-      url: util.format('%s/sign_in', context.mozillaidp.url),
+      url: util.format('%s/api/sign_in', context.mozillaidp.url),
       json: {
         user: 'user2@mozilla.com',
         pass: 'testtest',

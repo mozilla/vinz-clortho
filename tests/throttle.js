@@ -16,7 +16,7 @@ describe('authentication throttling', function() {
   function authNTimes(n, password, cb, _lastErr) {
     if (n === 0) return cb(_lastErr);
     request.post({
-      url: util.format('%s/sign_in', context.mozillaidp.url),
+      url: util.format('%s/api/sign_in', context.mozillaidp.url),
       json: {
         user: 'user2@mozilla.com',
         pass: password,

@@ -101,6 +101,7 @@ app.use(i18n.abide({
   locale_directory: config.get('locale_directory')
 }));
 
+// set up local variables available to templates
 app.use(function(req, res, next) {
   res.local('csrf_token', req.session._csrf);
   res.local('browserid_server', config.get('browserid_server'));
@@ -109,33 +110,39 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.get('/.well-known/browserid', routes.well_known_browserid);
+// all API requests should be uncachable
+app.use(function(req, res, next) {
+  if (/^\/api\//.test(req.url)) {
+    res.setHeader('Cache-Control', 'no-cache, max-age=0');
+  }
+  next();
+});
 
+// documents
+app.get('/.well-known/browserid', routes.well_known_browserid);
 app.get('/', routes.signin);
 app.get('/sign_in', routes.signin);
-app.post('/sign_in', routes.check_signin);
-
 app.get('/provision', routes.provision);
-app.post('/provision', routes.provision_key);
 
-// Monitoring to make sure things are working OK
+// monitoring
 app.get('/node_status', routes.elb_check);
 app.get('/ldap_status', routes.checkStatus);
 
-// Dev and Stage only
+// APIs
+app.get('/api/session_context', routes.session_context);
+app.post('/api/sign_in', routes.check_signin);
+app.post('/api/provision', routes.provision_key);
+
+// for testing
 app.get('/signout', routes.signout);
 
-// API, currently used only for testing, maybe we'll grow this into more
-app.get('/api/session_context', routes.session_context);
-
-// Static
+// static files
 var static_dir = path.join(process.cwd(), '..', 'static');
 app.use(express.compiler({ enable: ['less'],
                            src: '../static'}
                         ));
 
 app.use(express.static(static_dir));
-
 app.use(routes.handle404);
 
 function startup(cb) {
@@ -155,4 +162,3 @@ if (process.argv[1] === __filename) {
 } else {
   exports.startup = startup;
 }
-

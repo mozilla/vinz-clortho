@@ -55,7 +55,7 @@ describe('certificate signing', function() {
 
   it('signing request fails without proper CSRF', function(done) {
     request.post({
-      url: util.format('%s/provision', context.mozillaidp.url),
+      url: util.format('%s/api/provision', context.mozillaidp.url),
       json: {
         user: 'user2@mozilla.com',
         pubkey: keypair.publicKey.serialize()
@@ -70,7 +70,7 @@ describe('certificate signing', function() {
 
   it('signing request fails without an authenticated session', function(done) {
     request.post({
-      url: util.format('%s/provision', context.mozillaidp.url),
+      url: util.format('%s/api/provision', context.mozillaidp.url),
       json: {
         user: 'user2@mozilla.com',
         pubkey: keypair.publicKey.serialize(),
@@ -86,7 +86,7 @@ describe('certificate signing', function() {
 
   it('authentication should succeed', function(done) {
     request.post({
-      url: util.format('%s/sign_in', context.mozillaidp.url),
+      url: util.format('%s/api/sign_in', context.mozillaidp.url),
       json: {
         user: 'user2@mozilla.com',
         pass: 'testtest',
@@ -95,13 +95,14 @@ describe('certificate signing', function() {
     }, function(err, resp, body) {
       should.not.exist(err);
       (resp.statusCode).should.equal(200);
+      (resp.headers['cache-control']).should.equal('no-cache, max-age=0');
       done();
     });
   });
 
   it('signing request succeeds with an authenticated session', function(done) {
     request.post({
-      url: util.format('%s/provision', context.mozillaidp.url),
+      url: util.format('%s/api/provision', context.mozillaidp.url),
       json: {
         user: 'user2@mozilla.com',
         pubkey: keypair.publicKey.serialize(),
