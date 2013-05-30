@@ -6,7 +6,7 @@
 
 const
 should = require('should'),
-request = require('request'),
+request = require('request').defaults({jar: require('request').jar()}),
 util = require('util'),
 testUtil = require('./lib/test-util');
 

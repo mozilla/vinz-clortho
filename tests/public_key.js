@@ -7,7 +7,7 @@
 const
 should = require('should'),
 testUtil = require('./lib/test-util'),
-request = require('request'),
+request = require('request').defaults({jar: require('request').jar()}),
 jwcrypto = require('jwcrypto');
 
 // load desired algorithms
