@@ -55,10 +55,12 @@ function connectAndBind(opts, cb) {
     opts.bindPassword,
     function(err) {
       // count errors during bind (would indicate an error with connect
-      if (err) statsd.increment('ldap.error.bind');
+      if (err) {
+        statsd.increment('ldap.error.bind');
+        logger.warn('Unable to bind to LDAP as', opts.dn, err);
+      }
       client.removeAllListeners('close');
       client.removeAllListeners('error');
-      logger.warn('Unable to bind to LDAP as', opts.dn, err);
       if (cb) {
         cb(err, client);
         cb = null;
