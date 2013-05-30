@@ -25,7 +25,7 @@ function connectAndBind(opts, cb) {
   var client = ldap.createClient({
     url: opts.url,
     connectTimeout: connectTimeout,
-    maxConnections: 1  /* prevents pooling which we don't want since we `bind` a lot */
+    maxConnections: 2  /* prevents pooling which we don't want since we `bind` a lot */
   });
 
 
@@ -158,7 +158,6 @@ exports.authEmail = function(opts, authCallback) {
       var bindDN;
 
       // total time required to perform a search given an established TCP connection
-      statsd.timing('ldap.timing.search', new Date() - searchStart);
       if (err) {
         statsd.increment('ldap.error.search');
         logger.warn('error during LDAP search ' + err.toString());
@@ -172,6 +171,7 @@ exports.authEmail = function(opts, authCallback) {
 
       res.on('end', function () {
         if (results === 1) {
+          statsd.timing('ldap.timing.search', new Date() - searchStart);
           var bindAsUserStart = new Date();
           client.bind(bindDN, opts.password, function (err) {
             // report total time required to connect, bind, search, and
