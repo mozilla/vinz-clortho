@@ -35,7 +35,6 @@ $(document).ready(function() {
       $.ajax({
         url: auth_url,
         type: 'POST',
-        dataType: 'json',
         data: { user: email, pass: pass, "_csrf": $('[name=_csrf]').val() },
         success: function() {
           navigator.id.completeAuthentication();
