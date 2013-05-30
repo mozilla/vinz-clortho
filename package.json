@@ -15,7 +15,7 @@
     "convict": "0.1.0",
     "ejs": "0.6.1",
     "express": "2.5.11",
-    "i18n-abide": "0.0.3",
+    "i18n-abide": " 0.0.8beta6",
     "jwcrypto": "0.4.3",
     "ldapjs": "https://github.com/lloyd/node-ldapjs/archive/ephemeral_port.tar.gz",
     "less": "1.2.2",

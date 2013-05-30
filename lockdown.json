@@ -5,6 +5,9 @@
   "abbrev": {
     "1.0.4": "bd55ae5e413ba1722ee4caba1f6ea10414a59ecd"
   },
+  "amdefine": {
+    "0.0.5": "86b6e9470f8cde955ef7daa3cf5d544ba81aa3db"
+  },
   "ansi": {
     "0.1.2": "2627e29498f06e2a1c2ece9c21e28fd494430827"
   },
@@ -15,6 +18,7 @@
     "0.1.2": "d93ffdbb67ac5507779be316a7d65146417beef8"
   },
   "async": {
+    "0.1.22": "0fc1aaa088a0e3ef0ebe2d8831bab0dcf8845061",
     "0.2.9": "df63060fbf3d33286a76aaf6d55a2986d9ff8619"
   },
   "aws-lib": {
@@ -58,6 +62,7 @@
     "1.6.2": "fd9c88369c1e41e3307a0a160d713f22513c93b3"
   },
   "colors": {
+    "0.5.1": "7d0023eaeb154e8ee9fce75dcb923d0ed1667774",
     "0.6.0-1": "6dbb68ceb8bc60f2b313dcc5ce1599f06d19e67a"
   },
   "combined-stream": {
@@ -128,8 +133,16 @@
   "ejs": {
     "0.6.1": "16ccc98eeeac166982927fa67eb3fca8865f6871"
   },
+  "escodegen": {
+    "0.0.22": "4c9ba6e9f353aaba3eccdb045e93f9543cbb739d"
+  },
   "esprima": {
-    "0.9.9": "1b90925c975d632d7282939c3bb9c3a423c30490"
+    "0.9.9": "1b90925c975d632d7282939c3bb9c3a423c30490",
+    "1.0.3": "7bdb544f95526d424808654d3b8fbe928650c0fe"
+  },
+  "estraverse": {
+    "0.0.4": "01a0932dfee574684a598af5a67c3bf9b6428db2",
+    "1.1.1": "657fff768decd7e329e2454534897b70dc701ebf"
   },
   "express": {
     "2.5.11": "4ce8ea1f3635e69e49f0ebb497b6a4b0a51ce6f0"
@@ -162,6 +175,9 @@
   "glob": {
     "3.2.1": "57af70ec73ba2323bfe3f29a067765db64c5d758"
   },
+  "gobbledygook": {
+    "0.0.3": "437bb23d3ade04dd26b49e7c21e4026c6b086234"
+  },
   "graceful-fs": {
     "1.1.14": "07078db5f6377f6321fceaaedf497de124dc9465",
     "1.2.1": "b35cc6e623576fc2a278cba12c00dda6a1758d2d"
@@ -182,10 +198,7 @@
     "0.9.11": "9e882714572315e6790a5d0a7955efff1f19e653"
   },
   "i18n-abide": {
-    "0.0.3": "2142aac2db21da96add1dd617b71720976ca4e93"
-  },
-  "iconv": {
-    "2.0.6": "c492a563d5abc1a34d72ff9f7519a97eb4217361"
+    "0.0.8beta6": "1efaf183b417901178afb87e96047599ac175425"
   },
   "inherits": {
     "1.0.0": "38e1975285bf1f7ba9c84da102bb12771322ac48"
@@ -204,6 +217,9 @@
   },
   "jsprim": {
     "0.3.0": "cd13466ea2480dbd8396a570d47d31dda476f8b1"
+  },
+  "jsxgettext": {
+    "0.0.5": "882f3d69ed951cf22a8b4608b300333f9f8ebe5e"
   },
   "jwcrypto": {
     "0.4.3": "b48ef3db136b09df0933bfa09c717fd738b56038"
@@ -253,9 +269,6 @@
   "node-font-face-generator": {
     "0.1.0-dev1": "778430ea7fb61ed9de61e8a51e0aadda29007193"
   },
-  "node-gettext": {
-    "0.1.2": "f359eb00b77e1b17fa0f7e624a4dbef43ee1aa1d"
-  },
   "node-proxy": {
     "0.6.0": "41e64712dbd947aa9d9f466b5c0b5ee020bbcbbb"
   },
@@ -264,6 +277,9 @@
   },
   "node-uuid": {
     "1.4.0": "07f9b2337572ff6275c775e1d48513f3a45d7a65"
+  },
+  "nomnom": {
+    "1.5.2": "f4345448a853cfbd5c0d26320f2477ab0526fe2f"
   },
   "nopt": {
     "2.1.1": "91eb7c4b017e7c00adcad1fd6d63944d0fdb75c1"
@@ -290,6 +306,7 @@
   "optimist": {
     "0.2.6": "c15b750c98274ea175d241b745edf4ddc88f177b",
     "0.3.1": "6680d30560193af5a55eb64394883ed7bcb98f2e",
+    "0.3.4": "4d6d0bd71ffad0da4ba4f6d876d5eeb04e07480b",
     "0.3.7": "c90941ad59e4273328923074d2cf2e7cbc6ec0d9"
   },
   "osenv": {
@@ -349,6 +366,9 @@
   "sntp": {
     "0.1.4": "5ef481b951a7b29affdf4afd7f26838fc1120f84"
   },
+  "source-map": {
+    "0.1.22": "425906162f81bf110552ccc9931dba079e9f1341"
+  },
   "stack-trace": {
     "0.0.6": "1e719bd6a2629ff09c189e17a9ef902a94fc5db0"
   },
@@ -373,6 +393,7 @@
     "1.2.6": "d354b2d3c1cf10ebc18fa78c11a28bdd9ce1580d"
   },
   "underscore": {
+    "1.1.7": "40bab84bad19d230096e8d6ef628bff055d83db0",
     "1.4.4": "61a6a32010622afa07963bf325203cf12239d604"
   },
   "urlparse": {
