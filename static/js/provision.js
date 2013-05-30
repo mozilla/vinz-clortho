@@ -10,7 +10,7 @@
   navigator.id.beginProvisioning(function(email /* , cert_duration */) {
     navigator.id.genKeyPair(function(pubkey) {
       $.ajax({
-        url: window.location.href,
+        url: '/api/provision',
         data: JSON.stringify({
           pubkey: pubkey,
           user: email,

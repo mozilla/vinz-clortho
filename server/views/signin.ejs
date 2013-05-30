@@ -6,7 +6,7 @@
     <p><%= gettext("Please use your LDAP password") %></p>
   </div>
 
-  <form action="/sign_in" method="POST" novalidate>
+  <form action="/api/sign_in" method="POST" novalidate>
 
     <input type="hidden" name="_csrf" value="<%= csrf_token %>" />
     <div class="center-col">
