@@ -104,10 +104,10 @@ exports.authEmail = function(opts, authCallback) {
   if (!opts.password) throw "password required";
   if (!opts.email) throw "email address required";
 
-  var start = new Date();
+  var bindStart = new Date();
   connectAndBind(opts, function(err, client) {
     // report time required to connect and bind to ldap.
-    statsd.timing('ldap.timing.bind', new Date() - start);
+    statsd.timing('ldap.timing.bind', new Date() - bindStart);
     if (err) {
       return authCallback(err);
     }
@@ -148,7 +148,7 @@ exports.authEmail = function(opts, authCallback) {
 
     var results = 0;
 
-    start = new Date();
+    var searchStart = new Date();
     client.search('o=com,dc=mozilla', {
       scope: 'sub',
       filter: '(|(mail=' + opts.email + ')(emailAlias=' + opts.email + '))',
@@ -156,9 +156,8 @@ exports.authEmail = function(opts, authCallback) {
     }, function (err, res) {
       var bindDN;
 
-      // total time required to connect, bind, and then search for an
-      // alias
-      statsd.timing('ldap.timing.search', new Date() - start);
+      // total time required to perform a search given an established TCP connection
+      statsd.timing('ldap.timing.search', new Date() - searchStart);
       if (err) {
         statsd.increment('ldap.error.search');
         logger.warn('error during LDAP search ' + err.toString());
@@ -172,11 +171,11 @@ exports.authEmail = function(opts, authCallback) {
 
       res.on('end', function () {
         if (results === 1) {
-          start = new Date();
+          var bindAsUserStart = new Date();
           client.bind(bindDN, opts.password, function (err) {
             // report total time required to connect, bind, search, and
             // bind as target user
-            statsd.timing('ldap.timing.bind_as_user', new Date() - start);
+            statsd.timing('ldap.timing.bind_as_user', new Date() - bindAsUserStart);
             if (err) {
               statsd.increment('ldap.auth.wrong_password');
               logger.warn('Wrong credentials for user', bindDN, err);
