@@ -60,8 +60,8 @@ var conf = module.exports = convict({
   ldap_server_connect_timeout: { format: 'int', default: 10000 },
   locale_directory: { format: 'string', default: "locale" },
   statsd: {
-    host: { format: "string", default: "" },
-    port: { format: "int", default: 6000 }
+    host: { format: "string", default: "127.0.0.1" },
+    port: { format: "int", default: 8125 }
   },
   supported_languages: {
     doc: "List of languages this deployment should detect and display localized strings.",
