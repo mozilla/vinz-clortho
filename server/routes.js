@@ -46,35 +46,6 @@ exports.routes = function () {
         browserid_server: config.get('browserid_server'),
         layout: false});
     },
-    provision_key: function (req, resp) {
-      // check that there is an authenticated user
-      if (!req.session || !req.session.email) {
-        return resp.send(401);
-      }
-      // check that required arguments are supplied
-      if (!req.body.pubkey || !req.body.user) {
-        return resp.send(400);
-      }
-      // check that the user is authenticated as the target user
-      // XXX: alias support, see issue #64
-      if (req.session.email !== req.body.user) {
-        return resp.send(409);
-      }
-
-      crypto.cert_key(
-        req.body.pubkey,
-        req.session.email,
-        config.get('certificate_validity_s'),
-        function(err, cert) {
-          if (err) {
-            resp.writeHead(500);
-            resp.end();
-          } else {
-            resp.json({ cert: cert });
-          }
-        });
-    },
-
     signin: function (req, resp) {
       var email = (req.query ? req.query.email : null);
       if (email) email = emailRewrite(email);
@@ -97,13 +68,43 @@ exports.routes = function () {
       });
     },
 
-    check_signin: function (req, resp) {
-      var mozillaUser = "";
-      if (req.body.user) {
-        mozillaUser = emailRewrite(req.body.user).toLowerCase();
+    // API end points
+    provision_key: function (req, resp) {
+      // check that there is an authenticated user
+      if (!req.session || !req.session.email) {
+        return resp.send(401);
+      }
+      // check that required arguments are supplied
+      if (!req.params.pubkey || !req.params.user) {
+        return resp.send(400);
+      }
+      // check that the user is authenticated as the target user
+      // XXX: alias support, see issue #64
+      if (req.session.email !== req.params.user) {
+        return resp.send(409);
       }
 
-      if (!req.body.user || !req.body.pass) {
+      crypto.cert_key(
+        req.params.pubkey,
+        req.session.email,
+        config.get('certificate_validity_s'),
+        function(err, cert) {
+          if (err) {
+            resp.writeHead(500);
+            resp.end();
+          } else {
+            resp.json({ cert: cert });
+          }
+        });
+    },
+
+    check_signin: function (req, resp) {
+      var mozillaUser = "";
+      if (req.params.user) {
+        mozillaUser = emailRewrite(req.params.user).toLowerCase();
+      }
+
+      if (!req.params.user || !req.params.pass) {
         resp.writeHead(400);
         return resp.end();
       } else {
@@ -122,12 +123,15 @@ exports.routes = function () {
             // be indistiguishable from wrong password.  This is a
             // usability loss in the name of security
             // https://wiki.mozilla.org/WebAppSec/Secure_Coding_Guidelines
-            resp.send('Email or Password incorrect', 401);
+            resp.json({
+              success: false,
+              reason: 'email or password incorrect'
+            }, 401);
             return;
           }
           auth.authEmail({
             email: mozillaUser,
-            password: req.body.pass
+            password: req.params.pass
           }, function (err, passed) {
             if (err || ! passed) {
               // if this is a password failure, note it in our password
@@ -135,26 +139,26 @@ exports.routes = function () {
               if (err && err.name === 'InvalidCredentialsError') {
                 throttle.failed(mozillaUser);
               }
-              resp.writeHead(401);
-              resp.write('Email or Password incorrect');
+              resp.json({
+                success: false,
+                reason: 'email or password incorrect'
+              }, 401);
             } else {
               // upon successful authentication, clear any throttling
               // for this user
               throttle.clear(mozillaUser);
-              req.session.email = req.body.user;
-              resp.writeHead(200);
+              req.session.email = req.params.user;
+              resp.send({ success: true }, 200);
             }
-            resp.end();
           });
         });
       }
     },
 
-    // API end points
     session_context: function(req, res, next) {
-      res.send({
+      res.json({
         csrf: req.session._csrf
-      });
+      }, 200);
     },
 
     // Monitoring End points

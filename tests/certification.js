@@ -124,4 +124,57 @@ describe('certificate signing', function() {
       });
     });
   });
+
+  it('signing request fails if user is missing', function(done) {
+    request.post({
+      url: util.format('%s/api/provision', context.mozillaidp.url),
+      json: {
+        pubkey: keypair.publicKey.serialize(),
+        _csrf: csrf_token
+      },
+      json: true
+    }, function(err, resp, body) {
+      should.not.exist(err);
+      (body.success).should.equal(false);
+      (body.reason).should.equal("missing required parameter: 'user'");
+      (resp.statusCode).should.equal(400);
+      done();
+    });
+  });
+
+  it('signing request fails if pubkey is missing', function(done) {
+    request.post({
+      url: util.format('%s/api/provision', context.mozillaidp.url),
+      json: {
+        user: 'user2@mozilla.com',
+        _csrf: csrf_token
+      },
+      json: true
+    }, function(err, resp, body) {
+      should.not.exist(err);
+      (body.success).should.equal(false);
+      (body.reason).should.equal("missing required parameter: 'pubkey'");
+      (resp.statusCode).should.equal(400);
+      done();
+    });
+  });
+
+  it('signing fails when extra params are present', function(done) {
+    request.post({
+      url: util.format('%s/api/provision', context.mozillaidp.url),
+      json: {
+        user: 'user2@mozilla.com',
+        pubkey: keypair.publicKey.serialize(),
+        _csrf: csrf_token,
+        bogus: 'param'
+      },
+      json: true
+    }, function(err, resp, body) {
+      should.not.exist(err);
+      (body.success).should.equal(false);
+      (body.reason).should.equal("unsupported parameter: 'bogus'");
+      (resp.statusCode).should.equal(400);
+      done();
+    });
+  });
 });
