@@ -162,7 +162,8 @@ function startup(cb) {
 }
 
 // allow clortho to be invoked from the command line or as a library
-if (process.argv[1] === __filename) {
+// ref: http://stackoverflow.com/a/6398335/445792
+if (require.main === module) {
   // command line invocation
   startup(function(err, address) {
     logger.info(util.format("running on http://%s:%s",
