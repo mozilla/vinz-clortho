@@ -11,7 +11,7 @@
     "node": "~0.6.10"
   },
   "dependencies": {
-    "client-sessions": "0.1.0",
+    "client-sessions": "0.3.0",
     "convict": "0.1.0",
     "ejs": "0.6.1",
     "express": "2.5.11",
@@ -21,7 +21,7 @@
     "less": "1.2.2",
     "node-statsd": "https://github.com/downloads/lloyd/node-statsd/0509f85.tgz",
     "winston": "0.7.1",
-    "cef": "~0.3.3",
+    "cef": "0.3.3",
     "connect-fonts": "0.0.9",
     "connect-fonts-opensans": "0.0.4",
     "lockdown": "0.0.3"
