@@ -1,8 +1,7 @@
 {
   "basic_auth_realm": "Basic realm=\"Mozilla Corporation - LDAP Login\"",
   "browserid_server": "http://127.0.0.1:10002",
-  "client_sessions": {
-    "cookie_name": "session_state",
+  "cookie": {
     "secret": "YOU MUST CHANGE ME",
     "duration": 86400000
   },

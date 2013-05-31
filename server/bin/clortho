@@ -71,13 +71,12 @@ if (config.get('local_development')) {
   logger.warn("Running with insecure cookies, no appropriate for production");
 }
 
-var sess_config = config.get('client_sessions');
 app.use(sessions({
-  cookieName: sess_config.cookie_name,
-  secret: sess_config.secret,
-  duration: sess_config.duration_ms,
+  cookieName: 'session',
+  secret: config.get('cookie.secret'),
+  duration: config.get('cookie.duration_ms'),
   cookie: {
-    maxAge: sess_config.duration_ms,
+    maxAge: config.get('cookie.duration_ms'),
     httpOnly: true,
     // only allow non-secure cookies during local development
     secure: !config.get('local_development')

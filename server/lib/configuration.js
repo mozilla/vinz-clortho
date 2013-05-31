@@ -33,8 +33,7 @@ var conf = module.exports = convict({
     format: 'int',
     default: (5 * 60) // five minute default certification validity.
   },
-  client_sessions: {
-    cookie_name: { format: 'string', default: "session_state" },
+  cookie: {
     secret: { format: 'string', default: "YOU MUST CHANGE ME" },
     duration_ms: { format: 'int', default: (24 * 60 * 60 * 1000) }
   },
