@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/mozilla/vinz-clortho.png?branch=unit-tests)](https://travis-ci.org/mozilla/vinz-clortho)
+[![Build Status](https://travis-ci.org/mozilla/vinz-clortho.png?branch=master)](https://travis-ci.org/mozilla/vinz-clortho)
 
 # Mozilla IdP
 
