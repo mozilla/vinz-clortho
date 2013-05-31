@@ -21,7 +21,8 @@ const config = require('../lib/configuration'),
       util = require('util'),
       logger = require('../lib/logging').logger,
       font_middleware = require("connect-fonts"),
-      opensans = require("connect-fonts-opensans");
+      opensans = require("connect-fonts-opensans"),
+      validate = require('../lib/validate');
 
 // log uncaught exceptions
 process.on('uncaughtException', function(err) {
@@ -102,6 +103,9 @@ app.use(i18n.abide({
 
 // set up local variables available to templates
 app.use(function(req, res, next) {
+  // delete the supplied CSRF token at this point, it's already been checked and
+  // subsequent API endpoints perform rigorous input validation.
+  if (req.body && req.body._csrf) delete req.body._csrf;
   res.local('csrf_token', req.session._csrf);
   res.local('browserid_server', config.get('browserid_server'));
   var s = req.session || null;
@@ -129,8 +133,14 @@ app.get('/ldap_status', routes.checkStatus);
 
 // APIs
 app.get('/api/session_context', routes.session_context);
-app.post('/api/sign_in', routes.check_signin);
-app.post('/api/provision', routes.provision_key);
+app.post('/api/sign_in', validate({
+  user: 'email',
+  pass: 'password'
+}), routes.check_signin);
+app.post('/api/provision', validate({
+  user: 'email',
+  pubkey: 'pubkey'
+}), routes.provision_key);
 
 // for testing
 app.get('/signout', routes.signout);
