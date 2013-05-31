@@ -16,20 +16,15 @@ emailRewrite = require('./lib/email_rewrite.js'),
 
 // apply X-Content-Security-Policy headers to HTML resources served
 function applyContentSecurityPolicy(res) {
-  ['X-Content-Security-Policy',
-   'Content-Security-Policy'].forEach(function(header) {
-     res.setHeader(header,
-                   util.format("default-src 'self' %s",
-                               config.get('browserid_server')));
-   });
+  ['X-Content-Security-Policy','Content-Security-Policy'].forEach(function(header) {
+    res.setHeader(header,
+                  util.format("default-src 'self' %s",
+                              config.get('browserid_server')));
+  });
 }
 
 exports.routes = function () {
-  var well_known_last_mod = new Date().getTime();
   return {
-    public_key: null,
-    private_key: null,
-    ttl: null,
     well_known_browserid: function (req, resp) {
       var pk = crypto.pubKey;
       resp.setHeader('Content-Type', 'application/json');
@@ -44,7 +39,8 @@ exports.routes = function () {
       resp.render('provision', {
         user: req.session.email,
         browserid_server: config.get('browserid_server'),
-        layout: false});
+        layout: false
+      });
     },
     signin: function (req, resp) {
       var email = (req.query ? req.query.email : null);
@@ -155,7 +151,7 @@ exports.routes = function () {
       }
     },
 
-    session_context: function(req, res, next) {
+    session_context: function(req, res) {
       res.json({
         csrf: req.session._csrf
       }, 200);
@@ -165,15 +161,15 @@ exports.routes = function () {
 
     // the ELB (elastic load balancer) check is just to make
     // sure that node returns a response
-    elb_check: function(req, res, next) {
+    elb_check: function(req, res) {
       res.setHeader('Content-Type', 'text/plain');
-      res.send("OK")
+      res.send("OK");
     },
 
     // checks that we can bind against the LDAP server
     // this check is for our global load balancers so they
     // can add / remove regions if LDAP connectivity drops
-    checkStatus: function(req, res, next) {
+    checkStatus: function(req, res) {
       auth.checkBindAuth({}, function(err) {
         res.setHeader('Content-Type', 'text/plain');
         if (err) {

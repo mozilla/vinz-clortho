@@ -28,7 +28,8 @@ describe('source code syntax', function() {
   });
 
   var filesToLint = [
-    path.join(__dirname, '../server/bin/clortho')
+    path.join(__dirname, '../server/bin/clortho'),
+    path.join(__dirname, '../server/routes.js')
   ];
 
   it('we should be able to discover files to lint', function(done) {
