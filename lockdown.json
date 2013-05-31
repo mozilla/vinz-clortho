@@ -332,8 +332,7 @@
     "1.1.1": "75c97c5446fa1146c1d250c47ca3629fb9a2e764"
   },
   "request": {
-    "2.16.6": "872fe445ae72de266b37879d6ad7dc948fa01cad",
-    "2.20.0": "497c9bc869f03c34f6cabaac962224d2d835d47d"
+    "2.16.6": "872fe445ae72de266b37879d6ad7dc948fa01cad"
   },
   "resolve": {
     "0.2.8": "fdb17d4abb0ecaf6f80d67ac03cf290088f6c0d0"
