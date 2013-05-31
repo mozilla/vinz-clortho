@@ -25,8 +25,7 @@
     "0.0.5": "971b8995078d83c80f2372f134c496e71b293a46"
   },
   "aws-sign": {
-    "0.2.0": "c55013856c8194ec854a0cbec90aab5a04ce3ac5",
-    "0.3.0": "3d81ca69b474b1e16518728b51c24ff0bbedc6e9"
+    "0.2.0": "c55013856c8194ec854a0cbec90aab5a04ce3ac5"
   },
   "awsbox": {
     "0.4.5": "027a9998955f09f3d6b0a10d38ea37ae381b6358"
@@ -90,8 +89,7 @@
     "0.1.0": "d4b1948235196091855aaedc175374c58ae212d8"
   },
   "cookie-jar": {
-    "0.2.0": "64ecc06ac978db795e4b5290cbe48ba3781400fa",
-    "0.3.0": "bc9a27d4e2b97e186cd57c9e2063cb99fa68cccc"
+    "0.2.0": "64ecc06ac978db795e4b5290cbe48ba3781400fa"
   },
   "cookies": {
     "0.2.1": "fee635ef023704893ac30387899f3dc448a52840"
@@ -101,9 +99,6 @@
   },
   "crypto-browserify": {
     "0.2.3": "c98141505d90e31a1e456cb97343dc3b0f4a1a2a"
-  },
-  "ctype": {
-    "0.5.2": "fe8091d468a373a0b0c9ff8bbfb3425c00973a1d"
   },
   "cycle": {
     "1.0.2": "269aca6f1b8d2baeefc8ccbc888b459f322c4e60"
@@ -160,8 +155,7 @@
     "2.2.0": "093b32ce868cb69f5166dcf331fae074adc71cee"
   },
   "forever-agent": {
-    "0.2.0": "e1c25c7ad44e09c38f233876c76fcc24ff843b1f",
-    "0.3.0": "6cd4b6bd8d46ae829d7422ed84cabae336b293ef"
+    "0.2.0": "e1c25c7ad44e09c38f233876c76fcc24ff843b1f"
   },
   "form-data": {
     "0.0.10": "db345a5378d86aeeb1ed5d553b869ac192d2f5ed"
@@ -193,9 +187,6 @@
   },
   "http-browserify": {
     "0.1.1": "d9d82735a5f85f950761ac3909ba9485ec0af4f1"
-  },
-  "http-signature": {
-    "0.9.11": "9e882714572315e6790a5d0a7955efff1f19e653"
   },
   "i18n-abide": {
     "0.0.8beta6": "1efaf183b417901178afb87e96047599ac175425"
@@ -231,7 +222,7 @@
     "1.2.2": "0d6a59d640cc79d2a228b477c99cc4a45bd2c443"
   },
   "lockdown": {
-    "0.0.3": "ae472291d9de188bdaacc9211994a54a038b0cdd"
+    "0.0.4": "9ffd6fde34d3877ae03cd4c308aff215fef030d3"
   },
   "lru-cache": {
     "2.3.0": "1cee12d5a9f28ed1ee37e9c332b8888e6b85412a"
@@ -294,8 +285,7 @@
     "0.0.0": "b369bd32bdde66af59605c3b0520bc219dccc04f"
   },
   "oauth-sign": {
-    "0.2.0": "a0e6a1715daed062f322b622b7fe5afd1035b6e2",
-    "0.3.0": "cb540f93bb2b22a7d5941691a288d60e8ea9386e"
+    "0.2.0": "a0e6a1715daed062f322b622b7fe5afd1035b6e2"
   },
   "once": {
     "1.1.1": "9db574933ccb08c3a7614d154032c09ea6f339e7"
@@ -381,8 +371,7 @@
     "0.0.16": "704ea0513c15375389ef5b6dde865730528f2245"
   },
   "tunnel-agent": {
-    "0.2.0": "6853c2afb1b2109e45629e492bde35f459ea69e8",
-    "0.3.0": "ad681b68f5321ad2827c4cfb1b7d5df2cfe942ee"
+    "0.2.0": "6853c2afb1b2109e45629e492bde35f459ea69e8"
   },
   "ua-parser": {
     "0.2.4": "c25ef577be95350d0fe1d3361597282da4e9ba71"
