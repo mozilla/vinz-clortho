@@ -24,8 +24,7 @@ function connectAndBind(opts, cb) {
 
   var client = ldap.createClient({
     url: opts.url,
-    connectTimeout: connectTimeout,
-    maxConnections: 2  /* prevents pooling which we don't want since we `bind` a lot */
+    connectTimeout: connectTimeout
   });
 
 
