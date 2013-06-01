@@ -17,6 +17,14 @@ Here is the statsd hierarchy:
     * `healthcheck` - status of health check when requested by load balancers
       * `ok`
       * `error`
+    * `provision` - stats about certificate provisioning
+      * `attempt` - HTML provisioning content was served
+      * `success` - certificate provisioning succeeded
+    * `auth` - stats about user authenticatoin
+      * `attempt` - HTML authentication content was served
+      * `throttle` - authentication failed due to throttling
+      * `success` - authentication succeeded and session was established
+
 
 The ultimate source of truth is always the code, but an effort
 should be made to keep this document up to date to describe the general

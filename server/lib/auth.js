@@ -123,6 +123,8 @@ exports.authEmail = function(opts, authCallback) {
         authCallback.apply(null, arguments);
         authCallback = null;
       }
+      // total time for interaction with LDAP
+      statsd.timing('ldap.timing.total', new Date() - bindStart);
     };
 
     // ensure callback called if the connection drops
@@ -169,8 +171,8 @@ exports.authEmail = function(opts, authCallback) {
       });
 
       res.on('end', function () {
+        statsd.timing('ldap.timing.search', new Date() - searchStart);
         if (results === 1) {
-          statsd.timing('ldap.timing.search', new Date() - searchStart);
           var bindAsUserStart = new Date();
           client.bind(bindDN, opts.password, function (err) {
             // report total time required to connect, bind, search, and
@@ -187,6 +189,7 @@ exports.authEmail = function(opts, authCallback) {
             }
           });
         } else {
+          statsd.increment('ldap.auth.unknown_email');
           callback(null, false);
         }
       });
