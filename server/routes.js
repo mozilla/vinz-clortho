@@ -35,6 +35,7 @@ exports.routes = function () {
       });
     },
     provision: function (req, resp) {
+      statsd.increment('provision.attempt');
       applyContentSecurityPolicy(resp);
       resp.render('provision', {
         user: req.session.email,
@@ -43,6 +44,7 @@ exports.routes = function () {
       });
     },
     signin: function (req, resp) {
+      statsd.increment('auth.attempt');
       var email = (req.query ? req.query.email : null);
       if (email) email = emailRewrite(email);
 
@@ -89,6 +91,8 @@ exports.routes = function () {
             resp.writeHead(500);
             resp.end();
           } else {
+            // successful provisioning
+            statsd.increment('provision.success');
             resp.json({ cert: cert });
           }
         });
@@ -115,6 +119,7 @@ exports.routes = function () {
                 suser: mozillaUser
               }
             });
+            statsd.increment('auth.throttle');
             // as per security guidelines, account throttling should
             // be indistiguishable from wrong password.  This is a
             // usability loss in the name of security
@@ -145,6 +150,7 @@ exports.routes = function () {
               throttle.clear(mozillaUser);
               req.session.email = req.params.user;
               resp.send({ success: true }, 200);
+              statsd.increment('auth.success');
             }
           });
         });
