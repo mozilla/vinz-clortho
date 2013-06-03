@@ -182,7 +182,7 @@ exports.routes = function () {
           statsd.increment('healthcheck.error');
           // try message, no? has name? no ... "unknown"
           var output = "Error: " + err.name;
-          res.send(output);
+          res.send(output, 503);
         } else {
           statsd.increment('healthcheck.ok');
           res.send('OK');
