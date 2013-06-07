@@ -146,12 +146,7 @@ app.post('/api/provision', validate({
 app.get('/signout', routes.signout);
 
 // static files
-var static_dir = path.join(process.cwd(), '..', 'static');
-app.use(express.compiler({ enable: ['less'],
-                           src: '../static'}
-                        ));
-
-app.use(express.static(static_dir));
+app.use(express.static(path.join(process.cwd(), '..', 'static')));
 app.use(routes.handle404);
 
 function startup(cb) {
