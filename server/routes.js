@@ -57,6 +57,14 @@ exports.routes = function () {
       });
     },
 
+    welcome: function (req, resp) {
+      resp.setHeader('X-Frame-Options', 'DENY');
+      applyContentSecurityPolicy(resp);
+      resp.render('welcome', {
+        title: req.gettext("The Mozilla Identity Provider")
+      });
+    },
+
     handle404: function (req, resp) {
       resp.setHeader('X-Frame-Options', 'DENY');
       applyContentSecurityPolicy(resp);
