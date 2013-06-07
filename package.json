@@ -18,7 +18,6 @@
     "i18n-abide": " 0.0.8beta6",
     "jwcrypto": "0.4.3",
     "ldapjs": "https://github.com/lloyd/node-ldapjs/archive/ephemeral_port.tar.gz",
-    "less": "1.2.2",
     "node-statsd": "https://github.com/downloads/lloyd/node-statsd/0509f85.tgz",
     "winston": "0.7.1",
     "cef": "0.3.3",

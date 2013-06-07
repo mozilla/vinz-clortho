@@ -218,9 +218,6 @@
   "ldapjs": {
     "0.6.3": "*"
   },
-  "less": {
-    "1.2.2": "0d6a59d640cc79d2a228b477c99cc4a45bd2c443"
-  },
   "lockdown": {
     "0.0.4": "9ffd6fde34d3877ae03cd4c308aff215fef030d3"
   },
