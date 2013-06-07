@@ -123,7 +123,7 @@ app.use(function(req, res, next) {
 
 // documents
 app.get('/.well-known/browserid', routes.well_known_browserid);
-app.get('/', routes.signin);
+app.get('/', routes.welcome);
 app.get('/sign_in', routes.signin);
 app.get('/provision', routes.provision);
 
