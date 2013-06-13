@@ -28,7 +28,7 @@ echo "$GIT_REVISION" > static/ver.txt
 %install
 rm -rf %{buildroot}
 mkdir -p %{buildroot}%{_rootdir}
-for f in docs mock-ldap-server scripts server static tests utils *.json *.md; do
+for f in node_modules docs mock-ldap-server scripts server static tests utils *.json *.md; do
     cp -rp $f %{buildroot}%{_rootdir}/
 done
 mkdir -p %{buildroot}%{_rootdir}/config
