@@ -7,21 +7,26 @@ set -e
 
 progname=$(basename $0)
 
-cd $(dirname $0)/..    # top level of the checkout
+TOP="$(dirname $0)/.."    # top level of the checkout
+cd $TOP
 
-mkdir -p rpmbuild/SOURCES rpmbuild/SPECS rpmbuild/SOURCES
-rm -rf rpmbuild/RPMS rpmbuild/SOURCES/mozillaidp
+if [ $# -ne 1 ]; then
+    echo "Usage: $(basename $0) (GIT_SHA | GIT_TAG | GIT_BRANCH)"
+    exit 1
+else
+    VER=$1
+fi
 
-# make an archive out of the current code for the rpmbuild
-# command to work with
-tar --exclude rpmbuild \
-    --exclude .git \
-    --exclude var -czf \
-    "$PWD/rpmbuild/SOURCES/mozilla-idp-server.tar.gz" .
+
+rm -rf rpmbuild
+mkdir -p rpmbuild/SOURCES rpmbuild/SPECS rpmbuild/SOURCES rpmbuild/BUILD
+git clone . rpmbuild/BUILD
+cd rpmbuild/BUILD
+git checkout $VER
+export GIT_REVISION=$(git log -1 --oneline)
+cd $TOP
 
 set +e
-
-export GIT_REVISION=$(git log -1 --oneline)
 
 rpmbuild --define "_topdir $PWD/rpmbuild" \
          -ba scripts/mozidp.spec

@@ -8,7 +8,6 @@ Packager:      Benson Wong <bwong@mozilla.com>
 Group:         Development/Libraries
 License:       MPL 2.0
 URL:           https://github.com/mozilla/vinz-clortho
-Source0:       %{name}.tar.gz
 BuildRoot:     %{_tmppath}/%{name}-%{version}-%{release}-root
 AutoReqProv:   no
 Requires:      openssl, nodejs >= 0.8.24, gmp-devel
@@ -16,9 +15,6 @@ BuildRequires: gmp-devel, gcc-c++, git, make, npm, nodejs >= 0.8.24
 
 %description
 Mozilla IdP Server
-
-%prep
-%setup -q -c -n mozillaidp
 
 %build
 npm install
