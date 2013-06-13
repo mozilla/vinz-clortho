@@ -19,7 +19,7 @@ Mozilla IdP Server
 %build
 npm install
 export PATH=$PWD/node_modules/.bin:$PATH
-echo "$GIT_REVISION" > $PWD/static/ver.txt
+echo "$GIT_REVISION" > static/ver.txt
 
 %install
 rm -rf %{buildroot}
