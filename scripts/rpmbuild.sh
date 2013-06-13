@@ -40,4 +40,4 @@ echo "Building Source RPM"
 
 rpmbuild --define "_topdir $PWD/rpmbuild" \
          --define "version $MOZIDP_VER" \
-         -bs scripts/mozidp.spec
+         -ba scripts/mozidp.spec
