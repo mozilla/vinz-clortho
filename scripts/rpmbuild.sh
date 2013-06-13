@@ -6,8 +6,7 @@
 set -e
 
 progname=$(basename $0)
-
-TOP="$(dirname $0)/.."    # top level of the checkout
+TOP="$(cd $(dirname $0)/..; pwd)"    # top level of the checkout
 cd $TOP
 
 if [ $# -ne 1 ]; then
@@ -17,13 +16,13 @@ else
     VER=$1
 fi
 
-
 rm -rf rpmbuild
 mkdir -p rpmbuild/SOURCES rpmbuild/SPECS rpmbuild/SOURCES rpmbuild/BUILD
 git clone . rpmbuild/BUILD
 cd rpmbuild/BUILD
 git checkout $VER
 export GIT_REVISION=$(git log -1 --oneline)
+
 cd $TOP
 
 set +e
