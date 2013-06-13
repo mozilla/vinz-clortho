@@ -18,9 +18,9 @@ fi
 
 rm -rf rpmbuild
 mkdir -p rpmbuild/SOURCES rpmbuild/SPECS rpmbuild/SOURCES rpmbuild/BUILD
-git clone . rpmbuild/BUILD
+git clone . rpmbuild/BUILD &>/dev/null
 cd rpmbuild/BUILD
-git checkout $VER
+git checkout $VER &>/dev/null
 export GIT_REVISION=$(git log -1 --oneline)
 
 cd $TOP
@@ -28,6 +28,8 @@ cd $TOP
 set +e
 
 rpmbuild --define "_topdir $PWD/rpmbuild" \
+         --define "ver $(echo $VER | sed 's/-/_/g')" \
+         --define "hash $(echo $GIT_REVISION | awk '{print $1}')" \
          -ba scripts/mozidp.spec
 rc=$?
 if [ $rc -eq 0 ]; then

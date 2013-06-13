@@ -1,7 +1,7 @@
 %define _rootdir /opt/mozilla-idp-server
 
 Name:          mozilla-idp-server
-Version:       0.2013.06.19
+Version:       %{ver}.%{hash}
 Release:       1%{?dist}
 Summary:       Mozilla IdP Server
 Packager:      Benson Wong <bwong@mozilla.com>
