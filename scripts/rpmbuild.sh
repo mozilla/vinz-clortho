@@ -33,11 +33,10 @@ tar --exclude .git \
 cd $TOP
 set +e
 
-# just build the source rpm 
-# we will use mock to build the rpm
+# generate a new spec file with the version baked in
+sed "s/__VERSION__/$MOZIDP_VER/g" scripts/mozidp.spec.template > /tmp/mozidp.spec
 
 echo "Building Source RPM"
-
 rpmbuild --define "_topdir $PWD/rpmbuild" \
          --define "version $MOZIDP_VER" \
-         -ba scripts/mozidp.spec
+         -bs /tmp/mozidp.spec
