@@ -3,6 +3,12 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+# About: 
+# 
+# This script generates a SRPM of the source + rpm spec file to be passed
+# the mock RPM build tool. See: http://fedoraproject.org/wiki/Projects/Mock
+# 
+
 set -e
 
 progname=$(basename $0)
