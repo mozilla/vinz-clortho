@@ -18,9 +18,7 @@ const
  *  3. re-binds as the target user and provided password
  *
  * The following arguments are accepted:
- *          url: url to LDAP server
- *           dn: LDAP distinguished name to bind (used in #1)
- * bindPassword: credentials associated with DN (used in #1)
+ *   imapServer: Hostname of the IMAPS server
  *        email: the user's email address (or alias) (used in #2)
  *     password: the user's LDAP password
  */
@@ -28,6 +26,8 @@ exports.authEmail = function(opts, authCallback) {
   if (!opts) throw "argument required";
   if (!opts.password) throw "password required";
   if (!opts.email) throw "email address required";
+
+  opts.imapServer = opts.imapServer || config.get('imapServer')
 
   var imap = new imapLib({
     user: opts.email,

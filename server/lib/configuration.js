@@ -49,6 +49,21 @@ var conf = module.exports = convict({
   http_port: { format: 'int', env: "PORT", default: 3000 },
   http_address: { format: 'string', env: "ADDRESS", default: '127.0.0.1' },
   issuer: { format: 'string', default: "mozilla.personatest.org" },
+
+  imapServer: : {
+    doc: 'IMAPS hostname for IMAP authentication',
+    default: 'mail.mozilla.com'
+  },
+
+  imapUser: {
+    doc: 'IMAPS testing username. Used by /check_status to ensure connection is ok',
+    default: 'you-will-want-to-set-this@domain.noroute'
+  },
+  imapPass: {
+    doc: 'password for imapUser',
+    default: 'hello sailor!'
+  },
+
   ldap_bind_dn: { format: 'string', default: "mail=USERNAME@mozilla.com,o=com,dc=mozilla" },
   ldap_bind_password: { format: 'string', default: "password" },
   ldap_server_url: {
@@ -121,3 +136,5 @@ if (conf.get('config_path') === "") {
 if ([ '0.0.0.0', '*' ].indexOf(conf.get('http_address')) !== -1) {
   conf.set('http_address', null);
 }
+
+// vim: shiftwidth=2
