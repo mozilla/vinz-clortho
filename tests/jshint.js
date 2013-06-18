@@ -9,7 +9,8 @@ should = require('should'),
 fs = require('fs'),
 path = require('path'),
 jshint = require('jshint').JSHINT,
-walk = require('walk');
+walk = require('walk'),
+util = require('util');
 
 function jshintFormatter(errors) {
   return errors.map(function(e) {

@@ -177,7 +177,6 @@ exports.routes = function () {
     // this check is for our global load balancers so they
     // can add / remove regions if LDAP connectivity drops
     checkLDAP: function(req, res) {
-    
       auth.checkBindAuth({}, function(err) {
         res.setHeader('Content-Type', 'text/plain');
         if (err) {
@@ -199,7 +198,7 @@ exports.routes = function () {
       }, function(err) {
         if (err) {
           statsd.increment('healthcheck.error');
-          res.send("Error: " + err.message, 503)
+          res.send("Error: " + err.message, 503);
         } else {
           statsd.increment('healthcheck.ok');
           res.send('OK');

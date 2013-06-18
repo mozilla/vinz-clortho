@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-const 
+const
     imapLib   = require('imap'),
     config = require('./configuration'),
     logger = require('./logging').logger,
@@ -27,7 +27,7 @@ exports.authEmail = function(opts, authCallback) {
   if (!opts.password) throw "password required";
   if (!opts.email) throw "email address required";
 
-  opts.imapServer = opts.imapServer || config.get('imapServer')
+  opts.imapServer = opts.imapServer || config.get('imapServer');
 
   var imap = new imapLib({
     user: opts.email,
@@ -39,14 +39,14 @@ exports.authEmail = function(opts, authCallback) {
   });
 
   imap.connect(function(err) {
-      if (err) {
-        return authCallback(err);
-      } else {
-        imap.logout(function(err) {
-          if (err) console.error("IMAP Logout Error: ", err);
-        });
-        return authCallback(null, true);
-      }
+    if (err) {
+      return authCallback(err);
+    } else {
+      imap.logout(function(err) {
+        if (err) console.error("IMAP Logout Error: ", err);
+      });
+      return authCallback(null, true);
+    }
   });
 };
 
