@@ -50,7 +50,7 @@ var conf = module.exports = convict({
   http_address: { format: 'string', env: "ADDRESS", default: '127.0.0.1' },
   issuer: { format: 'string', default: "mozilla.personatest.org" },
 
-  imapServer: : {
+  imapServer: {
     doc: 'IMAPS hostname for IMAP authentication',
     default: 'mail.mozilla.com'
   },

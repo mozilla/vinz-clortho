@@ -34,7 +34,8 @@ exports.authEmail = function(opts, authCallback) {
     password: opts.password,
     host: 'mail.mozilla.com',
     port: 993,
-    secure: true
+    secure: true,
+    connTimeout: 2500
   });
 
   imap.connect(function(err) {

@@ -128,8 +128,8 @@ app.get('/sign_in', routes.signin);
 app.get('/provision', routes.provision);
 
 // monitoring
-app.get('/node_status', routes.elb_check);
-app.get('/ldap_status', routes.checkStatus);
+app.get('/ldap_status', routes.checkLDAP);
+app.get('/imap_status', routes.checkImap);
 
 // APIs
 app.get('/api/session_context', routes.session_context);

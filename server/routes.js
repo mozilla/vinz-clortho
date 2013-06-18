@@ -173,17 +173,11 @@ exports.routes = function () {
 
     // Monitoring End points
 
-    // the ELB (elastic load balancer) check is just to make
-    // sure that node returns a response
-    elb_check: function(req, res) {
-      res.setHeader('Content-Type', 'text/plain');
-      res.send("OK");
-    },
-
     // checks that we can bind against the LDAP server
     // this check is for our global load balancers so they
     // can add / remove regions if LDAP connectivity drops
-    checkStatus: function(req, res) {
+    checkLDAP: function(req, res) {
+    
       auth.checkBindAuth({}, function(err) {
         res.setHeader('Content-Type', 'text/plain');
         if (err) {
@@ -198,7 +192,24 @@ exports.routes = function () {
       });
     },
 
+    checkImap: function(req, res) {
+      auth.authEmail({
+        email: config.get('imapUser'),
+        password: config.get('imapPass')
+      }, function(err) {
+        if (err) {
+          statsd.increment('healthcheck.error');
+          res.send("Error: " + err.message, 503)
+        } else {
+          statsd.increment('healthcheck.ok');
+          res.send('OK');
+        }
+      });
+    },
+
     // QA Only URLs
     signout: function (req, resp) { req.session.reset(); resp.redirect('/'); }
   };
 };
+
+// vim: shiftwidth=2
