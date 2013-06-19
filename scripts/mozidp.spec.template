@@ -11,8 +11,8 @@ License:       MPL 2.0
 URL:           https://github.com/mozilla/vinz-clortho
 BuildRoot:     %{_tmppath}/%{name}-%{version}-%{release}-root
 AutoReqProv:   no
-Requires:      openssl, nodejs >= 0.8.24, gmp-devel
-BuildRequires: gmp-devel, gcc-c++, git, make, npm, nodejs >= 0.8.24
+Requires:      openssl, nodejs == 0.8.24, gmp-devel
+BuildRequires: gmp-devel, gcc-c++, git, make, npm, nodejs == 0.8.24
 Source:        mozidp-%{version}.tar.gz
 
 %description
