@@ -24,7 +24,8 @@
     "connect-fonts": "0.0.9",
     "connect-fonts-opensans": "0.0.4",
     "lockdown": "0.0.4",
-    "validator": "1.1.3"
+    "validator": "1.1.3",
+    "underscore": "1.4.4"
   },
   "devDependencies": {
     "awsbox": "0.4.5",
@@ -32,7 +33,8 @@
     "should": "1.2.2",
     "request": "2.16.6",
     "jshint": "2.1.2",
-    "walk": "2.2.1"
+    "walk": "2.2.1",
+    "temp": "~0.5.0"
   },
   "scripts": {
     "start": "LOCAL_DEV=true node ./server/bin/clortho",

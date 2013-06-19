@@ -6,7 +6,9 @@ const ldap = require('ldapjs'),
     config = require('./configuration'),
     logger = require('./logging').logger,
     statsd = require('../lib/statsd'),
-      util = require('util');
+      util = require('util'),
+         _ = require('underscore'),
+        fs = require('fs');
 
 // check required configuration at startup
 [ 'ldap_server_url', 'ldap_bind_dn', 'ldap_bind_password' ].forEach(function(k) {
@@ -16,185 +18,145 @@ const ldap = require('ldapjs'),
   }
 });
 
-function connectAndBind(opts, cb) {
+// create and connect an LDAP client, populate the options block
+function createClient(opts, cb) {
+  if (typeof opts !== 'object' || opts === null) throw new Error('invalid options parameter');
   opts.url = opts.url || config.get('ldap_server_url');
-  opts.dn = opts.dn || config.get('ldap_bind_dn');
-  opts.bindPassword = opts.bindPassword || config.get('ldap_bind_password');
-  var connectTimeout = opts.connectTimeout || config.get('ldap_server_connect_timeout');
+  opts.errorCallback = opts.errorCallback || function(err) {
+    logger.warn(util.format('LDAP connection ended with unhandled error: %s', err));
+  };
+
+  cb = _.once(cb);
 
   var client = ldap.createClient({
     url: opts.url,
-    connectTimeout: connectTimeout
+    connectTimeout: opts.connectTimeout || config.get('ldap_server_connect_timeout')
   });
 
+  var connected = false;
 
   client.on('close', function(err) {
-    if (err) {
-      if (cb) {
-        cb(err);
-        cb = null;
-      } else {
-        logger.debug(util.format('LDAP connection closed%s', err ? " with an error" : ""));
-      }
+    if (!connected) {
+      err = "connect failed";
     }
-  });
-  client.on('error', function(err) {
-    // count errors during connect
-    statsd.increment('ldap.error.connect');
     if (err) {
-      logger.warn('LDAP connection errored:', err);
-      if (cb) {
-        cb(err);
-        cb = null;
-      }
+      if (opts.errorCallback) opts.errorCallback(err);
+      opts.errorCallback = null;
     }
   });
 
-  client.bind(
-    opts.dn,
-    opts.bindPassword,
-    function(err) {
-      // count errors during bind (would indicate an error with connect
-      if (err) {
-        statsd.increment('ldap.error.bind');
-        logger.warn('Unable to bind to LDAP as', opts.dn, err);
-      }
-      client.removeAllListeners('close');
-      client.removeAllListeners('error');
-      if (cb) {
-        cb(err, client);
-        cb = null;
-      }
+  client.on('error', function(err) {
+    if (opts.errorCallback) {
+      opts.errorCallback(err);
     }
-  );
+    opts.errorCallback = null;
+  });
+
+  client.on('connect', function() {
+    connected = true;
+    cb(null, client);
+  });
+}
+
+function checkOpts(required, got) {
+  if (typeof got !== 'object' || got === null) {
+    throw new Error("missing options object");
+  }
+  got = Object.keys(got);
+  var missing = _.difference(required, got);
+  if (missing.length) {
+    throw new Error("missing required parameters: " + missing.join(', '));
+  }
 }
 
 /* check if we can authenticate to an ldap server. arguments include:
  *          url: url to LDAP server
  *           dn: LDAP distinguished name to bind
- * bindPassword: credentials associated with DN
+ *         pass: credentials associated with DN
  */
 exports.checkBindAuth = function(opts, cb) {
-  if (typeof opts === 'function' && !cb) {
-    cb = opts;
-    opts = {};
-  }
-  connectAndBind(opts, function(err, client) {
-    if (!err && client) client.unbind();
-    cb(err, !err);
+  opts.dn = opts.dn || config.get('ldap_bind_dn');
+  opts.pass = opts.pass || config.get('ldap_bind_password');
+
+  return exports.authUser(opts, cb);
+};
+
+// given an email, map it to a canonical address
+exports.canonicalAddress = function(opts, cb) {
+  checkOpts([ 'email' ], opts);
+
+  process.nextTick(function() {
+    cb(null, config.get('hardcoded_aliases')[opts.email] || opts.email);
+
+    // XXX once we move away from a static file, let's implement LDAP based searching
+
+    // 1. connect to LDAP server
+    // 2. bind as headless user
+    // 2. search for canonical address
+    // 3. return canonical
   });
 };
 
-/*
- * Authenticate a user to LDAP provided an email and the user's LDAP password.
- * This performs the following:
- *  1. binds to LDAP using known credentials
- *  2. searches for the email address the user entered (to support aliases)
- *  3. re-binds as the target user and provided password
- *
- * The following arguments are accepted:
- *          url: url to LDAP server
- *           dn: LDAP distinguished name to bind (used in #1)
- * bindPassword: credentials associated with DN (used in #1)
- *        email: the user's email address (or alias) (used in #2)
- *     password: the user's LDAP password
- */
-exports.authEmail = function(opts, authCallback) {
-  if (!opts) throw "argument required";
-  if (!opts.password) throw "password required";
-  if (!opts.email) throw "email address required";
+exports.authUser = function(opts, cb) {
+  // opts.email - a user email to authenticate as
+  // opts.dn - the dn to authenticate as
 
-  var bindStart = new Date();
-  connectAndBind(opts, function(err, client) {
-    // report time required to connect and bind to ldap.
-    statsd.timing('ldap.timing.bind', new Date() - bindStart);
-    if (err) {
-      return authCallback(err);
+  // ensure cb is called only once
+  cb = _.once(cb);
+
+  // if email is provided, let's dynamically convert it into a bind dn
+  if (opts.email) {
+    if (opts.dn) throw new Error(".dn and .email are mutually exclusive");
+    // is this a supported domain?
+    var searchBases = config.get('ldap_search_bases');
+    var domain = opts.email.split('@')[1];
+    if (!searchBases[domain]) {
+      return process.nextTick(function() {
+        cb(util.format("unsupported domain: %s", domain));
+      });
     }
-    // the bind connection was successful!  ensure we unbind() before
-    // returning to not leave stale connections about.
-    var callback = function() {
-      try {
-        client.unbind();
-      } catch(e) {
-        logger.warn('failed to unbind LDAP connection', e);
-      }
-      if (authCallback) {
-        authCallback.apply(null, arguments);
-        authCallback = null;
-      }
-      // total time for interaction with LDAP
-      statsd.timing('ldap.timing.total', new Date() - bindStart);
-    };
+    opts.dn = util.format("mail=%s,%s", opts.email, searchBases[domain]);
+  }
 
-    // ensure callback called if the connection drops
-    client.on('close', function(err) {
-      if (err) {
-        if (callback) {
-          callback(err);
-          callback = null;
-        } else {
-          logger.debug(util.format('LDAP connection closed after initial bind%s', err ? " with an error" : ""));
-        }
-      }
-    });
-    client.on('error', function(err) {
-      if (err) {
-        logger.warn('LDAP connection errored after successful initial bind:', err);
-        if (callback) {
-          callback(err);
-          callback = null;
-        }
-      }
-    });
+  checkOpts([ 'dn', 'pass' ], opts);
 
-    var results = 0;
+  opts.errorCallback = function(err) {
+    cb(err);
+  };
 
-    var searchStart = new Date();
-    client.search('o=com,dc=mozilla', {
-      scope: 'sub',
-      filter: '(|(mail=' + opts.email + ')(emailAlias=' + opts.email + '))',
-      attributes: ['mail']
-    }, function (err, res) {
-      var bindDN;
+  // 1. connect to LDAP server
+  createClient(opts, function(err, client) {
+    if (err) return cb(err);
 
-      // total time required to perform a search given an established TCP connection
-      if (err) {
-        statsd.increment('ldap.error.search');
-        logger.warn('error during LDAP search ' + err.toString());
-        return callback(err, false);
-      }
+    // ensure unbind() is called.
+    cb = _.compose(function() {
+      client.unbind();
+    }, cb);
 
-      res.on('searchEntry', function(entry) {
-        bindDN = entry.dn;
-        results++;
-      });
-
-      res.on('end', function () {
-        statsd.timing('ldap.timing.search', new Date() - searchStart);
-        if (results === 1) {
-          var bindAsUserStart = new Date();
-          client.bind(bindDN, opts.password, function (err) {
-            // report total time required to connect, bind, search, and
-            // bind as target user
-            statsd.timing('ldap.timing.bind_as_user', new Date() - bindAsUserStart);
-            if (err) {
-              statsd.increment('ldap.auth.wrong_password');
-              logger.warn('Wrong credentials for user', bindDN, err);
-              callback(err, false);
-            } else {
-              statsd.increment('ldap.auth.success');
-              // Successful LDAP authentication
-              callback(null, true);
-            }
-          });
-        } else {
-          statsd.increment('ldap.auth.unknown_email');
-          callback(null, false);
-        }
-      });
-    });
+    // 2. bind as target user
+    client.bind(opts.dn, opts.pass, cb);
   });
 };
 
+exports.userMayUseEmail = function(opts, cb) {
+  // opts.user - canonical user
+  // opts.email - possibly an alias
 
+  checkOpts([ 'user', 'email' ], opts);
+
+  // first let's get the canonical address
+  exports.canonicalAddress(opts, function(err, canonicalAddress) {
+    if (!err && canonicalAddress !== opts.user) {
+      err = util.format("%s does not own not %s", opts.user, opts.email);
+    }
+    cb(err);
+
+    // XXX: add proper revocation checking
+    // 1. connect to LDAP server
+    // 2. bind as headless user
+    // 3. if opts.email != opts.user canonicalize alias
+    // 4. if canonical address != opts.user fail!  you don't control this address.
+    // 5. if employeeType == disabled, fail
+    // 6. return all good
+  });
+};

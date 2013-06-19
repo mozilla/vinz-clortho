@@ -46,6 +46,16 @@ var conf = module.exports = convict({
       "mozilla.personatest.org": "mozilla.com"
     },
   },
+  hardcoded_alias_file: {
+    doc: "a file path to a file containing a JSON object mapping user entered emails to canonical email addresses.  alias support.",
+    format: "string",
+    default: ""
+  },
+  hardcoded_aliases: {
+    doc: "Actual aliases, automatically hydrated from hardcoded_alias_file.",
+    format: Object,
+    default: {}
+  },
   http_port: { format: 'int', env: "PORT", default: 3000 },
   http_address: { format: 'string', env: "ADDRESS", default: '127.0.0.1' },
   issuer: { format: 'string', default: "mozilla.personatest.org" },
@@ -55,6 +65,14 @@ var conf = module.exports = convict({
     format: 'string',
     default: "ldaps://ldap.mozilla.org:636",
     env: 'LDAP_SERVER_URL'
+  },
+  ldap_search_bases: {
+    doc: "The search bases for supported domains.  Both restricts the domains we support and provides configurable LDAP search base strings",
+    format: Object,
+    default: {
+      "mozillafoundation.org": "o=org,dc=mozilla",
+      "mozilla.com": "o=com,dc=mozilla"
+    }
   },
   ldap_server_connect_timeout: { format: 'int', default: 10000 },
   locale_directory: { format: 'string', default: "locale" },
@@ -120,4 +138,10 @@ if (conf.get('config_path') === "") {
 // massage bind address to something node will understand
 if ([ '0.0.0.0', '*' ].indexOf(conf.get('http_address')) !== -1) {
   conf.set('http_address', null);
+}
+
+// hydrate aliases if present
+if (conf.get('hardcoded_alias_file') !== "") {
+  conf.set('hardcoded_aliases',
+           JSON.parse(fs.readFileSync(conf.get('hardcoded_alias_file'))));
 }
