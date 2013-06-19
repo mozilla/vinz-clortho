@@ -84,12 +84,17 @@ exports.routes = function () {
       if (!req.params.pubkey || !req.params.user) {
         return resp.send(400);
       }
+
       // check that the user is authenticated as the target user
       auth.userMayUseEmail({
         user: req.session.email,
-        email: req.params.user
+        email: emailRewrite(req.params.user).toLowerCase()
       }, function(err) {
-        if (err) return resp.send(409);
+        if (err) {
+          logger.warn("cannot provision user:", err);
+          statsd.increment('provision.failure');
+          return resp.send(409);
+        }
 
         crypto.cert_key(
           req.params.pubkey,
@@ -120,7 +125,6 @@ exports.routes = function () {
       } else {
         auth.canonicalAddress({ email: mozillaUser }, function(err, mozillaUser) {
           // XXX: handle err
-
           throttle.check(mozillaUser, function(err) {
             if (err) {
               // Send an event to the security log for every authentication

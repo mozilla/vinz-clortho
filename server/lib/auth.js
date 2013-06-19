@@ -20,6 +20,8 @@ const ldap = require('ldapjs'),
 
 // create and connect an LDAP client, populate the options block
 function createClient(opts, cb) {
+  var connectStartTime = new Date();
+
   if (typeof opts !== 'object' || opts === null) throw new Error('invalid options parameter');
   opts.url = opts.url || config.get('ldap_server_url');
   opts.errorCallback = opts.errorCallback || function(err) {
@@ -53,6 +55,7 @@ function createClient(opts, cb) {
   });
 
   client.on('connect', function() {
+    statsd.timing('ldap.timing.connect', new Date() - connectStartTime);
     connected = true;
     cb(null, client);
   });
@@ -124,6 +127,8 @@ exports.authUser = function(opts, cb) {
     cb(err);
   };
 
+  var authStartTime = new Date();
+
   // 1. connect to LDAP server
   createClient(opts, function(err, client) {
     if (err) return cb(err);
@@ -134,7 +139,18 @@ exports.authUser = function(opts, cb) {
     }, cb);
 
     // 2. bind as target user
-    client.bind(opts.dn, opts.pass, cb);
+    client.bind(opts.dn, opts.pass, function(err) {
+      statsd.timing('ldap.timing.auth', new Date() - authStartTime);
+      if (err) {
+        statsd.increment('ldap.auth.wrong_password');
+        logger.warn('Wrong credentials for user', opts.dn, err);
+        cb(err, false);
+      } else {
+        statsd.increment('ldap.auth.success');
+        // Successful LDAP authentication
+        cb(null, true);
+      }
+    });
   });
 };
 
