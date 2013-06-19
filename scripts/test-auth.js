@@ -22,9 +22,11 @@ if (process.argv.length !== 4) {
   process.exit(1);
 }
 
-auth.authEmail({
+console.log('dn', process.argv[2]);
+auth.authUser({
+  url: 'ldaps://addressbook.mozilla.com:636',
   email: process.argv[2],
-  password: process.argv[3]
+  pass: process.argv[3]
 }, function (err, passed) {
-  console.log(err, passed);
+  console.log(JSON.stringify(err, null, "  "), passed);
 });

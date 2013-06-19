@@ -58,7 +58,7 @@
     "0.3.0": "6c9993858b2009416247ae70051b88a1d5e6ee7d"
   },
   "coffee-script": {
-    "1.6.2": "fd9c88369c1e41e3307a0a160d713f22513c93b3"
+    "1.6.3": "6355d32cf1b04cdff6b484e5e711782b2f0c39be"
   },
   "colors": {
     "0.5.1": "7d0023eaeb154e8ee9fce75dcb923d0ed1667774",
@@ -129,7 +129,7 @@
     "0.6.1": "16ccc98eeeac166982927fa67eb3fca8865f6871"
   },
   "escodegen": {
-    "0.0.22": "4c9ba6e9f353aaba3eccdb045e93f9543cbb739d"
+    "0.0.23": "9acf978164368e42276571f18839c823b3a844df"
   },
   "esprima": {
     "0.9.9": "1b90925c975d632d7282939c3bb9c3a423c30490",
@@ -137,7 +137,7 @@
   },
   "estraverse": {
     "0.0.4": "01a0932dfee574684a598af5a67c3bf9b6428db2",
-    "1.1.1": "657fff768decd7e329e2454534897b70dc701ebf"
+    "1.1.2-1": "28ff59bb3cf1272a2027e1c1541f94b23226b311"
   },
   "express": {
     "2.5.11": "4ce8ea1f3635e69e49f0ebb497b6a4b0a51ce6f0"
@@ -174,7 +174,7 @@
   },
   "graceful-fs": {
     "1.1.14": "07078db5f6377f6321fceaaedf497de124dc9465",
-    "1.2.1": "b35cc6e623576fc2a278cba12c00dda6a1758d2d"
+    "1.2.2": "2643e33eaed1c7277decd37377ff9fb394689cf5"
   },
   "growl": {
     "1.7.0": "de2d66136d002e112ba70f3f10c31cf7c350b2da"
@@ -252,7 +252,7 @@
     "0.0.5": "15eac759479884df1131d6de56bce20b654f5391"
   },
   "negotiator": {
-    "0.2.5": "12ec7b4a9f3b4c894c31d8c4ec015925ba547eec"
+    "0.2.6": "28db6bc2e442c8655325d156ff74055dc0db289c"
   },
   "node-font-face-generator": {
     "0.1.0-dev1": "778430ea7fb61ed9de61e8a51e0aadda29007193"
@@ -273,7 +273,7 @@
     "2.1.1": "91eb7c4b017e7c00adcad1fd6d63944d0fdb75c1"
   },
   "normalize-package-data": {
-    "0.1.6": "2503118c469c493ff030c5a9bafe82f4d371a566"
+    "0.1.7": "f216a318a868214892e89ad80a944cddc1a79615"
   },
   "npmlog": {
     "0.0.2": "f0cf4b2c519950c00e91ba8e2868b62bf86254f6"
@@ -353,13 +353,14 @@
     "0.1.4": "5ef481b951a7b29affdf4afd7f26838fc1120f84"
   },
   "source-map": {
-    "0.1.22": "425906162f81bf110552ccc9931dba079e9f1341"
+    "0.1.23": "079f8fa7867f318b48cf5d4c716ab6d4dc859be9"
   },
   "stack-trace": {
     "0.0.6": "1e719bd6a2629ff09c189e17a9ef902a94fc5db0"
   },
   "temp": {
-    "0.4.0": "671ad63d57be0fe9d7294664b3fc400636678a60"
+    "0.4.0": "671ad63d57be0fe9d7294664b3fc400636678a60",
+    "0.5.0": "605fa983bcbed88bac99370bc5bf934678cb289e"
   },
   "through": {
     "0.1.4": "8059576d833089b3c18eccd37580bf9cc5b59130"
