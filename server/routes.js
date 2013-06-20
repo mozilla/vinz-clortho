@@ -84,26 +84,33 @@ exports.routes = function () {
       if (!req.params.pubkey || !req.params.user) {
         return resp.send(400);
       }
-      // check that the user is authenticated as the target user
-      // XXX: alias support, see issue #64
-      if (req.session.email !== req.params.user) {
-        return resp.send(409);
-      }
 
-      crypto.cert_key(
-        req.params.pubkey,
-        req.session.email,
-        config.get('certificate_validity_s'),
-        function(err, cert) {
-          if (err) {
-            resp.writeHead(500);
-            resp.end();
-          } else {
-            // successful provisioning
-            statsd.increment('provision.success');
-            resp.json({ cert: cert });
-          }
-        });
+      // check that the user is authenticated as the target user
+      auth.userMayUseEmail({
+        user: req.session.email,
+        email: emailRewrite(req.params.user).toLowerCase()
+      }, function(err) {
+        if (err) {
+          logger.warn("cannot provision user:", err);
+          statsd.increment('provision.failure');
+          return resp.send(409);
+        }
+
+        crypto.cert_key(
+          req.params.pubkey,
+          req.params.user,
+          config.get('certificate_validity_s'),
+          function(err, cert) {
+            if (err) {
+              resp.writeHead(500);
+              resp.end();
+            } else {
+              // successful provisioning
+              statsd.increment('provision.success');
+              resp.json({ cert: cert });
+            }
+          });
+      });
     },
 
     check_signin: function (req, resp) {
@@ -116,50 +123,53 @@ exports.routes = function () {
         resp.writeHead(400);
         return resp.end();
       } else {
-        throttle.check(mozillaUser, function(err) {
-          if (err) {
-            // Send an event to the security log for every authentication
-            // attempt to a throttle account.
-            secLog.warn({
-              signature: 'AUTH_LOCKOUT',
-              name: "attempted login to a throttled account",
-              extensions: {
-                suser: mozillaUser
-              }
-            });
-            statsd.increment('auth.throttle');
-            // as per security guidelines, account throttling should
-            // be indistiguishable from wrong password.  This is a
-            // usability loss in the name of security
-            // https://wiki.mozilla.org/WebAppSec/Secure_Coding_Guidelines
-            resp.json({
-              success: false,
-              reason: 'email or password incorrect'
-            }, 401);
-            return;
-          }
-          auth.authEmail({
-            email: mozillaUser,
-            password: req.params.pass
-          }, function (err, passed) {
-            if (err || ! passed) {
-              // if this is a password failure, note it in our password
-              // throttling
-              if (err && err.name === 'InvalidCredentialsError') {
-                throttle.failed(mozillaUser);
-              }
+        auth.canonicalAddress({ email: mozillaUser }, function(err, mozillaUser) {
+          // XXX: handle err
+          throttle.check(mozillaUser, function(err) {
+            if (err) {
+              // Send an event to the security log for every authentication
+              // attempt to a throttle account.
+              secLog.warn({
+                signature: 'AUTH_LOCKOUT',
+                name: "attempted login to a throttled account",
+                extensions: {
+                  suser: mozillaUser
+                }
+              });
+              statsd.increment('auth.throttle');
+              // as per security guidelines, account throttling should
+              // be indistiguishable from wrong password.  This is a
+              // usability loss in the name of security
+              // https://wiki.mozilla.org/WebAppSec/Secure_Coding_Guidelines
               resp.json({
                 success: false,
                 reason: 'email or password incorrect'
               }, 401);
-            } else {
-              // upon successful authentication, clear any throttling
-              // for this user
-              throttle.clear(mozillaUser);
-              req.session.email = req.params.user;
-              resp.send({ success: true }, 200);
-              statsd.increment('auth.success');
+              return;
             }
+            auth.authUser({
+              email: mozillaUser,
+              pass: req.params.pass
+            }, function (err, passed) {
+              if (err || ! passed) {
+                // if this is a password failure, note it in our password
+                // throttling
+                if (err && err.name === 'InvalidCredentialsError') {
+                  throttle.failed(mozillaUser);
+                }
+                resp.json({
+                  success: false,
+                  reason: 'email or password incorrect'
+                }, 401);
+              } else {
+                // upon successful authentication, clear any throttling
+                // for this user
+                throttle.clear(mozillaUser);
+                req.session.email = mozillaUser;
+                resp.send({ success: true }, 200);
+                statsd.increment('auth.success');
+              }
+            });
           });
         });
       }

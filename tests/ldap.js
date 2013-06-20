@@ -19,11 +19,21 @@ describe('the LDAP authentication library', function() {
     ldapServerInstance.listen(65077, '127.0.0.1', done);
   });
 
+  it('should throw when required parameters are missing', function(done) {
+    (function() {
+      auth.authUser({
+        url: 'ldap://127.0.0.1:777',
+        pass: 'secret'
+      }, null);
+    }).should.throw("missing required parameters: dn");
+    done();
+  });
+
   it('should fail with an unbound port', function(done) {
-    auth.checkBindAuth({
+    auth.authUser({
       url: 'ldap://127.0.0.1:777',
       dn: 'o=example',
-      bindPassword: 'secret'
+      pass: 'secret'
     }, function(err) {
       should.exist(err);
       (err.message).should.equal("connect ECONNREFUSED");
@@ -32,23 +42,23 @@ describe('the LDAP authentication library', function() {
   });
 
   it('should fail with a bogus ip', function(done) {
-    auth.checkBindAuth({
+    auth.authUser({
       url: 'ldap://192.192.192.192:777',
       dn: 'o=example',
-      bindPassword: 'secret',
-      connectTimeout: 30 /* ms */
+      pass: 'secret',
+      connectTimeout: 30 // ms
     }, function(err) {
       should.exist(err);
-      (err.message).should.equal("ldap://192.192.192.192:777 closed");
+      (err).should.equal("connect failed");
       done();
     });
   });
 
   it('should fail with incorrect username', function(done) {
-    auth.checkBindAuth({
+    auth.authUser({
       url: ldapServerInstance.url,
       dn: 'o=badexample',
-      bindPassword: 'secret'
+      pass: 'secret'
     }, function(err) {
       should.exist(err);
       (err.message).should.equal("No tree found for: o=badexample");
@@ -57,10 +67,10 @@ describe('the LDAP authentication library', function() {
   });
 
   it('should succeed when params are correct', function(done) {
-    auth.checkBindAuth({
+    auth.authUser({
       url: ldapServerInstance.url,
       dn: 'mail=user1@mozilla.com, o=com, dc=mozilla',
-      bindPassword: 'testtest'
+      pass: 'testtest'
     }, function(err) {
       should.not.exist(err);
       done();

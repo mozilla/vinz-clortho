@@ -4,17 +4,36 @@
 
 // tests of authentication
 
+
+
 const
 should = require('should'),
 request = require('request').defaults({jar: require('request').jar()}),
 util = require('util'),
-testUtil = require('./lib/test-util');
+fs = require('fs'),
+config = require('../server/lib/configuration');
 
+// let's pre-write an alias file for the purposes of this test
 
 describe('authentication', function() {
   var context;
 
+  // set up alias config before test runs
+  before(function() {
+    config.set('hardcoded_aliases', {
+      'alias3_to_user2@mozilla.com': 'user2@mozilla.com',
+      'alias2_to_user2@mozilla.com': 'user2@mozilla.com',
+      'alias_to_user2@mozilla.com': 'user2@mozilla.com'
+    });
+  });
+
+  // clean up alias config after test completes
+  after(function() {
+    config.set('hardcoded_aliases', {});
+  });
+
   it('servers should start', function(done) {
+    var testUtil = require('./lib/test-util');
     testUtil.startServers(function(err, ctx) {
       should.not.exist(err);
       context = ctx;
@@ -103,6 +122,36 @@ describe('authentication', function() {
       (resp.statusCode).should.equal(400);
       (body.success).should.equal(false);
       (body.reason).should.equal("unsupported parameter: 'alias', 'email'");
+      done();
+    });
+  });
+
+  it('auth should succeed when correct', function(done) {
+    request.post({
+      url: util.format('%s/api/sign_in', context.mozillaidp.url),
+      json: {
+        user: 'user2@mozilla.com',
+        pass: 'testtest',
+        _csrf: csrf_token
+      }
+    }, function(err, resp, body) {
+      should.not.exist(err);
+      (resp.statusCode).should.equal(200);
+      done();
+    });
+  });
+
+  it('aliased user should authenticate', function(done) {
+    request.post({
+      url: util.format('%s/api/sign_in', context.mozillaidp.url),
+      json: {
+        user: 'alias_to_user2@mozilla.com',
+        pass: 'testtest',
+        _csrf: csrf_token,
+      }
+    }, function(err, resp, body) {
+      should.not.exist(err);
+      (resp.statusCode).should.equal(200);
       done();
     });
   });

@@ -11,7 +11,8 @@ util = require('util'),
 testUtil = require('./lib/test-util'),
 crypto = require('../server/lib/crypto'),
 config = require('../server/lib/configuration'),
-jwcrypto = require('jwcrypto');
+jwcrypto = require('jwcrypto'),
+fs = require('fs');
 
 // load desired algorithms
 require("jwcrypto/lib/algs/rs");
@@ -19,6 +20,18 @@ require("jwcrypto/lib/algs/ds");
 
 describe('certificate signing', function() {
   var context;
+
+  // set up alias configuration before test runs
+  before(function() {
+    config.set('hardcoded_aliases', {
+      'alias@mozilla.com': 'user2@mozilla.com'
+    });
+  });
+
+  // clean up alias file after test completes
+  after(function() {
+    config.set('hardcoded_aliases', {});
+  });
 
   it('servers should start', function(done) {
     testUtil.startServers(function(err, ctx) {
@@ -120,6 +133,31 @@ describe('certificate signing', function() {
         (payload.exp - payload.iat).should.equal((config.get('certificate_validity_s') + 10) * 1000);
         (payload.iss).should.equal('mozilla.personatest.org');
         (payload.principal.email).should.equal('user2@mozilla.com');
+        done();
+      });
+    });
+  });
+
+  it('signing request succeeds for an alias', function(done) {
+    request.post({
+      url: util.format('%s/api/provision', context.mozillaidp.url),
+      json: {
+        user: 'alias@mozilla.com',
+        pubkey: keypair.publicKey.serialize(),
+        _csrf: csrf_token
+      }
+    }, function(err, resp, body) {
+      should.not.exist(err);
+      (resp.statusCode).should.equal(200);
+      var serverPubKey = jwcrypto.loadPublicKey(crypto.pubKey);
+      jwcrypto.verify(body.cert, serverPubKey, function(err, payload) {
+        should.not.exist(err);
+        (payload.iss).should.equal(config.get('issuer'));
+        // convert units (s -> ms) and add 10 second padding (certificates are issued
+        // 10s in the past to mitigate minor clock skew)
+        (payload.exp - payload.iat).should.equal((config.get('certificate_validity_s') + 10) * 1000);
+        (payload.iss).should.equal('mozilla.personatest.org');
+        (payload.principal.email).should.equal('alias@mozilla.com');
         done();
       });
     });
