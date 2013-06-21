@@ -23,7 +23,8 @@ else
 fi
 
 rm -rf rpmbuild
-mkdir -p rpmbuild/SOURCES rpmbuild/SPECS rpmbuild/BUILD rpmbuild/TMP
+mkdir -p rpmbuild/SRPM rpmbuild/SOURCES rpmbuild/SPECS rpmbuild/BUILD rpmbuild/TMP
+git fetch
 git clone . rpmbuild/TMP &>/dev/null
 cd rpmbuild/TMP
 git checkout $VER &>/dev/null
@@ -40,9 +41,22 @@ cd $TOP
 set +e
 
 # generate a new spec file with the version baked in
-sed "s/__VERSION__/$MOZIDP_VER/g" scripts/mozidp.spec.template > /tmp/mozidp.spec
+TMPFILE=$TOP/rpmbuild/SPECS/mozidp.spec
+sed "s/__VERSION__/$MOZIDP_VER/g" scripts/mozidp.spec.template > $TMPFILE
 
 echo "Building Source RPM"
-rpmbuild --define "_topdir $PWD/rpmbuild" \
-         --define "version $MOZIDP_VER" \
-         -bs /tmp/mozidp.spec
+mock --root epel-6-x86_64 \
+    --buildsrpm \
+    --spec $TMPFILE \
+    --sources $TOP/rpmbuild/SOURCES
+
+FILENAME=mozilla-idp-server-${MOZIDP_VER}-1.el6.src.rpm
+SRPM_SOURCE=/var/lib/mock/epel-6-x86_64/result/$FILENAME
+
+if [ ! -e  $SRPM_SOURCE ]; then
+    echo "Failed building SRPM" >&2
+    exit 1
+fi
+
+mv /var/lib/mock/epel-6-x86_64/result/$FILENAME $TOP/rpmbuild/SRPM/
+echo "Wrote: $TOP/rpmbuild/SRPM/$FILENAME"
