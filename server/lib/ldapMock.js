@@ -28,7 +28,8 @@ module.exports = function() {
         // implementationd detail
         mail: "user"+i+"@mozilla.com",
         zimbraalias: 'alias'+i+"@mozilla.com",
-        password:"testtest"
+        password:"testtest",
+        employeetype: "Tester"
       }
     });
   }
@@ -39,7 +40,8 @@ module.exports = function() {
       attributes: {
         mail: "user"+i+"@mozilla.org",
         zimbraalias: 'alias'+i+"@mozilla.org",
-        password: "testtest"
+        password: "testtest",
+        employeetype: "Tester"
       }
     });
   }
@@ -48,7 +50,9 @@ module.exports = function() {
     var bindDN = req.dn.toString();
     var credentials = req.credentials;
     for(var i=0; i < directory.length; i++) {
-      if(directory[i].dn === bindDN && credentials === directory[i].attributes.password) {
+      if(directory[i].dn === bindDN && 
+         credentials === directory[i].attributes.password &&
+         directory[i].attributes.employeetype !== 'DISABLED') {
 
         this.emit('bind', {
           success: true,

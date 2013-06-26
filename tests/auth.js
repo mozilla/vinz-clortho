@@ -112,6 +112,30 @@ describe('authentication', function() {
     });
   });
 
+  it('auth should fail for DISABLED users', function(done) {
+    // change the employeetype for a specific user 
+    var user = context.ldap.findUser('user3@mozilla.com');
+    should.exist(user);
+    user.attributes.employeetype = 'DISABLED';
+
+    request.post({
+      url: util.format('%s/api/sign_in', context.mozillaidp.url),
+      json: {
+        user: 'user3@mozilla.com',
+        pass: 'testtest',
+        _csrf: csrf_token
+      }
+    }, function(err, resp, body) {
+        (resp.statusCode).should.equal(401);
+        (body.success).should.equal(false);
+
+        // *always* clean up after yourself when editing the mock LDAP directory
+        // data ... avoids bad things
+        user.attributes.employeetype = 'Tester'
+        done();
+    });
+  });
+
   it('auth should succeed when correct', function(done) {
     request.post({
       url: util.format('%s/api/sign_in', context.mozillaidp.url),

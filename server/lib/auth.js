@@ -135,10 +135,13 @@ exports.canonicalAddress = function(opts, cb) {
   checkOpts([ 'email' ], opts);
   getUserData(opts.email, function(err, results) {
     if (err) return cb(err, false);
-    if (results.length === 0) {
-      cb(null, opts.email);
-    } else {
+
+    if (results.length !== 0) {
       cb(null, results[0].mail);
+    } else {
+      err = "Could not find user: " + opts.email;
+      logger.warn(err);
+      cb(err, false);
     }
   });
 };
@@ -203,19 +206,19 @@ exports.userMayUseEmail = function(opts, cb) {
 
   checkOpts([ 'user', 'email' ], opts);
 
-  // first let's get the canonical address
-  exports.canonicalAddress(opts, function(err, canonicalAddress) {
-    if (!err && canonicalAddress !== opts.user) {
-      err = util.format("%s does not own not %s", opts.user, opts.email);
-    }
-    cb(err);
+  getUserData(opts.email, function(err, results) {
+    if (err) return cb(err);
 
-    // XXX: add proper revocation checking
-    // 1. connect to LDAP server
-    // 2. bind as headless user
-    // 3. if opts.email != opts.user canonicalize alias
-    // 4. if canonical address != opts.user fail!  you don't control this address.
-    // 5. if employeeType == disabled, fail
-    // 6. return all good
+    if (results.length === 0) return cb("User not found or disabled");
+
+    if (results[0].mail !== opts.user) {
+      return cb(util.format("%s does not own not %s", opts.user, opts.email));
+    }
+
+    if (results[0].employeetype === "DISABLED") {
+      return cb(util.format("%s account is disabled"), opts.user);
+    }
+
+    return cb(null);
   });
 };

@@ -1,3 +1,4 @@
+// vim: set shiftwidth=2
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
@@ -201,6 +202,24 @@ describe('certificate signing', function() {
       (body.success).should.equal(false);
       (body.reason).should.equal("unsupported parameter: 'bogus'");
       (resp.statusCode).should.equal(400);
+      done();
+    });
+  });
+
+  it('signed fails when employeeType===DISABLED', function(done) {
+    var user = context.ldap.findUser("user2@mozilla.com");
+    user.attributes.employeetype = "DISABLED";
+    request.post({
+      url: util.format('%s/api/provision', context.mozillaidp.url),
+      json: {
+        user: 'user2@mozilla.com',
+        pubkey: keypair.publicKey.serialize(),
+        _csrf: csrf_token
+      }
+    }, function(err, resp, body) {
+      user.attributes.employeetype = "Tester";
+      should.not.exist(err);
+      (resp.statusCode).should.equal(409);
       done();
     });
   });
