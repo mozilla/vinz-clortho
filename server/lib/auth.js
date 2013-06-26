@@ -1,3 +1,4 @@
+// vim: set shiftwidth=2
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
@@ -88,15 +89,47 @@ exports.checkBindAuth = function(opts, cb) {
 exports.canonicalAddress = function(opts, cb) {
   checkOpts([ 'email' ], opts);
 
-  process.nextTick(function() {
-    cb(null, config.get('hardcoded_aliases')[opts.email] || opts.email);
+  createClient({}, function(err, client) {
+    // ensure unbind() is called.
+    cb = _.compose(function() {
+      client.unbind();
+    }, cb);
 
-    // XXX once we move away from a static file, let's implement LDAP based searching
+    var dn = config.get('ldap_bind_dn'),
+        pass = config.get('ldap_bind_password');
+    
+    client.bind(dn, pass, function(err) {
 
-    // 1. connect to LDAP server
-    // 2. bind as headless user
-    // 2. search for canonical address
-    // 3. return canonical
+      var foundEmail=false;
+
+      if (err) {
+        logger.warn("Could not bind to check canonicalAddress");
+        return cb(err, false);
+      }
+
+      client.search('o=com,dc=mozilla', {
+        scope: 'sub',
+        filter: '(zimbraAlias=' + opts.email + ')',
+        attributes: ['mail']
+      }, function(err, res) {
+        if (err) {
+          logger.warn('error during LDAP search' + err.toString());
+          return cb(err, false); 
+        }
+
+        res.on('searchEntry', function(entry) {
+            foundEmail = entry.object.mail;
+          });
+
+        res.on('end', function() {
+          if (foundEmail === false) {
+            cb(null, opts.email);
+          } else {
+            cb(null, foundEmail);
+          }
+        });
+      });
+    });
   });
 };
 

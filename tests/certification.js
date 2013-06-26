@@ -21,18 +21,6 @@ require("jwcrypto/lib/algs/ds");
 describe('certificate signing', function() {
   var context;
 
-  // set up alias configuration before test runs
-  before(function() {
-    config.set('hardcoded_aliases', {
-      'alias@mozilla.com': 'user2@mozilla.com'
-    });
-  });
-
-  // clean up alias file after test completes
-  after(function() {
-    config.set('hardcoded_aliases', {});
-  });
-
   it('servers should start', function(done) {
     testUtil.startServers(function(err, ctx) {
       should.not.exist(err);
@@ -142,13 +130,14 @@ describe('certificate signing', function() {
     request.post({
       url: util.format('%s/api/provision', context.mozillaidp.url),
       json: {
-        user: 'alias@mozilla.com',
+        user: 'alias2@mozilla.com',
         pubkey: keypair.publicKey.serialize(),
         _csrf: csrf_token
       }
     }, function(err, resp, body) {
       should.not.exist(err);
       (resp.statusCode).should.equal(200);
+
       var serverPubKey = jwcrypto.loadPublicKey(crypto.pubKey);
       jwcrypto.verify(body.cert, serverPubKey, function(err, payload) {
         should.not.exist(err);
@@ -157,7 +146,7 @@ describe('certificate signing', function() {
         // 10s in the past to mitigate minor clock skew)
         (payload.exp - payload.iat).should.equal((config.get('certificate_validity_s') + 10) * 1000);
         (payload.iss).should.equal('mozilla.personatest.org');
-        (payload.principal.email).should.equal('alias@mozilla.com');
+        (payload.principal.email).should.equal('alias2@mozilla.com');
         done();
       });
     });

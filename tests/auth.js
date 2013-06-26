@@ -18,20 +18,6 @@ config = require('../server/lib/configuration');
 describe('authentication', function() {
   var context;
 
-  // set up alias config before test runs
-  before(function() {
-    config.set('hardcoded_aliases', {
-      'alias3_to_user2@mozilla.com': 'user2@mozilla.com',
-      'alias2_to_user2@mozilla.com': 'user2@mozilla.com',
-      'alias_to_user2@mozilla.com': 'user2@mozilla.com'
-    });
-  });
-
-  // clean up alias config after test completes
-  after(function() {
-    config.set('hardcoded_aliases', {});
-  });
-
   it('servers should start', function(done) {
     var testUtil = require('./lib/test-util');
     testUtil.startServers(function(err, ctx) {
@@ -145,7 +131,7 @@ describe('authentication', function() {
     request.post({
       url: util.format('%s/api/sign_in', context.mozillaidp.url),
       json: {
-        user: 'alias_to_user2@mozilla.com',
+        user: 'alias2@mozilla.com',
         pass: 'testtest',
         _csrf: csrf_token,
       }
