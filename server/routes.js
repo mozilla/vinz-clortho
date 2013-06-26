@@ -93,7 +93,7 @@ exports.routes = function () {
         if (err) {
           logger.warn("cannot provision user:", err);
           statsd.increment('provision.failure');
-          return resp.send(409);
+          return resp.send(401);
         }
 
         crypto.cert_key(

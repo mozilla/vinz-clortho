@@ -24,8 +24,12 @@ module.exports = function() {
     directory.push({
       dn: "mail=user"+i+"@mozilla.com, o=com, dc=mozilla",
       attributes: {
+        // note only use lowercase attribute names, seems to be an ldapjs 
+        // implementationd detail
         mail: "user"+i+"@mozilla.com",
-        password:"testtest"
+        zimbraalias: 'alias'+i+"@mozilla.com",
+        password:"testtest",
+        employeetype: "Tester"
       }
     });
   }
@@ -35,17 +39,20 @@ module.exports = function() {
       dn: "mail=user"+i+"@mozilla.org, o=org, dc=mozilla",
       attributes: {
         mail: "user"+i+"@mozilla.org",
-        password: "testtest"
+        zimbraalias: 'alias'+i+"@mozilla.org",
+        password: "testtest",
+        employeetype: "Tester"
       }
     });
   }
-
 
   function bindHandler(req, res, next) {
     var bindDN = req.dn.toString();
     var credentials = req.credentials;
     for(var i=0; i < directory.length; i++) {
-      if(directory[i].dn === bindDN && credentials === directory[i].attributes.password) {
+      if(directory[i].dn === bindDN && 
+         credentials === directory[i].attributes.password &&
+         directory[i].attributes.employeetype !== 'DISABLED') {
 
         this.emit('bind', {
           success: true,
