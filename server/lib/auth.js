@@ -1,4 +1,4 @@
-// vim: set shiftwidth=2
+// vim: shiftwidth=2
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
@@ -85,11 +85,11 @@ exports.checkBindAuth = function(opts, cb) {
   return exports.authUser(opts, cb);
 };
 
-// given an email, map it to a canonical address
-exports.canonicalAddress = function(opts, cb) {
-  checkOpts([ 'email' ], opts);
-
+// fetches the user's LDAP entry and returns an 
+// object with mail, zimbraAlias and employeeType attributes
+function getUserData(mail, cb) {
   createClient({}, function(err, client) {
+
     // ensure unbind() is called.
     cb = _.compose(function() {
       client.unbind();
@@ -100,36 +100,46 @@ exports.canonicalAddress = function(opts, cb) {
     
     client.bind(dn, pass, function(err) {
 
-      var foundEmail=false;
-
       if (err) {
-        logger.warn("Could not bind to check canonicalAddress");
+        logger.warn("Could not bind to get user data");
         return cb(err, false);
       }
 
       client.search('o=com,dc=mozilla', {
         scope: 'sub',
-        filter: '(zimbraAlias=' + opts.email + ')',
-        attributes: ['mail']
+        filter: '(|(mail='+mail+')(zimbraAlias='+mail+'))',
+        attributes: ['mail', 'zimbraAlias', 'employeeType']
       }, function(err, res) {
+
+        var results = [];
+
         if (err) {
           logger.warn('error during LDAP search' + err.toString());
           return cb(err, false); 
         }
 
         res.on('searchEntry', function(entry) {
-            foundEmail = entry.object.mail;
+            results.push(entry.object);
           });
 
         res.on('end', function() {
-          if (foundEmail === false) {
-            cb(null, opts.email);
-          } else {
-            cb(null, foundEmail);
-          }
-        });
+            cb(null, results);
+          });
       });
     });
+  });
+}
+
+// given an email, map it to a canonical address
+exports.canonicalAddress = function(opts, cb) {
+  checkOpts([ 'email' ], opts);
+  getUserData(opts.email, function(err, results) {
+    if (err) return cb(err, false);
+    if (results.length === 0) {
+      cb(null, opts.email);
+    } else {
+      cb(null, results[0].mail);
+    }
   });
 };
 
