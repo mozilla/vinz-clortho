@@ -25,6 +25,7 @@ module.exports = function() {
       dn: "mail=user"+i+"@mozilla.com, o=com, dc=mozilla",
       attributes: {
         mail: "user"+i+"@mozilla.com",
+        zimbraalias: 'alias'+i+"@mozilla.com",
         password:"testtest"
       }
     });
@@ -35,11 +36,11 @@ module.exports = function() {
       dn: "mail=user"+i+"@mozilla.org, o=org, dc=mozilla",
       attributes: {
         mail: "user"+i+"@mozilla.org",
+        alias: 'alias'+i+"@mozilla.org",
         password: "testtest"
       }
     });
   }
-
 
   function bindHandler(req, res, next) {
     var bindDN = req.dn.toString();

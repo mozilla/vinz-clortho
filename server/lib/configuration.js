@@ -46,16 +46,6 @@ var conf = module.exports = convict({
       "mozilla.personatest.org": "mozilla.com"
     },
   },
-  hardcoded_alias_file: {
-    doc: "a file path to a file containing a JSON object mapping user entered emails to canonical email addresses.  alias support.",
-    format: "string",
-    default: ""
-  },
-  hardcoded_aliases: {
-    doc: "Actual aliases, automatically hydrated from hardcoded_alias_file.",
-    format: Object,
-    default: {}
-  },
   http_port: { format: 'int', env: "PORT", default: 3000 },
   http_address: { format: 'string', env: "ADDRESS", default: '127.0.0.1' },
   issuer: { format: 'string', default: "mozilla.personatest.org" },
@@ -140,8 +130,3 @@ if ([ '0.0.0.0', '*' ].indexOf(conf.get('http_address')) !== -1) {
   conf.set('http_address', null);
 }
 
-// hydrate aliases if present
-if (conf.get('hardcoded_alias_file') !== "") {
-  conf.set('hardcoded_aliases',
-           JSON.parse(fs.readFileSync(conf.get('hardcoded_alias_file'))));
-}
