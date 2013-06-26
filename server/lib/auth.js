@@ -109,7 +109,7 @@ exports.canonicalAddress = function(opts, cb) {
 
       client.search('o=com,dc=mozilla', {
         scope: 'sub',
-        filter: '(zimbraalias=' + opts.email + ')',
+        filter: '(zimbraAlias=' + opts.email + ')',
         attributes: ['mail']
       }, function(err, res) {
         if (err) {
