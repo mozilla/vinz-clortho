@@ -219,7 +219,7 @@ describe('certificate signing', function() {
     }, function(err, resp, body) {
       user.attributes.employeetype = "Tester";
       should.not.exist(err);
-      (resp.statusCode).should.equal(409);
+      (resp.statusCode).should.equal(401);
       done();
     });
   });
