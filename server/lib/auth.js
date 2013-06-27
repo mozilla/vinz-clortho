@@ -1,3 +1,4 @@
+// vim: shiftwidth=2
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
@@ -84,19 +85,64 @@ exports.checkBindAuth = function(opts, cb) {
   return exports.authUser(opts, cb);
 };
 
+// fetches the user's LDAP entry and returns an 
+// object with mail, zimbraAlias and employeeType attributes
+function getUserData(mail, cb) {
+  createClient({}, function(err, client) {
+
+    // ensure unbind() is called.
+    cb = _.compose(function() {
+      client.unbind();
+    }, cb);
+
+    var dn = config.get('ldap_bind_dn'),
+        pass = config.get('ldap_bind_password');
+    
+    client.bind(dn, pass, function(err) {
+
+      if (err) {
+        logger.warn("Could not bind to get user data");
+        return cb(err, false);
+      }
+
+      client.search('o=com,dc=mozilla', {
+        scope: 'sub',
+        filter: '(|(mail='+mail+')(zimbraAlias='+mail+'))',
+        attributes: ['mail', 'zimbraAlias', 'employeeType']
+      }, function(err, res) {
+
+        var results = [];
+
+        if (err) {
+          logger.warn('error during LDAP search' + err.toString());
+          return cb(err, false); 
+        }
+
+        res.on('searchEntry', function(entry) {
+            results.push(entry.object);
+          });
+
+        res.on('end', function() {
+            cb(null, results);
+          });
+      });
+    });
+  });
+}
+
 // given an email, map it to a canonical address
 exports.canonicalAddress = function(opts, cb) {
   checkOpts([ 'email' ], opts);
+  getUserData(opts.email, function(err, results) {
+    if (err) return cb(err, false);
 
-  process.nextTick(function() {
-    cb(null, config.get('hardcoded_aliases')[opts.email] || opts.email);
-
-    // XXX once we move away from a static file, let's implement LDAP based searching
-
-    // 1. connect to LDAP server
-    // 2. bind as headless user
-    // 2. search for canonical address
-    // 3. return canonical
+    if (results.length !== 0) {
+      cb(null, results[0].mail);
+    } else {
+      err = "Could not find user: " + opts.email;
+      logger.warn(err);
+      cb(err, false);
+    }
   });
 };
 
@@ -160,19 +206,19 @@ exports.userMayUseEmail = function(opts, cb) {
 
   checkOpts([ 'user', 'email' ], opts);
 
-  // first let's get the canonical address
-  exports.canonicalAddress(opts, function(err, canonicalAddress) {
-    if (!err && canonicalAddress !== opts.user) {
-      err = util.format("%s does not own not %s", opts.user, opts.email);
-    }
-    cb(err);
+  getUserData(opts.email, function(err, results) {
+    if (err) return cb(err);
 
-    // XXX: add proper revocation checking
-    // 1. connect to LDAP server
-    // 2. bind as headless user
-    // 3. if opts.email != opts.user canonicalize alias
-    // 4. if canonical address != opts.user fail!  you don't control this address.
-    // 5. if employeeType == disabled, fail
-    // 6. return all good
+    if (results.length === 0) return cb("User not found or disabled");
+
+    if (results[0].mail !== opts.user) {
+      return cb(util.format("%s does not own not %s", opts.user, opts.email));
+    }
+
+    if (results[0].employeetype === "DISABLED") {
+      return cb(util.format("%s account is disabled"), opts.user);
+    }
+
+    return cb(null);
   });
 };

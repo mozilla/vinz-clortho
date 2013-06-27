@@ -1,3 +1,4 @@
+// vim: set shiftwidth=2
 /* a home for utilities common to all tests. */
 
 // disable logging for tests when VERBOSE isn't defined in the env
@@ -20,7 +21,17 @@ module.exports = {
       },
       ldap: {
         url: '',
-        instance: null
+        instance: null,
+        directory: ldapMock.directory,
+        findUser: function(email) {
+          for(var i=0; i < ldapMock.directory.length; i++) {
+            if (ldapMock.directory[i].attributes.mail == email) {
+              return ldapMock.directory[i];
+            }
+          }
+
+          return null;
+        }
       }
     };
     // set configuration for ldap server
