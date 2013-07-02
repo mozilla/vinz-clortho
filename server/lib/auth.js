@@ -153,7 +153,7 @@ function getUserData(mail, cb) {
 
           if (err) {
             logger.warn('error during LDAP search' + err.toString());
-            return cb(err, false); 
+            return searchCallback(err, false); 
           }
 
           res.on('searchEntry', function(entry) {
@@ -164,8 +164,7 @@ function getUserData(mail, cb) {
               if (results.length === 0) {
                 searchForEmail(searchBases.shift(), mail, searchCallback);
               } else {
-                console.log("Searches required: ", 2 - searchBases.length);
-                cb(null, results);
+                searchCallback(null, results);
               }
             });
         });
