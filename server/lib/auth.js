@@ -105,9 +105,9 @@ function getUserData(mail, cb) {
         return cb(err, false);
       }
 
-      client.search('o=com,dc=mozilla', {
+      client.search('dc=mozilla', {
         scope: 'sub',
-        filter: '(|(mail='+mail+')(zimbraAlias='+mail+'))',
+        filter: '(&(|(mail='+mail+')(zimbraAlias='+mail+'))(|(o:dn:=org)(o:dn:=com)))',
         attributes: ['mail', 'zimbraAlias', 'employeeType']
       }, function(err, res) {
 
