@@ -151,7 +151,7 @@ describe('authentication', function() {
     });
   });
 
-  it('auth should succeed when correct', function(done) {
+  it('auth (@mozilla.com) should succeed when correct', function(done) {
     request.post({
       url: util.format('%s/api/sign_in', context.mozillaidp.url),
       json: {
@@ -166,11 +166,41 @@ describe('authentication', function() {
     });
   });
 
-  it('aliased user should authenticate', function(done) {
+  it('aliased (@mozilla.com) user should authenticate', function(done) {
     request.post({
       url: util.format('%s/api/sign_in', context.mozillaidp.url),
       json: {
         user: 'alias2@mozilla.com',
+        pass: 'testtest',
+        _csrf: csrf_token,
+      }
+    }, function(err, resp, body) {
+      should.not.exist(err);
+      (resp.statusCode).should.equal(200);
+      done();
+    });
+  });
+
+  it('auth (@mozillafoundation.org) should succeed when correct', function(done) {
+    request.post({
+      url: util.format('%s/api/sign_in', context.mozillaidp.url),
+      json: {
+        user: 'user2@mozillafoundation.org',
+        pass: 'testtest',
+        _csrf: csrf_token
+      }
+    }, function(err, resp, body) {
+      should.not.exist(err);
+      (resp.statusCode).should.equal(200);
+      done();
+    });
+  });
+
+  it('aliased (@mozillafoundation.org) user should authenticate', function(done) {
+    request.post({
+      url: util.format('%s/api/sign_in', context.mozillaidp.url),
+      json: {
+        user: 'alias2@mozillafoundation.org',
         pass: 'testtest',
         _csrf: csrf_token,
       }

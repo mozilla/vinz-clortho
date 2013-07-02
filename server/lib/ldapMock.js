@@ -36,10 +36,10 @@ module.exports = function() {
 
   for(i=1; i <= 6; i++) {
     directory.push({
-      dn: "mail=user"+i+"@mozilla.org, o=org, dc=mozilla",
+      dn: "mail=user"+i+"@mozillafoundation.org, o=org, dc=mozilla",
       attributes: {
-        mail: "user"+i+"@mozilla.org",
-        zimbraalias: 'alias'+i+"@mozilla.org",
+        mail: "user"+i+"@mozillafoundation.org",
+        zimbraalias: 'alias'+i+"@mozillafoundation.org",
         password: "testtest",
         employeetype: "Tester"
       }

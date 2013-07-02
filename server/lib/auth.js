@@ -105,7 +105,12 @@ function getUserData(mail, cb) {
         return cb(err, false);
       }
 
-      client.search('o=com,dc=mozilla', {
+      // makes sure we search for emails in the right part of 
+      // the ldap tree
+      var searchBase = (mail.indexOf('mozillafoundation.org') !== -1) ? 
+        "o=org, dc=mozilla" : "o=com, dc=mozilla";
+
+      client.search(searchBase, {
         scope: 'sub',
         filter: '(|(mail='+mail+')(zimbraAlias='+mail+'))',
         attributes: ['mail', 'zimbraAlias', 'employeeType']
