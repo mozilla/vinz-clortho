@@ -136,6 +136,21 @@ describe('authentication', function() {
     });
   });
 
+  it('auth should fail for users not found in ldap', function(done) {
+    request.post({
+      url: util.format('%s/api/sign_in', context.mozillaidp.url),
+      json: {
+        user: 'user-fake@mozilla.com',
+        pass: 'testtest',
+        _csrf: csrf_token
+      }
+    }, function(err, resp, body) {
+      (body.success).should.equal(false);
+      (body.reason).should.equal('email not found');
+      done();
+    });
+  });
+
   it('auth should succeed when correct', function(done) {
     request.post({
       url: util.format('%s/api/sign_in', context.mozillaidp.url),

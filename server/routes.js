@@ -124,7 +124,14 @@ exports.routes = function () {
         return resp.end();
       } else {
         auth.canonicalAddress({ email: mozillaUser }, function(err, mozillaUser) {
-          // XXX: handle err
+          if (err) {
+            resp.json({
+              success: false,
+              reason: 'email not found'
+            }, 401);
+            return;
+          }
+
           throttle.check(mozillaUser, function(err) {
             if (err) {
               // Send an event to the security log for every authentication
