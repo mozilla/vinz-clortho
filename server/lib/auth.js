@@ -105,32 +105,73 @@ function getUserData(mail, cb) {
         return cb(err, false);
       }
 
-      // makes sure we search for emails in the right part of 
-      // the ldap tree
-      var searchBase = (mail.indexOf('mozillafoundation.org') !== -1) ? 
-        "o=org, dc=mozilla" : "o=com, dc=mozilla";
+      /** 
+       * This hairy bit of code allows us to search multiple 
+       * base levels of the ldap directory. This exists for several 
+       * reasons: 
+       *
+       * a) we want to be able to use our mock LDAP server to test with
+       *
+       * b) our mock ldap server (ldapjs) does not support extensible
+       *    filtering, otherwise we could search with this filter: 
+       *
+       *    (&(|(mail='+mail+')(zimbraAlias='+mail+'))(|(o:dn:=org)(o:dn:=com)))
+       *
+       *    and only need one request to the server
+       *
+       * c) it is worth the tradeoff(?) of multiple searches, more latency,
+       *    more bandwidth and more complex code to have and easily 
+       *    testable code base.
+       *
+       * d) it's compatible with Active Directory now ...
+       *
+       */
 
-      client.search(searchBase, {
-        scope: 'sub',
-        filter: '(|(mail='+mail+')(zimbraAlias='+mail+'))',
-        attributes: ['mail', 'zimbraAlias', 'employeeType']
-      }, function(err, res) {
+      // a list of the bases we want to search
+      var searchBases; 
 
-        var results = [];
+      /* an optimization to save some latency/bandwidth as most 
+       * addresses that end in .org are in o=org.
+       */
+      if (mail.indexOf('.org') === -1) {
+        searchBases = [ "o=com, dc=mozilla", "o=org, dc=mozilla" ];
+      } else {
+        searchBases = [ "o=org, dc=mozilla", "o=com, dc=mozilla" ];
+      }
 
-        if (err) {
-          logger.warn('error during LDAP search' + err.toString());
-          return cb(err, false); 
-        }
+      function searchForEmail(searchBase, mail, searchCallback) {
+        // no more bases left to search
+        if (!searchBase) return searchCallback(null, []);
 
-        res.on('searchEntry', function(entry) {
-            results.push(entry.object);
-          });
+        client.search(searchBase, {
+          scope: 'sub',
+          filter: '(|(mail='+mail+')(zimbraAlias='+mail+'))',
+          attributes: ['mail', 'zimbraAlias', 'employeeType']
+        }, function(err, res) {
 
-        res.on('end', function() {
-            cb(null, results);
-          });
-      });
+          var results = [];
+
+          if (err) {
+            logger.warn('error during LDAP search' + err.toString());
+            return searchCallback(err, false); 
+          }
+
+          res.on('searchEntry', function(entry) {
+              results.push(entry.object);
+            });
+
+          res.on('end', function() {
+              if (results.length === 0) {
+                searchForEmail(searchBases.shift(), mail, searchCallback);
+              } else {
+                searchCallback(null, results);
+              }
+            });
+        });
+      }
+
+      // search searching...
+      searchForEmail(searchBases.shift(), mail, cb);
     });
   });
 }

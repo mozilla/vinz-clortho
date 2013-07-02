@@ -195,6 +195,38 @@ describe('authentication', function() {
       done();
     });
   });
+ 
+  // this user lives under the o=org, dc=mozilla
+  it('auth (test_a@mozilla.com) should succeed', function(done) {
+    request.post({
+      url: util.format('%s/api/sign_in', context.mozillaidp.url),
+      json: {
+        user: 'test_a@mozilla.com',
+        pass: 'testtest',
+        _csrf: csrf_token
+      }
+    }, function(err, resp, body) {
+      should.not.exist(err);
+      (resp.statusCode).should.equal(200);
+      done();
+    });
+  });
+
+  // this user lives under the o=com, dc=mozilla
+  it('auth (test_a@mozillafoundation.org) should succeed', function(done) {
+    request.post({
+      url: util.format('%s/api/sign_in', context.mozillaidp.url),
+      json: {
+        user: 'test_a@mozillafoundation.org',
+        pass: 'testtest',
+        _csrf: csrf_token
+      }
+    }, function(err, resp, body) {
+      should.not.exist(err);
+      (resp.statusCode).should.equal(200);
+      done();
+    });
+  });
 
   it('aliased (@mozillafoundation.org) user should authenticate', function(done) {
     request.post({

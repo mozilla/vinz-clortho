@@ -46,6 +46,32 @@ module.exports = function() {
     });
   }
 
+  // add a .org mail under o=com
+  directory.push({
+    dn: "mail=user_a@mozilla.com, o=com, dc=mozilla",
+    attributes: {
+      // note only use lowercase attribute names, seems to be an ldapjs 
+      // implementationd detail
+      mail: "user_a@mozilla.com",
+      zimbraalias: 'test_a@mozillafoundation.org',
+      password:"testtest",
+      employeetype: "Tester"
+    }
+  });
+
+  // add a .com under o=org
+  directory.push({
+    dn: "mail=user_a@mozillafoundation.org, o=org, dc=mozilla",
+    attributes: {
+      // note only use lowercase attribute names, seems to be an ldapjs 
+      // implementationd detail
+      mail: "user_a@mozillafoundation.org",
+      zimbraalias: 'test_a@mozilla.com',
+      password:"testtest",
+      employeetype: "Tester"
+    }
+  });
+
   function bindHandler(req, res, next) {
     var bindDN = req.dn.toString();
     var credentials = req.credentials;
@@ -76,6 +102,13 @@ module.exports = function() {
 
   function searchHandler(req, res, next) {
     directory.forEach(function(user) {
+      // this test is pretty dumb, make sure in the directory
+      // that things are spaced / cased exactly
+
+      if (user.dn.indexOf(req.dn.toString()) === -1) {
+        return;
+      }
+
       if (req.filter.matches(user.attributes)) {
         res.send(user);
       }
