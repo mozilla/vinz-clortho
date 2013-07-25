@@ -15,6 +15,7 @@ const config = require('../lib/configuration'),
       fs = require('fs'),
       http = require('http'),
       i18n = require('i18n-abide'),
+      p3p = require('../lib/p3p'),
       routes = require('../routes').routes(),
       sessions = require('client-sessions'),
       statsd = require('../lib/statsd'),
@@ -83,6 +84,9 @@ app.use(sessions({
     secure: !config.get('local_development')
   }
 }));
+
+// add p3p cookie support
+app.use(p3p);
 
 app.use(font_middleware.setup({
   fonts: [ opensans ],

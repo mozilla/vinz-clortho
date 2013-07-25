@@ -30,9 +30,6 @@
   "awsbox": {
     "0.4.5": "027a9998955f09f3d6b0a10d38ea37ae381b6358"
   },
-  "bigint": {
-    "0.4.2": "5bccafb5af3924cc71eb59942fb3a64a12906e49"
-  },
   "boom": {
     "0.3.8": "c8cdb041435912741628c044ecc732d1d17c09ea"
   },
@@ -129,7 +126,7 @@
     "0.6.1": "16ccc98eeeac166982927fa67eb3fca8865f6871"
   },
   "escodegen": {
-    "0.0.23": "9acf978164368e42276571f18839c823b3a844df"
+    "0.0.24": "b6ce32abbf9458249c40983d9b866ac0457a8a1d"
   },
   "esprima": {
     "0.9.9": "1b90925c975d632d7282939c3bb9c3a423c30490",
@@ -137,7 +134,7 @@
   },
   "estraverse": {
     "0.0.4": "01a0932dfee574684a598af5a67c3bf9b6428db2",
-    "1.1.2-1": "28ff59bb3cf1272a2027e1c1541f94b23226b311"
+    "1.2.0": "6a3dc8a46a5d6766e5668639fc782976ce5660fd"
   },
   "express": {
     "2.5.11": "4ce8ea1f3635e69e49f0ebb497b6a4b0a51ce6f0"
@@ -167,14 +164,14 @@
     "1.1.1": "1f89623453123ef9623956e264c60bf4c3cf5ccf"
   },
   "glob": {
-    "3.2.1": "57af70ec73ba2323bfe3f29a067765db64c5d758"
+    "3.2.6": "28c805b47bc6c19ba3059cbdf079b98ff62442f2"
   },
   "gobbledygook": {
     "0.0.3": "437bb23d3ade04dd26b49e7c21e4026c6b086234"
   },
   "graceful-fs": {
     "1.1.14": "07078db5f6377f6321fceaaedf497de124dc9465",
-    "1.2.2": "2643e33eaed1c7277decd37377ff9fb394689cf5"
+    "1.2.3": "15a4806a57547cb2d2dbf27f42e89a8c3451b364"
   },
   "growl": {
     "1.7.0": "de2d66136d002e112ba70f3f10c31cf7c350b2da"
@@ -192,7 +189,7 @@
     "0.0.8beta6": "1efaf183b417901178afb87e96047599ac175425"
   },
   "inherits": {
-    "1.0.0": "38e1975285bf1f7ba9c84da102bb12771322ac48"
+    "2.0.0": "76c81b3b1c10ddee3a60bf2c247162bc369f8ba8"
   },
   "jade": {
     "0.26.3": "8f10d7977d8d79f2f6ff862a81b0513ccb25686c"
@@ -219,15 +216,17 @@
     "0.6.3": "*"
   },
   "lockdown": {
-    "0.0.4": "9ffd6fde34d3877ae03cd4c308aff215fef030d3"
+    "0.0.5": "6bbcc01b7d2a3894a712f135b2675a078ede24c7"
   },
   "lru-cache": {
+    "2.2.4": "6c658619becf14031d0d0b594b16042ce4dc063d",
     "2.3.0": "1cee12d5a9f28ed1ee37e9c332b8888e6b85412a"
   },
   "mersenne": {
     "0.0.3": "c39a3d45fee6091189ccd329107312ea8fe14d8a"
   },
   "mime": {
+    "1.2.10": "066380acbc3d78d4f4a51004d8988425dc68b9b1",
     "1.2.4": "11b5fdaf29c2509255176b80ad520294f5de92b7",
     "1.2.9": "009cd40867bd35de521b3b966f04e2f8d4d13d09"
   },
@@ -261,7 +260,7 @@
     "0.6.0": "41e64712dbd947aa9d9f466b5c0b5ee020bbcbbb"
   },
   "node-statsd": {
-    "0.0.2": "*"
+    "0.0.2": "ba96c26d4ec22b4f9501bb332fdf740db5a40ee7"
   },
   "node-uuid": {
     "1.4.0": "07f9b2337572ff6275c775e1d48513f3a45d7a65"
@@ -276,7 +275,7 @@
     "0.1.7": "f216a318a868214892e89ad80a944cddc1a79615"
   },
   "npmlog": {
-    "0.0.2": "f0cf4b2c519950c00e91ba8e2868b62bf86254f6"
+    "0.0.4": "a12a7418606b7e0183a2851d97a8729b9a0f3837"
   },
   "nub": {
     "0.0.0": "b369bd32bdde66af59605c3b0520bc219dccc04f"
@@ -327,6 +326,9 @@
   "response-stream": {
     "0.0.0": "da4b17cc7684c98c962beb4d95f668c8dcad09d5"
   },
+  "rimraf": {
+    "2.1.4": "5a6eb62eeda068f51ede50f29b3e5cd22f3d9bb2"
+  },
   "sax": {
     "0.1.5": "d1829a6120fa01665eb4dbff6c43f29fd6d61471",
     "0.5.4": "a3a4e1a9cf182bb547156c5232a49a1c3732ff7d"
@@ -353,14 +355,14 @@
     "0.1.4": "5ef481b951a7b29affdf4afd7f26838fc1120f84"
   },
   "source-map": {
-    "0.1.23": "079f8fa7867f318b48cf5d4c716ab6d4dc859be9"
+    "0.1.27": "f114e06a8b5c05cbc51aa1fa600e728162455eda"
   },
   "stack-trace": {
-    "0.0.6": "1e719bd6a2629ff09c189e17a9ef902a94fc5db0"
+    "0.0.7": "c72e089744fc3659f508cdce3621af5634ec0fff"
   },
   "temp": {
     "0.4.0": "671ad63d57be0fe9d7294664b3fc400636678a60",
-    "0.5.0": "605fa983bcbed88bac99370bc5bf934678cb289e"
+    "0.5.1": "77ab19c79aa7b593cbe4fac2441768cad987b8df"
   },
   "through": {
     "0.1.4": "8059576d833089b3c18eccd37580bf9cc5b59130"
@@ -384,6 +386,9 @@
   },
   "urlparse": {
     "0.0.1": "d171ec4681fcd0d8bd00b64345637d89a9700876"
+  },
+  "useragent": {
+    "2.0.5": "850e6acd9403583e7d589c5ac0ad8000d1d35ebe"
   },
   "validator": {
     "0.4.24": "9d88e88809114a861ec69bc0ddcb85322c98499a",
