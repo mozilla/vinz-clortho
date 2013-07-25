@@ -45,6 +45,9 @@
   "cef": {
     "0.3.3": "74a521e3c5c702fe1dc240e6250a2583f885227f"
   },
+  "character-parser": {
+    "1.0.2": "55384d6afcf8c6b9dd483e8347646a790e4545e7"
+  },
   "cjson": {
     "0.2.1": "73cd8aad65d9e1505f9af1744d3b79c1527682a5"
   },
@@ -65,7 +68,8 @@
     "0.0.4": "2d1a43347dbe9515a4a2796732e5b88473840b22"
   },
   "commander": {
-    "0.6.1": "fa68a14f6a945d54dbbe50d8cdb3320e9e3b1a06"
+    "0.6.1": "fa68a14f6a945d54dbbe50d8cdb3320e9e3b1a06",
+    "1.1.1": "50d1651868ae60eccff0a2d9f34595376bc6b041"
   },
   "commondir": {
     "0.0.1": "89f00fdcd51b519c578733fec563e6a6da7f5be2"
@@ -97,6 +101,15 @@
   "crypto-browserify": {
     "0.2.3": "c98141505d90e31a1e456cb97343dc3b0f4a1a2a"
   },
+  "css": {
+    "1.0.8": "9386811ca82bccc9ee7fb5a732b1e2a317c8a3e7"
+  },
+  "css-parse": {
+    "1.0.4": "38b0503fbf9da9f54e9c1dbda60e145c77117bdd"
+  },
+  "css-stringify": {
+    "1.0.5": "b0d042946db2953bb9d292900a6cb5f6d0122031"
+  },
   "cycle": {
     "1.0.2": "269aca6f1b8d2baeefc8ccbc888b459f322c4e60"
   },
@@ -126,7 +139,7 @@
     "0.6.1": "16ccc98eeeac166982927fa67eb3fca8865f6871"
   },
   "escodegen": {
-    "0.0.24": "b6ce32abbf9458249c40983d9b866ac0457a8a1d"
+    "0.0.23": "9acf978164368e42276571f18839c823b3a844df"
   },
   "esprima": {
     "0.9.9": "1b90925c975d632d7282939c3bb9c3a423c30490",
@@ -134,7 +147,7 @@
   },
   "estraverse": {
     "0.0.4": "01a0932dfee574684a598af5a67c3bf9b6428db2",
-    "1.2.0": "6a3dc8a46a5d6766e5668639fc782976ce5660fd"
+    "1.1.2-1": "28ff59bb3cf1272a2027e1c1541f94b23226b311"
   },
   "express": {
     "2.5.11": "4ce8ea1f3635e69e49f0ebb497b6a4b0a51ce6f0"
@@ -186,13 +199,17 @@
     "0.1.1": "d9d82735a5f85f950761ac3909ba9485ec0af4f1"
   },
   "i18n-abide": {
-    "0.0.8beta6": "1efaf183b417901178afb87e96047599ac175425"
+    "0.0.11": "0335f84ab550de1fc211b3169a105ac573f6efcc"
   },
   "inherits": {
     "2.0.0": "76c81b3b1c10ddee3a60bf2c247162bc369f8ba8"
   },
+  "is-promise": {
+    "1.0.0": "b998d17551f16f69f7bd4828f58f018cc81e064f"
+  },
   "jade": {
-    "0.26.3": "8f10d7977d8d79f2f6ff862a81b0513ccb25686c"
+    "0.26.3": "8f10d7977d8d79f2f6ff862a81b0513ccb25686c",
+    "0.30.0": "9ea816da61bea6fef4709b4d9f6b442f1e205ba3"
   },
   "jshint": {
     "2.1.2": "1fb7b77df7b8620c17d4f807945bb2d24990969e"
@@ -207,10 +224,13 @@
     "0.3.0": "cd13466ea2480dbd8396a570d47d31dda476f8b1"
   },
   "jsxgettext": {
-    "0.0.5": "882f3d69ed951cf22a8b4608b300333f9f8ebe5e"
+    "0.1.3": "db9dd0bedd531606cdd5fd978dd75d383fd99327"
   },
   "jwcrypto": {
     "0.4.3": "b48ef3db136b09df0933bfa09c717fd738b56038"
+  },
+  "keypress": {
+    "0.1.0": "4a3188d4291b66b4f65edb99f806aa9ae293592a"
   },
   "ldapjs": {
     "0.6.3": "*"
@@ -243,6 +263,9 @@
   },
   "moment": {
     "1.7.2": "e66be344be2e9ec1d12f1e16a8ca49bf63417f4f"
+  },
+  "monocle": {
+    "0.1.50": "9a7cbd0ccc10de95fd78a04b9beb2482ae4940b7"
   },
   "ms": {
     "0.3.0": "03edc348d613e66a56486cfdac53bcbe899cbd61"
@@ -301,8 +324,14 @@
   "pkginfo": {
     "0.3.0": "726411401039fe9b009eea86614295d5f3a54276"
   },
+  "plist": {
+    "0.4.3": "812842a873aa57f98d0050bee6aaf3549b9d5798"
+  },
   "pooling": {
     "0.4.4": "d06d7f565e9a1eec8b60bfa259c1e958a9e6ba03"
+  },
+  "promise": {
+    "2.0.0": "46648aa9d605af5d2e70c3024bf59436da02b80e"
   },
   "qs": {
     "0.4.2": "3cac4c861e371a8c9c4770ac23cda8de639b8e5f",
@@ -313,6 +342,9 @@
   },
   "read-package-json": {
     "0.4.1": "a0e917cce8333444889543de9db2b1a4606baaa2"
+  },
+  "readdirp": {
+    "0.2.5": "c4c276e52977ae25db5191fe51d008550f15d9bb"
   },
   "relative-date": {
     "1.1.1": "75c97c5446fa1146c1d250c47ca3629fb9a2e764"
@@ -370,6 +402,9 @@
   "tmp": {
     "0.0.16": "704ea0513c15375389ef5b6dde865730528f2245"
   },
+  "transformers": {
+    "2.0.1": "352131dfceb93a7532dc7535a4f142510435a394"
+  },
   "tunnel-agent": {
     "0.2.0": "6853c2afb1b2109e45629e492bde35f459ea69e8"
   },
@@ -378,7 +413,8 @@
   },
   "uglify-js": {
     "1.0.6": "f0d3aafd463f26a437b9ebc19f4947ab7e8078aa",
-    "1.2.6": "d354b2d3c1cf10ebc18fa78c11a28bdd9ce1580d"
+    "1.2.6": "d354b2d3c1cf10ebc18fa78c11a28bdd9ce1580d",
+    "2.2.5": "a6e02a70d839792b9780488b7b8b184c095c99c7"
   },
   "underscore": {
     "1.1.7": "40bab84bad19d230096e8d6ef628bff055d83db0",
@@ -418,6 +454,12 @@
   },
   "xml2js": {
     "0.1.13": "438ff3b1d85a51ad659ffc2ebe83403e10c98722"
+  },
+  "xmlbuilder": {
+    "0.4.2": "1776d65f3fdbad470a08d8604cdeb1c4e540ff83"
+  },
+  "xmldom": {
+    "0.1.16": "cf2602832b1ab5c3e6813fca08fe70196ba15e8c"
   },
   "yamlparser": {
     "0.0.2": "32393e6afc70c8ca066b6650ac6738b481678ebc"
