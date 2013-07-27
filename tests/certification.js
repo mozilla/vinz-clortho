@@ -86,7 +86,6 @@ describe('certificate signing', function() {
     });
   });
 
-
   it('authentication should succeed', function(done) {
     request.post({
       url: util.format('%s/api/sign_in', context.mozillaidp.url),
@@ -103,29 +102,6 @@ describe('certificate signing', function() {
     });
   });
 
-  it('signing request fails when user has changed their password', function(done) {
-
-    var user = context.ldap.findUser('user2@mozilla.com');
-    var oldChangeTime = user.attributes.pwdChangeTime; 
-    user.attributes.pwdChangeTime = "CHANGED"
-
-    request.post({
-      url: util.format('%s/api/provision', context.mozillaidp.url),
-      json: {
-        user: 'user2@mozilla.com',
-        pubkey: keypair.publicKey.serialize(),
-        _csrf: csrf_token
-      }
-    }, function(err, resp, body) {
-      should.not.exist(err);
-      (resp.statusCode).should.equal(401);
-      (resp.body).should.equal('Password Changed. Reauthentication required.');
-
-      // * reset the value ...  
-      user.attributes.pwdChangeTime = oldChangeTime;
-      done();
-    });
-  });
 
   it('signing request succeeds with an authenticated session', function(done) {
     request.post({
@@ -246,6 +222,45 @@ describe('certificate signing', function() {
       should.not.exist(err);
       (resp.statusCode).should.equal(401);
       done();
+    });
+  });
+
+
+  it('signing request fails when user has changed their password', function(done) {
+    request.post({
+      url: util.format('%s/api/sign_in', context.mozillaidp.url),
+      json: {
+        user: 'user2@mozilla.com',
+        pass: 'testtest',
+        _csrf: csrf_token
+      }
+    }, function(err, resp, body) {
+      should.not.exist(err);
+      (resp.statusCode).should.equal(200);
+
+      var user = context.ldap.findUser('user2@mozilla.com');
+      var oldChangeTime = user.attributes.pwdChangeTime; 
+      user.attributes.pwdChangeTime = "CHANGED"
+
+      request.post({
+        url: util.format('%s/api/provision', context.mozillaidp.url),
+        json: {
+          user: 'user2@mozilla.com',
+          pubkey: keypair.publicKey.serialize(),
+          _csrf: csrf_token
+        }
+      }, function(err, resp, body) {
+        should.not.exist(err);
+        (resp.statusCode).should.equal(401);
+        (resp.body).should.equal('Password Changed. Reauthentication required.');
+
+        // make sure the session was reset
+        should.exist(resp.headers['set-cookie']);
+
+        // * reset the value ...  
+        user.attributes.pwdChangeTime = oldChangeTime;
+        done();
+      });
     });
   });
 });

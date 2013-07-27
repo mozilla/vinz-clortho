@@ -78,7 +78,7 @@ exports.routes = function () {
     provision_key: function (req, resp) {
       // check that there is an authenticated user
       if (!req.session || !req.session.email) {
-        return resp.send(401);
+        return resp.send('No Session', 401);
       }
       // check that required arguments are supplied
       if (!req.params.pubkey || !req.params.user) {
@@ -100,6 +100,7 @@ exports.routes = function () {
         // provision then force them to log in again
         if (userData.pwdChangeTime !== req.session.pwdChangeTime) {
           statsd.increment('provision.pwdChangeTime mismatch');
+          req.session.reset();
           return resp.send('Password Changed. Reauthentication required.', 401);
         }
 
