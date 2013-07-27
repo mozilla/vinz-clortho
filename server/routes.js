@@ -89,11 +89,18 @@ exports.routes = function () {
       auth.userMayUseEmail({
         user: req.session.email,
         email: emailRewrite(req.params.user).toLowerCase()
-      }, function(err) {
+      }, function(err, userData) {
         if (err) {
           logger.warn("cannot provision user:", err);
           statsd.increment('provision.failure');
           return resp.send(401);
+        }
+
+        // if the user has changed their password since the last
+        // provision then force them to log in again
+        if (userData.pwdChangeTime !== req.session.pwdChangeTime) {
+          statsd.increment('provision.pwdChangeTime mismatch');
+          return resp.send('Password Changed. Reauthentication required.', 401);
         }
 
         crypto.cert_key(
@@ -157,8 +164,8 @@ exports.routes = function () {
             auth.authUser({
               email: mozillaUser,
               pass: req.params.pass
-            }, function (err, passed) {
-              if (err || ! passed) {
+            }, function (err, userData) {
+              if (err || userData === false) {
                 // if this is a password failure, note it in our password
                 // throttling
                 if (err && err.name === 'InvalidCredentialsError') {
@@ -172,7 +179,10 @@ exports.routes = function () {
                 // upon successful authentication, clear any throttling
                 // for this user
                 throttle.clear(mozillaUser);
+
                 req.session.email = mozillaUser;
+                req.session.pwdChangeTime = userData.pwdChangeTime;
+
                 resp.send({ success: true }, 200);
                 statsd.increment('auth.success');
               }
