@@ -3,6 +3,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 $(document).ready(function() {
+
+  setTimeout(function() {
+    $('[name=user]').attr('disabled', 'true');
+  }, 300);
+
   // XXX: currently the server is plucking email out of get data when
   // the auth page is rendered.  It does this to render to the user
   // their substituted email address.
