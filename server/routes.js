@@ -37,6 +37,8 @@ exports.routes = function () {
     provision: function (req, resp) {
       statsd.increment('provision.attempt');
       applyContentSecurityPolicy(resp);
+      // This cookie tests 3rd party Cookie blocking
+      req.session.question = "Are you the Keymaster?";
       resp.render('provision', {
         user: req.session.email,
         browserid_server: config.get('browserid_server'),
@@ -44,6 +46,12 @@ exports.routes = function () {
       });
     },
     signin: function (req, resp) {
+      if (! req.session.question) {
+        statsd.increment('auth.3rd_party_cookies_fail');
+        return resp.render('3rd_party_cookies',
+                           { title: req.gettext("Sign In") });
+      }
+
       statsd.increment('auth.attempt');
       var email = (req.query ? req.query.email : null);
       if (email) email = emailRewrite(email);
