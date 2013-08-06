@@ -1,53 +1,36 @@
-[![Build Status](https://travis-ci.org/mozilla/vinz-clortho.png?branch=master)](https://travis-ci.org/mozilla/vinz-clortho)
+[![Build
+Status](https://travis-ci.org/mozilla/vinz-clortho.png?branch=master)](https://travis-ci.org/mozilla/vinz-clortho)
 
 # Mozilla IdP
 
-``mozilla-idp`` is a server that implements support for Persona on the mozilla.com domain.
+``mozilla-idp`` is a server that implements support for Persona on the
+mozilla.com domain.
 
-When deployed, this will allow mozillans with `mozilla.com` or `mozilla.org` email addresses
-to authenticate with Persona enabled websites using their Mozilla (LDAP) password.
+When deployed, this will allow mozillans with `mozilla.com` or
+`mozillafoundation.org` email addresses to authenticate with Persona enabled
+websites using their Mozilla (LDAP) password.
 
-## Configuration
+## Getting Code to Production
 
-Note: This section is still in changing. 
+This is the process for getting new code into Production
 
-### Step N: Creating Public/Private Keypairs
+1. Do features and bug fixes in branches. Create a pull request to have new
+   code merged into the `master` branch
+1. Create a new release tag with `scripts/create-release.sh`
+1. Create an RPM from the tag
+1. Create a new staging server based on the new RPM
+1. Have QA test to make sure everything is OK
+1. *if* tests pass, create new production systems from same version. Otherwise
+   go back to step 1. to fix issues.
 
-You will need a public and secret key pair to act as a 
-[Persona IdP](https://developer.mozilla.org/en-US/docs/Persona/Implementing_a_Persona_IdP). 
+## Why the RPM?
 
-    > scripts/gen_keys.js
+This is a quick introduction to how the Service Ops. team deploys Mozilla IdP.
+For security and operational reasons we turn the application into an RPM and
+deploy from our private RPM repository. 
 
-The `gen_keys.js` command can be run directly. It will write two files into `server/config`, 
-`public-key.json` and `secret-key.json`.
+This allows us to maintain a package that can be audited as well as very
+specific versioning using RPMs. 
 
-Note: this process takes much longer without libgmp installed. Basically javascript vs native
-code. Here's how to install the library: 
-
-    Scientific Linux (our production distro)
-    ----------------------------------------
-    
-    TODO
-
-    Ubuntu
-    ------
-
-    TODO
-
-
-### Step N: Creating a Configuration File 
-
-    > cd server/config
-    > cp local.json-dist local.json
-
-## Deployment 
-
-![Deployment Diagram](./docs/aws-infrastructure.png)
-
-* Multi-Region, Multi availability zone deployment
-* Use Route53 to DNS load balance across regions and manage region availability
-* Use ELB to 
-    * terminate SSL 
-    * direct traffic to available hosts
-
-
+The scripts and processes for building the RPM exists in the
+mozilla-services/svcops-oompaloompas repository.
