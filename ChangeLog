@@ -1,0 +1,9 @@
+rel2013_08_06.15.01.46:
+
+  * 9a8ad5e Fix bugs in create-release.sh #111
+  * b41df8c Rename create-release-tag.sh to create-release.sh #111
+  * 737770d Add ChangeLog creation to create-release-tag.sh
+  * 5ea2b29 update readme
+  * ec24abf fix i18n-abide lockdown issues
+  * 794c302 #105 add P3P cookie if talking to IE browsers
+
