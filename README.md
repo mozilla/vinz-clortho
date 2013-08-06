@@ -16,7 +16,7 @@ This is the process for getting new code into Production
 
 1. Do features and bug fixes in branches. Create a pull request to have new
    code merged into the `master` branch
-1. Create a git tag of the master. This tag is used to generate the RPM
+1. Create a new release tag with `scripts/create-release.sh`
 1. Create an RPM from the tag
 1. Create a new staging server based on the new RPM
 1. Have QA test to make sure everything is OK
