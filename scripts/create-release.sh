@@ -7,8 +7,6 @@
 
 cd $(dirname $0)/../
 BASE=$PWD
-echo $BASE
-
 
 # Make sure there are no uncommited changes
 # src: http://stackoverflow.com/a/3879077/445792
@@ -37,7 +35,6 @@ then
     exit 1
 fi
 
-
 RDATE=$(date '+%Y_%m_%d.%H.%M.%S')
 TAG="rel$RDATE"
 LAST_RELEASE=$(git tag --list | grep ^rel | sort -r | head -1)
@@ -51,13 +48,20 @@ if [ -z "$LAST_RELEASE" ]; then
     exit 1
 fi
 
+if [ -z $(git log --pretty=format:%s "$LAST_RELEASE..HEAD") ]; then
+    echo "Abort: No changes since $LAST_RELEASE" >&2
+    exit 1
+fi
+
 TMPFILE=$(mktemp /tmp/idpchangelog.XXXXX)
 echo "$TAG:" > $TMPFILE
 echo >> $TMPFILE
 git log --pretty="  * %h %s" "$LAST_RELEASE..HEAD" >> $TMPFILE
+
 echo >> $TMPFILE
 cat $BASE/ChangeLog >> $TMPFILE
 cat $TMPFILE
 cat $TMPFILE > $BASE/ChangeLog
+git add $BASE/ChangeLog
 git commit -am "Create Release: $TAG"
 git tag $TAG
