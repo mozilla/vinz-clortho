@@ -146,7 +146,7 @@ function getUserData(mail, cb) {
         client.search(searchBase, {
           scope: 'sub',
           filter: '(|(mail='+mail+')(zimbraAlias='+mail+'))',
-          attributes: ['mail', 'zimbraAlias', 'employeeType', 'pwdChangeTime']
+          attributes: ['mail', 'zimbraAlias', 'employeeType', 'pwdChangedTime']
         }, function(err, res) {
 
           var results = [];
@@ -259,7 +259,7 @@ exports.authUser = function(opts, cb) {
             cb(null, {
               email: opts.email,
               zimbraAlias: results[0].zimbraAlias || "",
-              pwdChangeTime: results[0].pwdChangeTime || ""
+              pwdChangedTime: results[0].pwdChangedTime || ""
             });
           });
         } else {
@@ -292,7 +292,7 @@ exports.userMayUseEmail = function(opts, cb) {
     return cb(null, {
       email: opts.email,
       zimbraAlias: results[0].zimbraAlias || "",
-      pwdChangeTime: results[0].pwdChangeTime || ""
+      pwdChangedTime: results[0].pwdChangedTime || ""
     });
   });
 };
