@@ -86,7 +86,7 @@ exports.routes = function () {
     provision_key: function (req, resp) {
       // check that there is an authenticated user
       if (!req.session || !req.session.email) {
-        return resp.send(401);
+        return resp.send('No Session', 401);
       }
       // check that required arguments are supplied
       if (!req.params.pubkey || !req.params.user) {
@@ -97,11 +97,19 @@ exports.routes = function () {
       auth.userMayUseEmail({
         user: req.session.email,
         email: emailRewrite(req.params.user).toLowerCase()
-      }, function(err) {
+      }, function(err, userData) {
         if (err) {
           logger.warn("cannot provision user:", err);
           statsd.increment('provision.failure');
           return resp.send(401);
+        }
+
+        // if the user has changed their password since the last
+        // provision then force them to log in again
+        if (userData.pwdChangedTime !== req.session.pwdChangedTime) {
+          statsd.increment('provision.pwdChangedTime mismatch');
+          req.session.reset();
+          return resp.send('Password Changed. Reauthentication required.', 401);
         }
 
         crypto.cert_key(
@@ -165,8 +173,8 @@ exports.routes = function () {
             auth.authUser({
               email: mozillaUser,
               pass: req.params.pass
-            }, function (err, passed) {
-              if (err || ! passed) {
+            }, function (err, userData) {
+              if (err || userData === false) {
                 // if this is a password failure, note it in our password
                 // throttling
                 if (err && err.name === 'InvalidCredentialsError') {
@@ -180,7 +188,10 @@ exports.routes = function () {
                 // upon successful authentication, clear any throttling
                 // for this user
                 throttle.clear(mozillaUser);
+
                 req.session.email = mozillaUser;
+                req.session.pwdChangedTime = userData.pwdChangedTime;
+
                 resp.send({ success: true }, 200);
                 statsd.increment('auth.success');
               }

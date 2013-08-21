@@ -30,6 +30,9 @@
   "awsbox": {
     "0.4.5": "027a9998955f09f3d6b0a10d38ea37ae381b6358"
   },
+  "bigint": {
+    "0.4.2": "5bccafb5af3924cc71eb59942fb3a64a12906e49"
+  },
   "boom": {
     "0.3.8": "c8cdb041435912741628c044ecc732d1d17c09ea"
   },
@@ -283,7 +286,7 @@
     "0.6.0": "41e64712dbd947aa9d9f466b5c0b5ee020bbcbbb"
   },
   "node-statsd": {
-    "0.0.2": "ba96c26d4ec22b4f9501bb332fdf740db5a40ee7"
+    "0.0.2": "*"
   },
   "node-uuid": {
     "1.4.0": "07f9b2337572ff6275c775e1d48513f3a45d7a65"
@@ -424,7 +427,7 @@
     "0.0.1": "d171ec4681fcd0d8bd00b64345637d89a9700876"
   },
   "useragent": {
-    "2.0.5": "850e6acd9403583e7d589c5ac0ad8000d1d35ebe"
+    "2.0.7": "a44c07d157a15e13d73d4af4ece6aab70f298224"
   },
   "validator": {
     "0.4.24": "9d88e88809114a861ec69bc0ddcb85322c98499a",

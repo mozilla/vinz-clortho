@@ -146,7 +146,7 @@ function getUserData(mail, cb) {
         client.search(searchBase, {
           scope: 'sub',
           filter: '(|(mail='+mail+')(zimbraAlias='+mail+'))',
-          attributes: ['mail', 'zimbraAlias', 'employeeType']
+          attributes: ['mail', 'zimbraAlias', 'employeeType', 'pwdChangedTime']
         }, function(err, res) {
 
           var results = [];
@@ -239,8 +239,32 @@ exports.authUser = function(opts, cb) {
         cb(err, false);
       } else {
         statsd.increment('ldap.auth.success');
-        // Successful LDAP authentication
-        cb(null, true);
+
+        /* only fetch extra info. if we are searching by email. 
+         * this happens only when a user is signing on.  
+         * I should also note, doing this because getUserData 
+         * only takes an email address to locate the *right* 
+         * record in our LDAP directory 
+         */
+        if (opts.email) {
+          // fetch some info about the user
+          getUserData(opts.email, function(err, results) {
+            if (err) {
+              statsd.increment('ldap.auth.fetch_data_error');
+              logger.warn("Could not fetch data for user", opts.dn, err);
+              cb(err, false);
+              return;
+            }
+
+            cb(null, {
+              email: opts.email,
+              zimbraAlias: results[0].zimbraAlias || "",
+              pwdChangedTime: results[0].pwdChangedTime || ""
+            });
+          });
+        } else {
+          cb(null, {});
+        }
       }
     });
   });
@@ -265,6 +289,10 @@ exports.userMayUseEmail = function(opts, cb) {
       return cb(util.format("%s account is disabled"), opts.user);
     }
 
-    return cb(null);
+    return cb(null, {
+      email: opts.email,
+      zimbraAlias: results[0].zimbraAlias || "",
+      pwdChangedTime: results[0].pwdChangedTime || ""
+    });
   });
 };
