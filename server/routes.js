@@ -98,8 +98,8 @@ exports.routes = function () {
 
         // if the user has changed their password since the last
         // provision then force them to log in again
-        if (userData.pwdChangeTime !== req.session.pwdChangeTime) {
-          statsd.increment('provision.pwdChangeTime mismatch');
+        if (userData.pwdChangedTime !== req.session.pwdChangedTime) {
+          statsd.increment('provision.pwdChangedTime mismatch');
           req.session.reset();
           return resp.send('Password Changed. Reauthentication required.', 401);
         }
@@ -182,7 +182,7 @@ exports.routes = function () {
                 throttle.clear(mozillaUser);
 
                 req.session.email = mozillaUser;
-                req.session.pwdChangeTime = userData.pwdChangeTime;
+                req.session.pwdChangedTime = userData.pwdChangedTime;
 
                 resp.send({ success: true }, 200);
                 statsd.increment('auth.success');

@@ -30,7 +30,7 @@ module.exports = function() {
         zimbraalias: 'alias'+i+"@mozilla.com",
         password:"testtest",
         employeetype: "Tester",
-        pwdChangeTime: "12345Z"
+        pwdChangedTime: "12345Z"
       }
     });
   }
@@ -43,7 +43,7 @@ module.exports = function() {
         zimbraalias: 'alias'+i+"@mozillafoundation.org",
         password: "testtest",
         employeetype: "Tester",
-        pwdChangeTime: "12345Z"
+        pwdChangedTime: "12345Z"
       }
     });
   }
@@ -58,7 +58,7 @@ module.exports = function() {
       zimbraalias: 'test_a@mozillafoundation.org',
       password:"testtest",
       employeetype: "Tester",
-      pwdChangeTime: "12345Z"
+      pwdChangedTime: "12345Z"
     }
   });
 
@@ -72,7 +72,7 @@ module.exports = function() {
       zimbraalias: 'test_a@mozilla.com',
       password:"testtest",
       employeetype: "Tester",
-      pwdChangeTime: "12345Z"
+      pwdChangedTime: "12345Z"
     }
   });
 
