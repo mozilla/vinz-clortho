@@ -1,3 +1,19 @@
+rel2013_08_28.15.22.40:
+
+  * a48b888 Merge branch '91-use-pwdChangedTime'
+  * 7129101 changed pwdChangeTime to pwdChangedTime
+  * 5f12b6c Merge pull request #112 from mozilla/111-improve-release-process
+  * 29fa434 Improve documentation on new release process, #111
+  * 25f4285 Remove old train/stage tag create scripts #111
+  * eb8979b update useragent to 2.0.7 to detect IE11
+  * 6140471 added bigint lockdown dependency back in
+  * 8baa716 Merge pull request #109 from mozilla/issue-107-3rd-party-cookies
+  * d37e726 Merge pull request #108 from mozilla/issue-104-password-manager
+  * fd8f2dc Detect 3rd party cookies and show an error screen
+  * 85f61de Make email address field read only after password manager runs. Fixes Issue #104
+  * e89639b #91 old session destroyed on password change
+  * 5657e90 fixes #91 User should be logged out when LDAP password changes
+
 rel2013_08_06.15.01.46:
 
   * 9a8ad5e Fix bugs in create-release.sh #111
