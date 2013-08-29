@@ -491,8 +491,8 @@ input:disabled {
   .left-col,
   .right-col {
     border: solid 0px #0000ff;
-    min-width: 400px);
-    max-width: 400px);
+    min-width: 400px;
+    max-width: 400px;
     min-height: 1px;
     overflow: hidden;
     float: none;
