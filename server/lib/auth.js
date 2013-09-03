@@ -85,101 +85,132 @@ exports.checkBindAuth = function(opts, cb) {
   return exports.authUser(opts, cb);
 };
 
-// fetches the user's LDAP entry and returns an 
+// fetches the user's LDAP entry and returns an
 // object with mail, zimbraAlias and employeeType attributes
-function getUserData(mail, cb) {
-  createClient({}, function(err, client) {
+function getUserData(opts, cb) {
 
-    // ensure unbind() is called.
-    cb = _.compose(function() {
-      client.unbind();
-    }, cb);
+  // required parameters
+  checkOpts([ 'email', 'dn', 'pass' ], opts);
 
-    var dn = config.get('ldap_bind_dn'),
-        pass = config.get('ldap_bind_password');
-    
-    client.bind(dn, pass, function(err) {
+  // 'boundClient' is an optional parameter.  When supplied,
+  // we will use an existing bound LDAP connection rather than
+  // opening a new one.
 
-      if (err) {
-        logger.warn("Could not bind to get user data");
-        return cb(err, false);
-      }
-
-      /** 
-       * This hairy bit of code allows us to search multiple 
-       * base levels of the ldap directory. This exists for several 
-       * reasons: 
-       *
-       * a) we want to be able to use our mock LDAP server to test with
-       *
-       * b) our mock ldap server (ldapjs) does not support extensible
-       *    filtering, otherwise we could search with this filter: 
-       *
-       *    (&(|(mail='+mail+')(zimbraAlias='+mail+'))(|(o:dn:=org)(o:dn:=com)))
-       *
-       *    and only need one request to the server
-       *
-       * c) it is worth the tradeoff(?) of multiple searches, more latency,
-       *    more bandwidth and more complex code to have and easily 
-       *    testable code base.
-       *
-       * d) it's compatible with Active Directory now ...
-       *
-       */
-
-      // a list of the bases we want to search
-      var searchBases; 
-
-      /* an optimization to save some latency/bandwidth as most 
-       * addresses that end in .org are in o=org.
-       */
-      if (mail.indexOf('.org') === -1) {
-        searchBases = [ "o=com, dc=mozilla", "o=org, dc=mozilla" ];
-      } else {
-        searchBases = [ "o=org, dc=mozilla", "o=com, dc=mozilla" ];
-      }
-
-      function searchForEmail(searchBase, mail, searchCallback) {
-        // no more bases left to search
-        if (!searchBase) return searchCallback(null, []);
-
-        client.search(searchBase, {
-          scope: 'sub',
-          filter: '(|(mail='+mail+')(zimbraAlias='+mail+'))',
-          attributes: ['mail', 'zimbraAlias', 'employeeType', 'pwdChangedTime']
-        }, function(err, res) {
-
-          var results = [];
-
-          if (err) {
-            logger.warn('error during LDAP search' + err.toString());
-            return searchCallback(err, false); 
-          }
-
-          res.on('searchEntry', function(entry) {
-              results.push(entry.object);
-            });
-
-          res.on('end', function() {
-              if (results.length === 0) {
-                searchForEmail(searchBases.shift(), mail, searchCallback);
-              } else {
-                searchCallback(null, results);
-              }
-            });
-        });
-      }
-
-      // search searching...
-      searchForEmail(searchBases.shift(), mail, cb);
+  // determine the search bases
+  var domain = opts.email.split('@')[1];
+  var searchBases = config.get('ldap_search_bases')[domain];
+  if (!searchBases) {
+    process.nextTick(function() {
+      cb(util.format("unsupported domain: %s", domain));
     });
-  });
+    return;
+  }
+
+  function withClient(client) {
+    /**
+     * This hairy bit of code allows us to search multiple
+     * base levels of the ldap directory. This exists for several
+     * reasons:
+     *
+     * a) we want to be able to use our mock LDAP server to test with
+     *
+     * b) our mock ldap server (ldapjs) does not support extensible
+     *    filtering, otherwise we could search with this filter:
+     *
+     *    (&(|(mail='+mail+')(zimbraAlias='+mail+'))(|(o:dn:=org)(o:dn:=com)))
+     *
+     *    and only need one request to the server
+     *
+     * c) it is worth the tradeoff(?) of multiple searches, more latency,
+     *    more bandwidth and more complex code to have and easily
+     *    testable code base.
+     *
+     * d) it's compatible with Active Directory now ...
+     *
+     */
+
+    function searchForEmail(searchBase, mail, searchCallback) {
+      // no more bases left to search
+      if (!searchBase) return searchCallback(null, []);
+
+      client.search(searchBase, {
+        scope: 'sub',
+        filter: '(|(mail='+opts.email+')(zimbraAlias='+opts.email+'))',
+        attributes: ['mail', 'zimbraAlias', 'employeeType', 'pwdChangedTime']
+      }, function(err, res) {
+
+        var results = [];
+
+        if (err) {
+          logger.warn('error during LDAP search' + err.toString());
+          return searchCallback(err, false);
+        }
+
+        res.on('searchEntry', function(entry) {
+          results.push(entry.object);
+        });
+
+        res.on('end', function() {
+          if (results.length === 0) {
+            searchForEmail(searchBases.shift(), opts.email, searchCallback);
+          } else {
+            searchCallback(null, results);
+          }
+        });
+      });
+    }
+
+    // search searching...
+    searchForEmail(searchBases.shift(), opts.email, cb);
+  }
+
+  if (opts.boundClient) {
+    withClient(opts.boundClient);
+  } else {
+    createClient(opts, function(err, client) {
+
+      // ensure unbind() is called.
+      cb = _.compose(function() {
+        client.unbind();
+      }, cb);
+
+      client.bind(opts.dn, opts.pass, function(err) {
+        if (err) {
+          logger.warn("Could not bind to get user data");
+          return cb(err, false);
+        }
+
+        withClient(client);
+      });
+    });
+  }
+}
+
+// convert a (canonical) email address to a DN
+exports.convertEmailToDN = function(email) {
+  // is this a supported domain?
+  var searchBases = config.get('ldap_search_bases');
+  var domain = email.split('@')[1];
+  if (!searchBases[domain]) {
+    throw new Error(util.format("unsupported domain: %s", domain));
+  }
+  return util.format("mail=%s,%s", email, searchBases[domain][0]);
+};
+
+// given an object, add default .dn and .pass if they do not exist
+function addDefaultCredentials(opts) {
+  if (!opts.dn) {
+    opts.dn = config.get('ldap_bind_dn');
+    if (opts.pass) throw new Error("providing a password without a DN is meaningless");
+    opts.pass = config.get('ldap_bind_password');
+  }
 }
 
 // given an email, map it to a canonical address
 exports.canonicalAddress = function(opts, cb) {
-  checkOpts([ 'email' ], opts);
-  getUserData(opts.email, function(err, results) {
+  addDefaultCredentials(opts);
+  checkOpts([ 'email', 'dn', 'pass' ], opts);
+  getUserData(opts, function(err, results) {
     if (err) return cb(err, false);
 
     if (results.length !== 0) {
@@ -199,18 +230,16 @@ exports.authUser = function(opts, cb) {
   // ensure cb is called only once
   cb = _.once(cb);
 
-  // if email is provided, let's dynamically convert it into a bind dn
+  // if email is provided, we assume it is the canonical ldap account and
+  // convert it into a bind dn
   if (opts.email) {
     if (opts.dn) throw new Error(".dn and .email are mutually exclusive");
-    // is this a supported domain?
-    var searchBases = config.get('ldap_search_bases');
-    var domain = opts.email.split('@')[1];
-    if (!searchBases[domain]) {
-      return process.nextTick(function() {
-        cb(util.format("unsupported domain: %s", domain));
-      });
+    try {
+      opts.dn = exports.convertEmailToDN(opts.email);
+    } catch(e) {
+      process.nextTick(function() { cb(e); });
+      return;
     }
-    opts.dn = util.format("mail=%s,%s", opts.email, searchBases[domain]);
   }
 
   checkOpts([ 'dn', 'pass' ], opts);
@@ -240,15 +269,15 @@ exports.authUser = function(opts, cb) {
       } else {
         statsd.increment('ldap.auth.success');
 
-        /* only fetch extra info. if we are searching by email. 
-         * this happens only when a user is signing on.  
-         * I should also note, doing this because getUserData 
-         * only takes an email address to locate the *right* 
-         * record in our LDAP directory 
+        /* only fetch extra info. if we are searching by email.
+         * this happens only when a user is signing on.
+         * I should also note, doing this because getUserData
+         * only takes an email address to locate the *right*
+         * record in our LDAP directory
          */
         if (opts.email) {
           // fetch some info about the user
-          getUserData(opts.email, function(err, results) {
+          getUserData(opts, function(err, results) {
             if (err) {
               statsd.increment('ldap.auth.fetch_data_error');
               logger.warn("Could not fetch data for user", opts.dn, err);
@@ -261,7 +290,7 @@ exports.authUser = function(opts, cb) {
               zimbraAlias: results[0].zimbraAlias || "",
               pwdChangedTime: results[0].pwdChangedTime || ""
             });
-          });
+          }, client);
         } else {
           cb(null, {});
         }
@@ -274,9 +303,10 @@ exports.userMayUseEmail = function(opts, cb) {
   // opts.user - canonical user
   // opts.email - possibly an alias
 
-  checkOpts([ 'user', 'email' ], opts);
+  addDefaultCredentials(opts);
+  checkOpts([ 'user', 'email', 'dn', 'pass' ], opts);
 
-  getUserData(opts.email, function(err, results) {
+  getUserData(opts, function(err, results) {
     if (err) return cb(err);
 
     if (results.length === 0) return cb("User not found or disabled");
