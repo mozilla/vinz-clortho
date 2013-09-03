@@ -239,8 +239,8 @@ describe('certificate signing', function() {
       (resp.statusCode).should.equal(200);
 
       var user = context.ldap.findUser('user2@mozilla.com');
-      var oldChangeTime = user.attributes.pwdChangeTime; 
-      user.attributes.pwdChangeTime = "CHANGED"
+      var oldChangeTime = user.attributes.pwdChangedTime;
+      user.attributes.pwdChangedTime = "CHANGED"
 
       request.post({
         url: util.format('%s/api/provision', context.mozillaidp.url),
@@ -258,7 +258,7 @@ describe('certificate signing', function() {
         should.exist(resp.headers['set-cookie']);
 
         // * reset the value ...  
-        user.attributes.pwdChangeTime = oldChangeTime;
+        user.attributes.pwdChangedTime = oldChangeTime;
         done();
       });
     });
