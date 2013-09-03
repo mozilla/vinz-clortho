@@ -290,7 +290,7 @@ exports.authUser = function(opts, cb) {
               zimbraAlias: results[0].zimbraAlias || "",
               pwdChangedTime: results[0].pwdChangedTime || ""
             });
-          }, client);
+          });
         } else {
           cb(null, {});
         }
