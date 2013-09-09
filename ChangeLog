@@ -1,3 +1,18 @@
+rel2013_09_09.15.45.21:
+
+  * 2feabd3 changed pwdChangeTime to pwdChangedTime
+  * d3b5b51 update useragent to 2.0.7 to detect IE11
+  * 467ee73 added bigint lockdown dependency back in
+  * edbdbe2 #91 old session destroyed on password change
+  * 3f94f47 fixes #91 User should be logged out when LDAP password changes
+  * 4f3862e Improve documentation on new release process, #111
+  * 164c280 Remove old train/stage tag create scripts #111
+  * 9366e05 Create Release: rel2013_08_06.15.01.46
+  * 7060834 Fix bugs in create-release.sh #111
+  * e9c7700 Rename create-release-tag.sh to create-release.sh #111
+  * 19431c8 Add ChangeLog creation to create-release-tag.sh
+  * a17fe55 update readme
+
 rel2013_08_06.15.01.46:
 
   * 9a8ad5e Fix bugs in create-release.sh #111
