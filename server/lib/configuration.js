@@ -60,8 +60,8 @@ var conf = module.exports = convict({
     doc: "The search bases for supported domains.  Both restricts the domains we support and provides configurable LDAP search base strings",
     format: Object,
     default: {
-      "mozillafoundation.org": "o=org,dc=mozilla",
-      "mozilla.com": "o=com,dc=mozilla"
+      "mozillafoundation.org": [ "o=org,dc=mozilla", "o=com,dc=mozilla" ],
+      "mozilla.com": [ "o=com,dc=mozilla", "o=org,dc=mozilla" ]
     }
   },
   ldap_server_connect_timeout: { format: 'int', default: 10000 },

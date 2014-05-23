@@ -42,7 +42,8 @@
     "request": "2.16.6",
     "jshint": "2.1.2",
     "walk": "2.2.1",
-    "temp": "0.5.1"
+    "temp": "0.5.1",
+    "optimist": "0.6.0"
   },
   "scripts": {
     "start": "LOCAL_DEV=true node ./server/bin/clortho",

@@ -4,29 +4,72 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-const ldap = require('ldapjs'),
-    config = require('../server/lib/configuration'),
-      path = require('path');
-
 process.on('uncaughtException', function(err) {
   console.error('uncaught exception', err);
 });
 
-var auth = require('../server/lib/auth');
+const ldap = require('ldapjs'),
+    config = require('../server/lib/configuration'),
+      path = require('path');
 
-if (process.argv.length !== 4) {
-  var progName = path.basename(process.argv[1]);
-  console.error(util.format("%s: using mozilla credentials, authenticate to " +
-                            "LDAP", progName));
-  console.error(util.format("USAGE: %s <username> <password>"), progName);
-  process.exit(1);
+var argv = require('optimist')
+.usage('Test authentication against LDAP.\nUsage: $0')
+.alias('h', 'help')
+.describe('h', 'display this usage message')
+.alias('u', 'url')
+.describe('u', 'LDAP server url')
+.default('u', 'ldaps://addressbook.mozilla.com:636')
+.alias('a', 'address')
+.describe('a', 'email address to authenticate (may be an alias)')
+.demand('a')
+.alias('p', 'password')
+.describe('p', 'LDAP account password')
+.demand('p')
+.alias('c', 'canonical')
+.describe('c', 'canonical LDAP password (required when email is an alias)');
+
+var args = argv.argv;
+
+// request context (cookie jar, etc)
+var ctx = {};
+
+if (args.h) {
+  argv.showHelp();
+  process.exit(0);
 }
 
-console.log('dn', process.argv[2]);
-auth.authUser({
-  url: 'ldaps://addressbook.mozilla.com:636',
-  email: process.argv[2],
-  pass: process.argv[3]
-}, function (err, passed) {
-  console.log(JSON.stringify(err, null, "  "), passed);
+var auth = require('../server/lib/auth');
+
+var dn = auth.convertEmailToDN(args.c || args.a);
+
+auth.canonicalAddress({
+  email: args.a,
+  dn: dn,
+  pass: args.p,
+  url: args.u
+}, function(err, canonicalAddress) {
+  if (err) {
+    console.log(util.format("communication with LDAP failed (%s): %s",
+                           err.name, err.message));
+  } else {
+    if (canonicalAddress == args.a) {
+      console.log(args.a, "is canonical");
+    } else {
+      console.log(util.format("canonical address for %s is %s",
+                              args.a, canonicalAddress));
+    }
+
+    auth.authUser({
+      url: args.u,
+      email: canonicalAddress,
+      pass: args.p
+    }, function (err, passed) {
+      if (err) {
+        console.log(util.format("authentication with LDAP failed (%s): %s",
+                                err.name, err.message));
+      } else {
+        console.log(passed);
+      }
+    });
+  }
 });
