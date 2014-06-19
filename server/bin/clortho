@@ -153,6 +153,12 @@ app.get('/signout', routes.signout);
 app.use(express.static(path.join(process.cwd(), '..', 'static')));
 app.use(routes.handle404);
 
+var dntPolicy = fs.readFileSync(path.join(process.cwd(), '..', 'static', 'dnt-policy.txt')).toString();
+app.get('/.well-known/dnt-policy.txt', function(req, res) {
+  res.setHeader('Content-Type', 'text/plain; charset=utf8');
+  res.send(dntPolicy);
+});
+
 function startup(cb) {
   app.listen(config.get('http_port'), config.get('http_address'), function(err) {
     statsd.increment('server.started');
