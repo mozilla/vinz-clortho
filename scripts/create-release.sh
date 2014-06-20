@@ -56,7 +56,7 @@ fi
 TMPFILE=$(mktemp /tmp/idpchangelog.XXXXX)
 echo "$TAG:" > $TMPFILE
 echo >> $TMPFILE
-git log --pretty="  * %h %s" "$LAST_RELEASE..HEAD" >> $TMPFILE
+git log --no-merges --pretty="  * %h %s" "$LAST_RELEASE..HEAD" >> $TMPFILE
 
 echo >> $TMPFILE
 cat $BASE/ChangeLog >> $TMPFILE
