@@ -1,3 +1,13 @@
+rel2014_06_20.19.26.40:
+
+  * b75c6ba Get rid of merge commits in the changelog
+  * 6688d8b Add a Do Not Track policy
+  * 0c2612f Adding some missing properties to the package.json file
+  * c032b4b remove superfluous argument to getUserData()
+  * 2246335 refactor auth.js, improved command line testing tool, removed unneccesary LDAP reconnection
+  * 34c6637 fix unit tests, update pwdChangeTime to pwdChangedTime
+  * d734bc5 Fix for issue #114
+
 rel2013_08_28.15.22.40:
 
   * 7129101 changed pwdChangeTime to pwdChangedTime
