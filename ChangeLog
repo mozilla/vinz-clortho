@@ -1,14 +1,20 @@
+rel2014_06_20.19.26.40:
+
+  * b75c6ba Get rid of merge commits in the changelog
+  * 6688d8b Add a Do Not Track policy
+  * 0c2612f Adding some missing properties to the package.json file
+  * c032b4b remove superfluous argument to getUserData()
+  * 2246335 refactor auth.js, improved command line testing tool, removed unneccesary LDAP reconnection
+  * 34c6637 fix unit tests, update pwdChangeTime to pwdChangedTime
+  * d734bc5 Fix for issue #114
+
 rel2013_08_28.15.22.40:
 
-  * a48b888 Merge branch '91-use-pwdChangedTime'
   * 7129101 changed pwdChangeTime to pwdChangedTime
-  * 5f12b6c Merge pull request #112 from mozilla/111-improve-release-process
   * 29fa434 Improve documentation on new release process, #111
   * 25f4285 Remove old train/stage tag create scripts #111
   * eb8979b update useragent to 2.0.7 to detect IE11
   * 6140471 added bigint lockdown dependency back in
-  * 8baa716 Merge pull request #109 from mozilla/issue-107-3rd-party-cookies
-  * d37e726 Merge pull request #108 from mozilla/issue-104-password-manager
   * fd8f2dc Detect 3rd party cookies and show an error screen
   * 85f61de Make email address field read only after password manager runs. Fixes Issue #104
   * e89639b #91 old session destroyed on password change
