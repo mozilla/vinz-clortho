@@ -56,6 +56,21 @@ var conf = module.exports = convict({
     default: "ldaps://ldap.mozilla.org:636",
     env: 'LDAP_SERVER_URL'
   },
+  ldap_server_use_client_cert: {
+    doc: 'use client certs to connect to the ldap server',
+    format: Boolean,
+    default: false
+  },
+  ldap_server_client_cert: {
+    doc: 'path to the client certificate to use',
+    format: 'string',
+    default: ''
+  },
+  ldap_server_client_key: {
+    doc: 'path to the client certificate key to use', 
+    format: 'string', 
+    default: ''
+  },
   ldap_search_bases: {
     doc: "The search bases for supported domains.  Both restricts the domains we support and provides configurable LDAP search base strings",
     format: Object,

@@ -19,22 +19,42 @@ const ldap = require('ldapjs'),
   }
 });
 
+// preload the binary cert / key files
+if (config.get('ldap_server_use_client_cert') == true) {
+  var CLIENT_CERT_DATA = fs.readFileSync(config.get('ldap_server_client_cert'));
+  var CLIENT_KEY_DATA = fs.readFileSync(config.get('ldap_server_client_key'));
+}
+
 // create and connect an LDAP client, populate the options block
 function createClient(opts, cb) {
   var connectStartTime = new Date();
 
   if (typeof opts !== 'object' || opts === null) throw new Error('invalid options parameter');
   opts.url = opts.url || config.get('ldap_server_url');
+
+  opts.use_client_cert      = opts.use_client_cert || config.get('ldap_server_use_client_cert');
+  opts.client_cert_file     = opts.use_client_cert_file || config.get('ldap_server_client_cert');
+  opts.client_cert_key_file = opts.use_client_cert_key_file || config.get('ldap_server_client_key');
+
   opts.errorCallback = opts.errorCallback || function(err) {
     logger.warn(util.format('LDAP connection ended with unhandled error: %s', err));
   };
 
-  cb = _.once(cb);
-
-  var client = ldap.createClient({
+  var connectOpts = {
     url: opts.url,
     connectTimeout: opts.connectTimeout || config.get('ldap_server_connect_timeout')
-  });
+  };
+
+  if (opts.url.substring(0, 8) == 'ldaps://' && opts.use_client_cert == true) {
+    connectOpts.tlsOptions = {
+      cert: CLIENT_CERT_DATA,
+      key: CLIENT_KEY_DATA
+    }
+  }
+
+  cb = _.once(cb);
+
+  var client = ldap.createClient(connectOpts);
 
   var connected = false;
 
